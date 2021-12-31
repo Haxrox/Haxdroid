@@ -1,8 +1,8 @@
 const ClientEvent = require("./ClientEvent.js");
 
 class MessageCreate extends ClientEvent {
-    Execute(message) {
-        super();
+    Execute(client, message) {
+        super.Execute(client, message);
         console.log(message.content);
     }
 }

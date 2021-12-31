@@ -3,20 +3,23 @@ const FileSystem = require('fs');
 const ClientEvent = require("./ClientEvent.js");
 
 const slashCommands = new Discord.Collection();
-FileSystem.readdirSync('./Commands').filter(file => (file.endsWith('.js') && file != 'Command.js' && file != 'SlashCommand.js' && file != "TemplateCommand.js")).forEach(file => {
+FileSystem.readdirSync('./Commands').filter(file => (file.endsWith('.js') && file != 'Command.js' && file != 'SlashCommand.js')).forEach(file => {
     const command = require(`../Commands/${file}`);
     slashCommands.set(command.commandName, command);
 });
 
 class InteractionCreate extends ClientEvent {
-    async Execute(interaction) {
-        super.Execute();
-        console.log(super.client);
+    async Execute(client, interaction) {
+        super.Execute(client, interaction);
         if (interaction.isCommand()) {
             const command = slashCommands.get(interaction.commandName);
             if (command) {
                 await command.Execute(interaction);
+            } else {
+                console.log("Command not ready");
             }
+        } else {
+            console.log("Not a command");
         }
     }
 }
