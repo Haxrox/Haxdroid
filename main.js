@@ -13,9 +13,9 @@ const client = new Discord.Client({
     ]
 });
 
-FileSystem.readdirSync('./Events').filter(file => (file.endsWith('.js') && file != "TemplateEvent.js" && file != "ClientEvent.js")).forEach(file => {
+FileSystem.readdirSync('./Events').filter(file => (file.endsWith('.js') && file != "ClientEvent.js")).forEach(file => {
     const event = require(`./Events/${file}`);
-    console.log("Read: - " + file + " | event: " + event.event);
+    console.log("Read: - " + file + " | event: " + event.eventName);
 	if (event.once) {
 		client.once(event.eventName, (...args) => event.Execute(client, ...args));
 	} else {
