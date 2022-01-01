@@ -3,13 +3,12 @@ const {SlashCommandBuilder} = DiscordBuilders;
 
 module.exports = class Command {
     constructor(name, description) {
-        console.log(name, description);
         this.commandName = name;
         this.description = description;
-        // this.data = new SlashCommandBuilder().setName(name).setDescription(description);
+        this.data = new SlashCommandBuilder().setName(name).setDescription(description);
     }
 
-    GetBuilder() {
+    GetData() {
         return this.data;
     }
 
@@ -19,6 +18,5 @@ module.exports = class Command {
 
     Execute(interaction) {
         console.log(`${this.commandName} executed`);
-        
     }
 }
