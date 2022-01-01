@@ -8,8 +8,8 @@ class Commands extends Command {
     commandCount = 0;
     constructor(name, description) {
         super(name, description);
-        FileSystem.readdirSync('./Commands').filter(file => (file.endsWith('.js') && file != 'Command.js' && file != 'SlashCommand.js' && file != "Commands.js")).forEach(file => {
-            const command = require(`../Commands/${file}`);
+        FileSystem.readdirSync('./commands').filter(file => (file.endsWith('.js') && file != 'Command.js' && file != 'SlashCommand.js' && file != "Commands.js")).forEach(file => {
+            const command = require(`../commands/${file}`);
             this.commandCount++;
             this.commands = this.commands.concat(`**${file.slice(0, file.length - 3)} - ** ${command.description}\n`);
         });
