@@ -3,8 +3,8 @@ const FileSystem = require('fs');
 const ClientEvent = require("./ClientEvent.js");
 
 const slashCommands = new Discord.Collection();
-FileSystem.readdirSync('./Commands').filter(file => (file.endsWith('.js') && file != 'Command.js' && file != 'SlashCommand.js')).forEach(file => {
-    const command = require(`../Commands/${file}`);
+FileSystem.readdirSync('./commands').filter(file => (file.endsWith('.js') && file != 'Command.js' && file != 'SlashCommand.js')).forEach(file => {
+    const command = require(`../commands/${file}`);
     console.log("Command loaded: " + command.commandName);
     slashCommands.set(command.commandName.toUpperCase(), command);
 });
