@@ -35,6 +35,6 @@ module.exports = class Command {
      * @param {CommandInteraction} interaction 
      */
     Execute(interaction) {
-        console.log(`${this.commandName} executed`);
+        console.debug(`${this.commandName} executed`);
     }
 }

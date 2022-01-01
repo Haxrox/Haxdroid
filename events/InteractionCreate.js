@@ -5,6 +5,7 @@ const ClientEvent = require("./ClientEvent.js");
 const slashCommands = new Discord.Collection();
 FileSystem.readdirSync('./Commands').filter(file => (file.endsWith('.js') && file != 'Command.js' && file != 'SlashCommand.js')).forEach(file => {
     const command = require(`../Commands/${file}`);
+    console.log("Command loaded: " + command.commandName);
     slashCommands.set(command.commandName.toUpperCase(), command);
 });
 
@@ -16,10 +17,11 @@ class InteractionCreate extends ClientEvent {
             if (command) {
                 await command.Execute(interaction);
             } else {
-                console.log("Command not ready");
+                await interaction.reply("Command not ready");
             }
         } else {
-            console.log("Not a command");
+            await interaction.reply("Not a command");
+            console.log("Err: not a command");
         }
     }
 }

@@ -4,7 +4,7 @@ module.exports = class ClientEvent {
         this.once = once;
     }
     Execute(client, args) {
-        console.log(`${this.eventName} emitted`);
+        console.debug(`${this.eventName} emitted`);
         this.client = client;
     }
 }
