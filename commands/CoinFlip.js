@@ -1,23 +1,36 @@
 const Command = require('./Command.js');
-const {MessageEmbed} = require('discord.js');
+const {MessageEmbed, CommandInteraction, CommandInteractionOptionResolver} = require('discord.js');
 const wait = require('util').promisify(setTimeout);
+
+/**
+ * Gets the specified options based on an interaction
+ * @param {String} optionType the optionType (heads or tails)
+ * @param {CommandInteractionOptionResolver} options where the option data is stored
+ * @returns the given option, or the optionType with the first letter capitalized
+ */
+function getOption(optionType, options) {
+    var result;
+    try {
+        result = options.getString(optionType, true);
+    } catch (exception) {
+        result = optionType.charAt(0).toUpperCase().concat(optionType.slice(1));
+    }
+    return result;
+}
 
 class CoinFlip extends Command {
     async Execute(interaction) {
         const choice = Math.round(Math.random());
-        var result;
-        try {
-            const resultString = choice ? interaction.options.getString("heads", true) : interaction.options.getString("tails", true);
-            result = `**${choice ? "HEADS" : "TAILS"}:** ${resultString}`;
-        } catch(exception) {
-            result = `**${choice ? "HEADS" : "TAILS"}!**`;
-        } 
+        const headOption = getOption("heads", interaction.options);
+        const tailOption = getOption("tails", interaction.options)
+        const question = `${headOption} or ${tailOption}`;
+        const result = choice ? headOption : tailOption;
         await interaction.deferReply();
         await wait(1000);
         const embed = new MessageEmbed()
             .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
-            .setTitle("Coinflip")
-            .setDescription(result)
+            .setTitle(question)
+            .setDescription(`${result}!`)
             .setColor('#cacaca')
             .setTimestamp()
             .setFooter(`Flipped by: ${interaction.user.username}`, interaction.user.avatarURL());
