@@ -4,8 +4,8 @@ const {MessageEmbed} = require('discord.js');
 class Ping extends Command {
     async Execute(interaction) {
         const embed = new MessageEmbed()
-            .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
-            .setTitle(`${interaction.client.user.username} Ping`)
+            // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
+            .setTitle(`${interaction.client.user.username}'s Ping`)
             .setDescription(`${interaction.client.ws.ping}ms`)
             .setColor('#cacaca')
             .setTimestamp()

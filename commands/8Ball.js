@@ -28,12 +28,11 @@ const RESPONSES = [
 class Magic8Ball extends Command {
     async Execute(interaction) {
         const responseIndex = Math.round(Math.random() * RESPONSES.length);
-        console.log(responseIndex);
         await interaction.deferReply();
         await wait(1000);
         const embed = new MessageEmbed()
-            .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
-            .setTitle(`:8ball:  ${interaction.options.getString("question")}?`)
+            // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
+            .setTitle(`Magic :8ball:,  ${interaction.options.getString("question")}?`)
             .setDescription(`:${responseIndex < 10 ? 'green_circle' : (responseIndex < 15 ? 'yellow_circle' : 'red_circle')}:  ${RESPONSES[responseIndex]}.`)
             .setColor('#cacaca')
             .setTimestamp()
@@ -43,7 +42,7 @@ class Magic8Ball extends Command {
     }
 }
 
-const Magic8BallCommand = new Magic8Ball("8ball", "Ask the Magic 8-Ball a question")
+const Magic8BallCommand = new Magic8Ball("8ball", "Asks a Magic 8-Ball question")
 Magic8BallCommand.GetData()
 .addStringOption(option => 
     option.setName("question").setDescription("Enter your question").setRequired(true)

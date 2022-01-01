@@ -28,7 +28,7 @@ class CoinFlip extends Command {
         await interaction.deferReply();
         await wait(1000);
         const embed = new MessageEmbed()
-            .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
+            // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
             .setTitle(question)
             .setDescription(`${result}!`)
             .setColor('#cacaca')
