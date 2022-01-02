@@ -15,4 +15,4 @@ class Ping extends Command {
     }
 }
 
-module.exports = new Ping("ping", "Returns average ping of Haxdroid");
+module.exports = new Ping("Ping", "Returns average ping of Haxdroid");

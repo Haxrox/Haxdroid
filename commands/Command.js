@@ -1,5 +1,5 @@
-const DiscordBuilders = require("@discordjs/builders");
-const {SlashCommandBuilder} = DiscordBuilders;
+const {SlashCommandBuilder} = require("@discordjs/builders");
+const {MessageEmbed} = require('discord.js');
 
 module.exports = class Command {
     /**
@@ -11,7 +11,7 @@ module.exports = class Command {
     constructor(name, description) {
         this.commandName = name;
         this.description = description;
-        this.data = new SlashCommandBuilder().setName(name).setDescription(description);
+        this.data = new SlashCommandBuilder().setName(name.toLowerCase()).setDescription(description);
     }
 
     /**
@@ -36,5 +36,20 @@ module.exports = class Command {
      */
     Execute(interaction) {
         console.debug(`${this.commandName} executed`);
+    }
+
+    /**
+     * Called when the command errors
+     * @param {CommandInteraction} interaction 
+     * @param {String} message error message
+     */
+    async Error(interaction, message) {
+        const embed = new MessageEmbed() 
+            .setTitle(`${this.commandName} Error`)
+            .setDescription(message)
+            .setColor("#dc143c")
+            .setTimestamp()
+            .setFooter(`Requested by: ${interaction.user.username}`, interaction.user.avatarURL());
+        await interaction.reply({embeds: [embed]});
     }
 }

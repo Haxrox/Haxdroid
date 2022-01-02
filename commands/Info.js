@@ -12,8 +12,7 @@ class Info extends Command {
             // .setFooter({name: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			
         if (interaction.options.getSubcommand() === 'user') {
-            var user = interaction.options.getUser('target');
-            user = user != null ? user : interaction.user;
+            var user = interaction.options.getUser('target') || interaction.user;
             
             const color = user.haxAccentColor != null ? user.haxAccentColor : 'cacaca';
             embed.setColor(color)
@@ -23,8 +22,7 @@ class Info extends Command {
             .addField("Created", user.createdAt.toDateString(), true)
             .addField("Tag", user.tag, true);
 		} else if (interaction.options.getSubcommand() === 'server') {
-            var owner = await interaction.guild.fetchOwner({cache: true, force: true});
-            owner = owner != null ? owner : "Undefined";
+            var owner = await interaction.guild.fetchOwner({cache: true, force: true}) || "Undefined";
             const description = interaction.guild.description;
             if (description != null) {
                 description = blockQuote(description);
@@ -41,7 +39,7 @@ class Info extends Command {
     }
 }
 
-const InfoCommand = new Info("info", "Gets information")
+const InfoCommand = new Info("Info", "Gets information")
 InfoCommand.GetData()
 .addSubcommand(subcommand =>
     subcommand

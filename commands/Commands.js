@@ -27,4 +27,4 @@ class Commands extends Command {
     }
 }
 
-module.exports = new Commands("commands", "Gets a list of commands");
+module.exports = new Commands("Commands", "Gets a list of commands");
