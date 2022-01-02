@@ -80,6 +80,27 @@ class UBCGrades extends Command {
                                 color: "rgb(235, 252, 255)"
                             },
                         }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                backdropColor: "rgb(235, 252, 255)",
+                                color: "rgb(235, 252, 255)"
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                backdropColor: "rgb(235, 252, 255)",
+                                color: "rgb(235, 252, 255)",
+                                grid: {
+                                    display: true,
+                                    drawTicks: true,
+                                    color: "rgba(235, 252, 255, 0.5)",
+                                    lineWidth: 1
+                                } 
+                            }
+                        }
+
                     }
                 }
             });
