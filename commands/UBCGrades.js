@@ -108,7 +108,7 @@ class UBCGrades extends Command {
             .addField("Enrolled", `${response.data.enrolled} Students`, true)
             .addField("Average", `${parseFloat(response.data.average).toFixed(4)}%`, true)
             .addField("Standard Deviation", `${parseFloat(response.data.stdev).toFixed(4)}%`, true)
-            .addField("Passed", `${response.data.enrolled - response.data.grades["<50%"]} Students (${parseFloat((response.data.enrolled - response.data.grades["<50%"])*100).toFixed(4)}%)`, true)
+            .addField("Passed", `${response.data.enrolled - response.data.grades["<50%"]} Students (${parseFloat((response.data.enrolled - response.data.grades["<50%"])/response.data.enrolled*100).toFixed(4)}%)`, true)
             .addField("Failed", `${response.data.grades["<50%"]} Students`, true)
             .addField('\u200b', '\u200b', true)
             .addField("Highest", `${response.data.high}%`, true)
