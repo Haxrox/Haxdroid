@@ -76,6 +76,7 @@ class UBCGrades extends Command {
                                 color: "rgb(235, 252, 255)"
                             },
                             labels: {
+                                font: "Roboto",
                                 color: "rgb(235, 252, 255)"
                             },
                         }
