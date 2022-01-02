@@ -41,11 +41,6 @@ class UBCGrades extends Command {
                 description = description.concat("\n").concat(blockQuote(response.data.detail));
             }
 
-            var passCount = 0;
-            for (var index = 1; index < GRADE_DISTRIBUTION.length; index++) {
-                passCount += response.data.grades[GRADE_DISTRIBUTION[index]];
-            }
-
             const grades = [];
             GRADE_DISTRIBUTION.forEach(grade => {
                 grades.push(response.data.grades[grade]);
@@ -113,8 +108,8 @@ class UBCGrades extends Command {
             .addField("Enrolled", `${response.data.enrolled} Students`, true)
             .addField("Average", `${parseFloat(response.data.average).toFixed(4)}%`, true)
             .addField("Standard Deviation", `${parseFloat(response.data.stdev).toFixed(4)}%`, true)
-            .addField("Passed", `${passCount} Students (${parseFloat((passCount / response.data.enrolled)*100).toFixed(4)}%)`, true)
-            .addField("Failed", `${response.data.enrolled - passCount} Students`, true)
+            .addField("Passed", `${response.data.enrolled - response.data.grades["<50%"]} Students (${parseFloat((response.data.enrolled - response.data.grades["<50%"])*100).toFixed(4)}%)`, true)
+            .addField("Failed", `${response.data.grades["<50%"]} Students`, true)
             .addField('\u200b', '\u200b', true)
             .addField("Highest", `${response.data.high}%`, true)
             .addField("Lowest", `${response.data.low}%`, true)
