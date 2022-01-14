@@ -49,7 +49,7 @@ class Embed extends Command {
     }
 }
 
-const EmbedCommand = new Embed("embed", "creates an embedded message");
+const EmbedCommand = new Embed("embed", "Creates an embedded message");
 EmbedCommand.GetData()
 .addStringOption(option => 
     option.setName("description").setDescription("Sets the description field").setRequired(true)
