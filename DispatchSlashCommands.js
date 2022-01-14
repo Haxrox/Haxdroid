@@ -3,7 +3,7 @@ const {Routes} = require("discord-api-types/v9");
 const FileSystem = require('fs');
 const Configuration = require('./config.json');
 
-const DISPATCH_GUILD_COMMANDS = true;
+const DISPATCH_GUILD_COMMANDS = false;
 const DELETE_COMMANDS = false;
 const DISPATCH_COMMANDS = true;
 
@@ -22,16 +22,15 @@ if (DISPATCH_COMMANDS) {
 const applicationCommands = DISPATCH_GUILD_COMMANDS ? Routes.applicationGuildCommands(Configuration.TESTING ? Configuration.TEST_CLIENT_ID : Configuration.CLIENT_ID, Configuration.GUILD_ID) : Routes.applicationCommands(Configuration.TESTING ? Configuration.TEST_CLIENT_ID : Configuration.CLIENT_ID);
 
 if (DELETE_COMMANDS) {
-    console.log("Deleting commands ...");
-    rest.get(applicationCommands).then(data => {
-        console.log("Deleting %scommands ...", DISPATCH_GUILD_COMMANDS ? "guild " : "");
+    rest.get(applicationCommands).then(async data => {
+        console.log("Deleting %scommands [%d] ...", DISPATCH_GUILD_COMMANDS ? "guild " : "", data.length);
         const promises = [];
         data.filter(command => true).forEach(command => {
             console.log(`Deleting %s [${command.id}]: %s`, command.name, command.description);
             const deleteUrl = `${applicationCommands}/${command.id}`;
             promises.push(rest.delete(deleteUrl));
         });
-        return Promise.all(promises);
+        return await Promise.all(promises);
     })
     .catch(console.error)
     .finally(() => {
