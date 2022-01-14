@@ -35,7 +35,10 @@ class Embed extends Command {
                     .setDescription(`Embed sent to: ${channel}`)
                     .setColor('#cacaca')
                     .setTimestamp()
-                    .setFooter(`Created by: ${interaction.user.username}`, interaction.user.avatarURL());
+                    .setFooter({
+                        text: `Created by: ${interaction.user.username}`, 
+                        iconURL: interaction.user.avatarURL()
+                    });
                 await interaction.reply({embeds: [responseEmbed]})
             }).catch(error => {
                 this.Error(interaction, error);

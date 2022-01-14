@@ -14,7 +14,6 @@ class RandomNumberGenerator extends Command {
                 .setDescription(num.toString())
                 .setColor('#cacaca')
                 .setTimestamp()
-                // .setFooter(`Requested by: ${interaction.user.username}`, interaction.user.avatarURL());
                 .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
             await interaction.reply({embeds: [embed]});
         } else {
