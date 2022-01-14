@@ -8,13 +8,12 @@ class Info extends Command {
             // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
             .setColor('#cacaca')
             .setTimestamp()
-            .setFooter(`Requested by: ${interaction.user.username}`, interaction.user.avatarURL());
-            // .setFooter({name: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+            .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			
         if (interaction.options.getSubcommand() === 'user') {
             var user = interaction.options.getUser('target') || interaction.user;
             
-            const color = user.haxAccentColor != null ? user.haxAccentColor : 'cacaca';
+            const color = user.hexAccentColor != null ? user.hexAccentColor : 'cacaca';
             embed.setColor(color)
             .setTitle(`${user.username} Info`)
             .setDescription(`**Profile:** ${user}`)

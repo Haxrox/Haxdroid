@@ -25,19 +25,34 @@ const RESPONSES = [
     "Very doubtful"
 ]
 
+const RESPONSE_DATA = {
+    Red: {
+        Emoji: "red_circle",
+        Colour: "#dd2e44"
+    },
+    Yellow: {
+        Emoji: "yellow_circle",
+        Colour: "#fdcb58"
+    },
+    Green: {
+        Emoji: "green_circle",
+        Colour: "78b159"
+    }
+}
+
 class Magic8Ball extends Command {
     async Execute(interaction) {
         const responseIndex = Math.round(Math.random() * RESPONSES.length);
         await interaction.deferReply();
         await wait(1000);
+        const responseColour = responseIndex < 10 ? "Green" : (responseIndex < 15 ? "Yellow" : "Red");
         const embed = new MessageEmbed()
             // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
             .setTitle(`Magic :8ball:,  ${interaction.options.getString("question", true)}?`)
-            .setDescription(`:${responseIndex < 10 ? 'green_circle' : (responseIndex < 15 ? 'yellow_circle' : 'red_circle')}:  ${RESPONSES[responseIndex]}.`)
-            .setColor('#cacaca')
+            .setDescription(`:${RESPONSE_DATA[responseColour].Emoji}:  ${RESPONSES[responseIndex]}.`)
+            .setColor(RESPONSE_DATA[responseColour].Colour)
             .setTimestamp()
-            .setFooter(`Asked by: ${interaction.user.username}`, interaction.user.avatarURL());
-            // .setFooter({name: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+            .setFooter({text: `Asked by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
         await interaction.editReply({embeds: [embed]});
     }
 }

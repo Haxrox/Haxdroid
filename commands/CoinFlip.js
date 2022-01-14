@@ -17,8 +17,7 @@ class CoinFlip extends Command {
             .setDescription(`${result}!`)
             .setColor('#cacaca')
             .setTimestamp()
-            .setFooter(`Flipped by: ${interaction.user.username}`, interaction.user.avatarURL());
-            // .setFooter({name: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+            .setFooter({text: `Flipped by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
         await interaction.editReply({embeds: [embed]});
     }
 }

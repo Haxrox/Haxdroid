@@ -117,7 +117,7 @@ class UBCGrades extends Command {
             .setImage("attachment://distribution.png")
             .setColor('#cacaca')
             .setTimestamp()
-            .setFooter(`Requested by: ${interaction.user.username} | Data from ubcgrades.com`, interaction.user.avatarURL());
+            .setFooter({text: `Requested by: ${interaction.user.username} | Data from ubcgrades.com`, iconURL: interaction.user.avatarURL()});
             await interaction.reply({embeds: [embed], files: [attachment]});
         }).catch(async error => {
             if (error.response) {

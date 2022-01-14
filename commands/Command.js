@@ -44,10 +44,11 @@ module.exports = class Command {
      * @param {String} message error message
      */
     async Error(interaction, message) {
+        console.log("Command error: " + message);
         const embed = new MessageEmbed() 
             .setTitle(`${this.commandName} Error`)
-            .setDescription(message)
-            .setColor("#dc143c")
+            .setDescription(`:octagonal_sign:  ${message}`)
+            .setColor("#dd2e44")
             .setTimestamp()
             .setFooter(`Requested by: ${interaction.user.username}`, interaction.user.avatarURL());
         await interaction.reply({embeds: [embed]});
