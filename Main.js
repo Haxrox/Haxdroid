@@ -22,7 +22,7 @@ FileSystem.readdirSync('./events').filter(file => (file.endsWith('.js') && file 
 	}
 });
 
-client.login(Configuration.TOKEN);
+client.login(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN);
 /*
 Client.once("ready", client => {
     console.log("Client ready");
