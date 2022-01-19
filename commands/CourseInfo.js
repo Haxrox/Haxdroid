@@ -44,7 +44,7 @@ class CourseInfo extends Command {
             await interaction.editReply({embeds: [embed]})
         }).catch(async error => {
             console.log(error);
-            await this.DeferError(interaction, `Failed to get course info. Please retry. If this command constantly fails, try to use this **[link](${queryUrl.href}) to manually find the course`);
+            await this.DeferError(interaction, `Failed to get course info. Please retry. If this command constantly fails, try to use this **[link](${queryUrl.href})** to manually find the course`);
         });
     }
 }
