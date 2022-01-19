@@ -28,15 +28,17 @@ class CourseInfo extends Command {
         
             console.log(paragraphElements);
 
-            const credits = paragraphElements[1].slice(8).trim(); // paragraphElements[1].search("Credits:")
-            const preReqs = paragraphElements[2].slice(9).trim(); // paragraphElements[2].search("Pre-reqs:")
+            const credits = paragraphElements[1].slice(8).trim() || 0; // paragraphElements[1].search("Credits:")
+            const preReqs = paragraphElements[2].slice(9).trim() || "None"; // paragraphElements[2].search("Pre-reqs:")
+            const coReqs = paragraphElements[3].slice(8).trim() || "None"; // paragraphElements[2].search("Pre-reqs:")
 
             const embed = new MessageEmbed()
                 .setTitle(`${title} Information`)
                 .setDescription(blockQuote(paragraphElements[0].trim()))
                 .setURL(queryUrl.href)
-                .addField("Credits", `${credits} Credits`, true)
-                .addField("Pre-Requisites", `${preReqs}`, true)
+                .addField("Credits", `${credits} Credits`)
+                .addField("Pre-Requisites", `${preReqs}`)
+                .addField("Co-Requisites", `${coReqs}`)
                 .setColor('#cacaca')
                 .setTimestamp()
                 .setFooter({text: `Requested by: ${interaction.user.username} | Data from UBC SSC Course Schedule`, iconURL: interaction.user.avatarURL()});

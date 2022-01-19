@@ -45,7 +45,7 @@ module.exports = class Command {
      * @param {String} message error message
      */
     async Error(interaction, message) {
-        console.log("Command error: " + message);
+        console.log(this.commandName +  " error: " + message);
         const embed = new MessageEmbed() 
             .setTitle(`${this.commandName} Error`)
             .setDescription(`:octagonal_sign:  ${message}`)
@@ -61,7 +61,7 @@ module.exports = class Command {
      * @param {String} message error message
      */
      async DeferError(interaction, message) {
-        console.log("Command error: " + message);
+        console.log(this.commandName + " error: " + message);
         const embed = new MessageEmbed() 
             .setTitle(`${this.commandName} Error`)
             .setDescription(`:octagonal_sign:  ${message}`)
