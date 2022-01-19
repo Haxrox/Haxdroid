@@ -2,6 +2,7 @@ const {SlashCommandBuilder} = require("@discordjs/builders");
 const {MessageEmbed} = require('discord.js');
 
 module.exports = class Command {
+    defaultPermission = true;
     /**
      * Abstract class for commands executed by the user
      * @abstract
@@ -27,7 +28,7 @@ module.exports = class Command {
      * @param {Array} permissions a permissions array
      */
     SetPermissions(permissions) {
-        this.Permissions = permissions;
+        this.permissions = permissions;
     }
 
     /**
