@@ -102,6 +102,7 @@ class UBCGrades extends Command {
 
             const attachment = new MessageAttachment(image, "distribution.png");
             const embed = new MessageEmbed()
+            .setAuthor({text: "UBCGrades", url: "ubcgrades.com", iconURL: "https://pbs.twimg.com/profile_images/1174018931532550144/jRmFjhVX_400x400.png"})
             .setTitle(`Grade Summary of ${format}`)
             .setDescription(description)
             .setURL(webUrl)
@@ -115,7 +116,7 @@ class UBCGrades extends Command {
             .addField("Lowest", `${response.data.low}%`, true)
             .addField('\u200b', '\u200b', true)
             .setImage("attachment://distribution.png")
-            .setColor('#cacaca')
+            .setColor('#0c2344')
             .setTimestamp()
             .setFooter({text: `Requested by: ${interaction.user.username} | Data from ubcgrades.com`, iconURL: interaction.user.avatarURL()});
             await interaction.reply({embeds: [embed], files: [attachment]});
