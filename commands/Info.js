@@ -37,16 +37,12 @@ class Info extends Command {
     }
 }
 
-const InfoCommand = new Info("Info", "Gets information")
+const InfoCommand = new Info("Info", "Gets information");
 InfoCommand.GetData()
 .addSubcommand(subcommand =>
-    subcommand
-        .setName('user')
-        .setDescription('Info about a user')
-        .addUserOption(option => option.setName('target').setDescription('The user')))
+    subcommand.setName('user').setDescription('Info about a user')
+    .addUserOption(option => option.setName('target').setDescription('The user')))
 .addSubcommand(subcommand =>
-    subcommand
-        .setName('server')
-        .setDescription('Info about the server'));
+    subcommand.setName('server').setDescription('Info about the server'));
 
 module.exports = InfoCommand;
