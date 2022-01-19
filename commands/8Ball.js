@@ -36,7 +36,7 @@ const RESPONSE_DATA = {
     },
     Green: {
         Emoji: "green_circle",
-        Colour: "78b159"
+        Colour: "#78b159"
     }
 }
 
