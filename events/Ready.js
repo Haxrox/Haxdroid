@@ -4,14 +4,18 @@ class Ready extends ClientEvent {
     CurrentPresence = 0;
     Execute(client) {
         super.Execute(client);
-        setInterval(() => {
-            if (thisCurrentPrecense % 2 == 0) {
+
+        const setPresence = () => {
+            if (this.CurrentPresence % 2 === 0) {
                 client.user.setPresence({activities: [{name: "Hello World!", type: "PLAYING"}], status: "online"});
-            } else if (this.CurrentPresence) {
-                client.user.setPresence({activities: [{name: `${new Date().toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })} PST`, type: "PLAYING"}], status: "online"});
+            } else if (this.CurrentPresence % 2 === 1) {
+                client.user.setPresence({activities: [{name: `Time: ${new Date().toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })} PST`, type: "PLAYING"}], status: "online"});
             }
-            this.CurrentPrecense++;
-        }, 10000);
+            this.CurrentPresence++;
+        }
+
+        setInterval(setPresence, 10000);
+        setPresence();
     }
 }
 
