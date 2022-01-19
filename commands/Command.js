@@ -51,7 +51,23 @@ module.exports = class Command {
             .setDescription(`:octagonal_sign:  ${message}`)
             .setColor("#dd2e44")
             .setTimestamp()
-            .setFooter(`Requested by: ${interaction.user.username}`, interaction.user.avatarURL());
+            .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
         await interaction.reply({embeds: [embed]});
+    }
+
+    /**
+     * Called when the command errors and the reply needs to be deferred
+     * @param {CommandInteraction} interaction 
+     * @param {String} message error message
+     */
+     async DeferError(interaction, message) {
+        console.log("Command error: " + message);
+        const embed = new MessageEmbed() 
+            .setTitle(`${this.commandName} Error`)
+            .setDescription(`:octagonal_sign:  ${message}`)
+            .setColor("#dd2e44")
+            .setTimestamp()
+            .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+        await interaction.editReply({embeds: [embed]});
     }
 }
