@@ -1,3 +1,5 @@
+const Crypto = require("crypto");
+
 class Random {
     Generate(min, max) {
         min = min || 0;
@@ -7,6 +9,9 @@ class Random {
         max = Math.max(min, max);
 
         return (Math.random() * (max - min)) + min;
+    }
+    GenerateSecure(min, max) {
+        return Crypto.randomInt(min = min, max = max);
     }
 }
 
