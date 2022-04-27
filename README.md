@@ -1,3 +1,3 @@
-![Haxdroid](https://github.com/Haxrox/Haxdroid/assets/Haxdroid.gif)
+![Haxdroid](https://github.com/Haxrox/Haxdroid/blob/main/assets/Haxdroid.gif)
 # Haxdroid
 Discord bot
