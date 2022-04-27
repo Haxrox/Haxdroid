@@ -2,6 +2,8 @@ const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const {MessageEmbed, Permissions} = require('discord.js');
 
+const GUILD_TEXT = 0;
+
 class Embed extends Command {
     async Execute(interaction) {
         const channel = interaction.options.getChannel("channel") || interaction.channel
@@ -56,7 +58,7 @@ EmbedCommand.GetData()
     option.setName("description").setDescription("Sets the description field").setRequired(true)
 )
 .addChannelOption(option => 
-    option.setName("channel").setDescription("Sets the channel to send the embed")
+    option.setName("channel").setDescription("Sets the channel to send the embed").addChannelType(GUILD_TEXT)
 )
 .addStringOption(option => 
     option.setName("author-name").setDescription("Sets the author name field")

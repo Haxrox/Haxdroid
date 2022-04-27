@@ -148,7 +148,7 @@ RemindCommand.GetData()
         option.setName('target').setDescription('The user')
     )
     .addChannelOption(option => 
-        option.setName("channel").setDescription("Where to remind everyone")
+        option.setName("channel").setDescription("Where to remind everyone").addChannelType(GUILD_TEXT)
     )
 )
 .addSubcommand(subcommand => 
