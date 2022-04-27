@@ -1,18 +1,36 @@
+const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const {MessageEmbed} = require('discord.js');
-const {blockQuote} = require('@discordjs/builders');
+const {blockQuote, inlineCode} = require('@discordjs/builders');
 const RNG = require('./RNG.js');
+const Random = require("../services/Random");
 
 class Generate extends Command {
     Subcommands = {
         array: function(interaction) {
-            const length = interaction.options.getInteger("length", true);
+            const length = interaction.options.getInteger("length") || 10;
             const ordering = interaction.options.getString("order") || "unordered"
-            const data = [];
+            const type = interaction.options.getString("type") || "int"
+            var min = interaction.options.getInteger("min");
+            var max = interaction.options.getInteger("max");
+            var data = [];
             for (var index = 0; index < length; index++) {
-                // generate random # and insert into data based off of ordering
+                var value = Random.Generate(min, max);
+                switch (type) {
+                    case "int":
+                        value = Math.round(value);
+                        break;
+                    case "float":
+                        value = Math.fround(value);
+                        break;
+                    case "double":
+                        break;
+                }
+                data.push(value);
             }
-            return data.join("")
+            // Sort on insert rather than sorting entire array for better optimization
+            data = ordering == "unordered" ? data : data.sort((a, b) => ordering == "ascending" ? a - b : b - a)
+            return inlineCode(data.join(", "));
         },
         reverse: function(interaction) {
             const input = interaction.options.getString("input", true);
@@ -22,7 +40,7 @@ class Generate extends Command {
     
         },
         ["random number"]: function(interaction) {
-            
+            return Random.Generate(interaction.options.getInteger("min"), interaction.options.getInteger("max"));
         }
     }
     async Execute(interaction) {
@@ -30,9 +48,9 @@ class Generate extends Command {
         if (subcommand != "Execute" && this.Subcommands[subcommand]) {
             const data = await this.Subcommands[subcommand](interaction);
             const embed = new MessageEmbed()
-            .setTitle(`Generated ${subcommand}`)
+            .setTitle(`Generated ${subcommand} data`)
             .setDescription(blockQuote(data || "none"))
-            .setColor('#cacaca')
+            .setColor(Styles.Colours.Theme)
             .setTimestamp()
             .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			
@@ -48,19 +66,25 @@ GenerateCommand.GetData()
 .addSubcommand(subcommand => 
     subcommand.setName("array").setDescription("Generates random array of X integers")
     .addIntegerOption(option => 
-        option.setName("length").setDescription("length of array").setRequired(true)
+        option.setName("length").setDescription("length of array")
     )
-    .addIntegerOption(option => 
-        option.setName("min").setDescription("Enter lower-bound")
-    )
-    .addIntegerOption(option => 
-        option.setName("max").setDescription("Enter upper-bound (exclusive)")
+    .addStringOption(option => 
+        option.setName("type").setDescription("type of the data")
+        .addChoice("Integer", "int")
+        .addChoice("Float", "float")
+        .addChoice("Double", "double")
     )
     .addStringOption(option => 
         option.setName("order").setDescription("whether the array is in ascending, descending, or unsorted order")
         .addChoice("Unordered", "unordered")
         .addChoice("Ascending", "ascending")
         .addChoice("Descending", "descending")
+    )
+    .addIntegerOption(option => 
+        option.setName("min").setDescription("Enter lower-bound")
+    )
+    .addIntegerOption(option => 
+        option.setName("max").setDescription("Enter upper-bound (exclusive)")
     )
 )
 .addSubcommand(subcommand => 
@@ -70,7 +94,7 @@ GenerateCommand.GetData()
     )
 )
 .addSubcommand(subcommand => 
-    subcommand.setName("random number").setDescription("Generates random number (alias of RNG command)")
+    subcommand.setName("random_number").setDescription("Generates random number (alias of RNG command)")
     .addIntegerOption(option => 
         option.setName("min").setDescription("Enter lower-bound")
     )
