@@ -1,0 +1,22 @@
+{
+    "Colours": {
+        "Theme": "#cacaca",
+        "Red": "#dd2e44",
+        "Error": "#dd2e44",
+        "Reminder_Cancelled": "#fdcb58",
+        "Reminder_Set": "#78b159",
+        "Reminder_Confirmation": "#fdcb58",
+        "Reminder_Alarm": "#dd2e44",
+        "Yellow": "#fdcb58", 
+        "Green": "#78b159",
+        "Wolfram": "#fd745c",
+        "UBC": "#0c2344"
+    },
+    "Emojis": {
+        "Red_Circle": "red_circle",
+        "Yellow_Circle": "yellow_circle",
+        "Green_Circle": "green_circle",
+        "Error": "octagonal_sign",
+        "Reminder": "alarm_clock"
+    }
+}

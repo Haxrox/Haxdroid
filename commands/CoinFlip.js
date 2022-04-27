@@ -1,5 +1,6 @@
+const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const {MessageEmbed, CommandInteraction, CommandInteractionOptionResolver} = require('discord.js');
+const {MessageEmbed} = require('discord.js');
 const wait = require('util').promisify(setTimeout);
 
 class CoinFlip extends Command {
@@ -15,7 +16,7 @@ class CoinFlip extends Command {
             // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
             .setTitle(`:coin: ${question}`)
             .setDescription(`${result}!`)
-            .setColor('#cacaca')
+            .setColor(Styles.Colours.Theme)
             .setTimestamp()
             .setFooter({text: `Flipped by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
         await interaction.editReply({embeds: [embed]});

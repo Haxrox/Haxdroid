@@ -1,3 +1,4 @@
+const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const Axios = require('axios');
 const {MessageEmbed, MessageAttachment, DiscordAPIError} = require('discord.js');
@@ -116,7 +117,7 @@ class UBCGrades extends Command {
             .addField("Lowest", `${response.data.low}%`, true)
             .addField('\u200b', '\u200b', true)
             .setImage("attachment://distribution.png")
-            .setColor('#0c2344')
+            .setColor(Styles.Colours.UBC)
             .setTimestamp()
             .setFooter({text: `Requested by: ${interaction.user.username} | Data from ubcgrades.com`, iconURL: interaction.user.avatarURL()});
             await interaction.reply({embeds: [embed], files: [attachment]});

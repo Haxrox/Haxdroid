@@ -1,3 +1,4 @@
+const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const {MessageEmbed, Permissions} = require('discord.js');
 
@@ -16,7 +17,7 @@ class Embed extends Command {
             .setTitle(interaction.options.getString("title") || "")
             .setURL(interaction.options.getString("url") || "")
             .setDescription(interaction.options.getString("description", true))
-            .setColor(interaction.options.getString("colour") || '#cacaca')
+            .setColor(interaction.options.getString("colour") || Styles.Colours.Theme)
             .setImage(interaction.options.getString("image") || "")
             .setThumbnail(interaction.options.getString("thumbnail") || "")
             .setFooter({
@@ -33,7 +34,7 @@ class Embed extends Command {
                 const responseEmbed = new MessageEmbed()
                     .setTitle("Embed")
                     .setDescription(`Embed sent to: ${channel}`)
-                    .setColor('#cacaca')
+                    .setColor(Styles.Colours.Theme)
                     .setTimestamp()
                     .setFooter({
                         text: `Created by: ${interaction.user.username}`, 

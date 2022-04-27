@@ -1,3 +1,4 @@
+const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const {MessageEmbed} = require('discord.js');
 const {blockQuote} = require('@discordjs/builders');
@@ -12,7 +13,7 @@ class Info extends Command {
         if (interaction.options.getSubcommand() === 'user') {
             const user = interaction.options.getUser('target') || interaction.user;
             
-            embed.setColor(user.hexAccentColor || '#cacaca')
+            embed.setColor(user.hexAccentColor || Styles.Colours.Theme)
             .setTitle(`${user.username} Info`)
             .setDescription(`**Profile:** ${user}`)
             .setThumbnail(user.avatarURL())
@@ -27,6 +28,7 @@ class Info extends Command {
             }
             
             embed.setTitle(`${interaction.guild.name} Info`)
+            .setColor(Styles.Colours.Theme)
             .setThumbnail(interaction.guild.iconURL())
             .addField("Created", interaction.guild.createdAt.toDateString(), true)
             .addField("Members", `${interaction.guild.memberCount} members`, true)

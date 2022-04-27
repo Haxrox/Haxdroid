@@ -1,3 +1,4 @@
+const Styles = require("../styles.json");
 const {SlashCommandBuilder} = require("@discordjs/builders");
 const {MessageEmbed} = require('discord.js');
 
@@ -48,8 +49,8 @@ module.exports = class Command {
         console.log(this.commandName +  " error: " + message);
         const embed = new MessageEmbed() 
             .setTitle(`${this.commandName} Error`)
-            .setDescription(`:octagonal_sign:  ${message}`)
-            .setColor("#dd2e44")
+            .setDescription(`:${Styles.Emojis.Error}:  ${message}`)
+            .setColor(Styles.Colours.Error)
             .setTimestamp()
             .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
         await interaction.reply({embeds: [embed]});
@@ -64,8 +65,8 @@ module.exports = class Command {
         console.log(this.commandName + " error: " + message);
         const embed = new MessageEmbed() 
             .setTitle(`${this.commandName} Error`)
-            .setDescription(`:octagonal_sign:  ${message}`)
-            .setColor("#dd2e44")
+            .setDescription(`:${Styles.Emojis.Error}:  ${message}`)
+            .setColor(Styles.Colours.Error)
             .setTimestamp()
             .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
         await interaction.editReply({embeds: [embed]});

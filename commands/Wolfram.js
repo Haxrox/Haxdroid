@@ -1,3 +1,4 @@
+const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const {MessageEmbed, MessageAttachment} = require('discord.js');
 const {bold, blockQuote} = require('@discordjs/builders');
@@ -27,7 +28,7 @@ class Wolfram extends Command {
                 .setTitle("Wolfram Query")
                 .setURL(url.href)
                 .setImage(plotPod ? plotPod.subpods[0].img.src : "")
-                .setColor('#fd745c')
+                .setColor(Styles.Colours.Wolfram)
                 .setTimestamp()
                 .setFooter({text: `Queried by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
                 
@@ -48,7 +49,6 @@ class Wolfram extends Command {
                 this.DeferError(interaction, `Query failed. Visit this **[link](${url.href})** to fix your query`);
             }
         }).catch(error => {
-            console.log(error);
             this.DeferError(interaction, `Query failed. Failed to communicate with **[WolframAPI](https://products.wolframalpha.com/api/)**\n\n**Error**\m ${blockQuote(error.message)}`);
         });
     }

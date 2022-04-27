@@ -1,3 +1,4 @@
+const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const {MessageEmbed} = require('discord.js');
 const wait = require('util').promisify(setTimeout);
@@ -27,16 +28,16 @@ const RESPONSES = [
 
 const RESPONSE_DATA = {
     Red: {
-        Emoji: "red_circle",
-        Colour: "#dd2e44"
+        Emoji: Styles.Emojis.Red_Circle,
+        Colour: Styles.Colours.Red
     },
     Yellow: {
-        Emoji: "yellow_circle",
-        Colour: "#fdcb58"
+        Emoji: Styles.Emojis.Yellow_Circle,
+        Colour: Styles.Colours.Yellow
     },
     Green: {
-        Emoji: "green_circle",
-        Colour: "#78b159"
+        Emoji: Styles.Emojis.Green_Circle,
+        Colour: Styles.Colours.Green
     }
 }
 

@@ -1,3 +1,4 @@
+const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const {MessageEmbed, Permissions} = require('discord.js');
 const {bold, blockQuote} = require('@discordjs/builders');
@@ -19,7 +20,7 @@ class Remind extends Command {
                         .addField("Task", reminderInfo.Task, true)
                         .addField("Time", reminderInfo.Date, true)
                         .addField("Reminder", `${reminderInfo.Reminder}`, true)
-                        .setColor("#fdcb58")
+                        .setColor(Styles.Colours.Reminder_Cancelled)
                         .setTimestamp()
                         .setFooter({text: `Reminder cancelled by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
                     interaction.reply({embeds: [embed]});
@@ -42,8 +43,8 @@ class Remind extends Command {
             var remindChannel;
 
             const replyEmbed = new MessageEmbed()
-                .setTitle(`:alarm_clock:  ${interaction.client.user.username} Reminder Set!`) 
-                .setColor("#78b159")
+                .setTitle(`:${Styles.Emojis.Reminder}:  ${interaction.client.user.username} Reminder Set!`) 
+                .setColor(Styles.Colours.Reminder_Set)
                 .setTimestamp()
 
             if (interaction.options.getSubcommand() == "user") {
@@ -55,9 +56,9 @@ class Remind extends Command {
                 if (channel == null) {
                     const confirmationEmbed = new MessageEmbed()
                         .setAuthor({name: author.username, iconURL: author.avatarURL()})
-                        .setTitle(`:alarm_clock:  ${interaction.client.user.username} Reminder`)
+                        .setTitle(`:${Styles.Emojis.Reminder}:  ${interaction.client.user.username} Reminder`)
                         .setDescription(`Reminder ${reminderDescription}`)
-                        .setColor("#fdcb58")
+                        .setColor(Stules.Colours.Reminder_Confirmation)
                         .setTimestamp()
                         .setFooter({text: `Reminder set by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 
@@ -94,9 +95,9 @@ class Remind extends Command {
             if (remindChannel) {
                 const reminderID = setTimeout(() => {
                     const remindEmbed = new MessageEmbed()
-                        .setTitle(`:alarm_clock:  ${interaction.client.user.username} Reminder`)
+                        .setTitle(`:${Styles.Emojis.Reminder}:  ${interaction.client.user.username} Reminder`)
                         .setDescription(blockQuote(task))
-                        .setColor("#dd2e44")
+                        .setColor(Styles.Colours.Reminder_Alarm)
                         .setFooter({text: `Reminder set by: ${interaction.user.username} | ID: ${reminderID}`, iconURL: interaction.user.avatarURL()});
 
                     if (remindChannel.type == "DM") {

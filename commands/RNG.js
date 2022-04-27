@@ -1,18 +1,20 @@
+const Styles = require("../styles.json");
 const Command = require('./Command.js');
+const Random = require('../services/Random.js');
 const {MessageEmbed} = require('discord.js');
 
 class RandomNumberGenerator extends Command {
     async Execute(interaction) {
-        var max = interaction.options.getInteger("max") || 10;
-        var min = interaction.options.getInteger("min") || 0;
+        var max = interaction.options.getInteger("max");
+        var min = interaction.options.getInteger("min");
         
         if (min <= max) {
-            const num = Math.round((Math.random() * (max - min)) + min);
+            const num = Math.round(Random.Generate(min, max));
             const embed = new MessageEmbed()
                 // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
                 .setTitle(`RNG [${min}-${max}]`)
                 .setDescription(num.toString())
-                .setColor('#cacaca')
+                .setColor(Styles.Colours.Theme)
                 .setTimestamp()
                 .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
             await interaction.reply({embeds: [embed]});
