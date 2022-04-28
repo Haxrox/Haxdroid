@@ -12,14 +12,16 @@ const Styles = require("../styles.json");
 const Queue = require("../utils/Queue.js");
 
 class Song {
-    constructor(videoDetails, audio, user) {
+    constructor(info, audio, user, autoplay) {
+        const videoDetails = info?.videoDetails;
         this.Audio = audio; 
         this.Title = videoDetails?.title || "Unknown";
         this.Url = videoDetails?.video_url || "Unknown";
         this.Artist = videoDetails?.author
         this.Length = videoDetails?.lengthSeconds;
         this.Thumbnail = videoDetails?.thumbnails[videoDetails?.thumbnails.length - 2]?.url;
-        this.RelatedVideos = videoDetails?.related_videos;
+        this.AutoPlay = autoplay
+        this.RelatedVideos = autoplay ? info?.related_videos : null;
         this.User = user || { username: "Haxdroid", avatarURL: () => Styles.Avatar};
     }
 
@@ -67,7 +69,7 @@ class Audio {
                     bitrate: 128
                 });
                 const info = await Ytdl.getBasicInfo(url);
-                const song = new Song(info?.videoDetails, createAudioResource(stream, { inputType: StreamType.Arbitrary }), user);
+                const song = new Song(info, createAudioResource(stream, { inputType: StreamType.Arbitrary }), user);
                 this.Queue.Push(song);
                 return song;
             } catch (error) {
@@ -113,9 +115,11 @@ class Audio {
 
     Idle() {
         if (this.Queue.Empty()) {
-            if (this.State !== "Stopped" && this.Connection) {
+            if (!this.AutoPlay && this.State !== "Stopped" && this.Connection) {
                 this.Stop();
-            }   
+            } else {
+
+            }
         } else {
             this.PlaySong();
         }

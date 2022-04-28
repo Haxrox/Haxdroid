@@ -22,7 +22,7 @@ class Music extends Command {
 			const channel = interaction.options.getChannel("channel", true);
 			const url = interaction.options.getString("song", true);
 			audio = new Audio(interaction.client, channel);
-			const song = await audio.Play(url, interaction.user);
+			const song = await audio.Play(url, interaction.user, interaction.options.getBoolean("autoplay") || true);
 
 			if (song) {
 				const embed = new MessageEmbed()
@@ -147,6 +147,9 @@ MusicCommand.GetData()
     )
 	.addStringOption(option => 
 		option.setName("song").setDescription("Song to play").setRequired(true)
+	)
+	.addBooleanOption(option => 
+		option.setName("autoplay").setDescription("Whether to continue playing music once the queue is empty")
 	)
 )
 .addSubcommand(subcommand => 
