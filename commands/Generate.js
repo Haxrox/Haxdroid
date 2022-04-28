@@ -129,7 +129,7 @@ class Generate extends Command {
     }
     async Execute(interaction) {
         const subcommand = interaction.options.getSubcommand();
-        if (subcommand != "Execute" && this.Subcommands[subcommand]) {
+        if (this.Subcommands[subcommand]) {
             const data = await this.Subcommands[subcommand](interaction);
             const embed = new MessageEmbed()
             .setTitle(`Generated ${subcommand} data`)
@@ -200,7 +200,7 @@ GenerateCommand.GetData()
     )
 )
 .addSubcommand(subcommand =>
-    subcommand.setName('password').setDescription('Generates a password. NOTE: these passwords should not be used for personal or private accounts')
+    subcommand.setName('password').setDescription('Generates a password. NOTE: these passwords shouldn\' be used for personal or security-heavy accounts')
     .addIntegerOption(option => 
         option.setName("length").setDescription("Length of the password").setMinValue(8).setRequired(true)
     )
