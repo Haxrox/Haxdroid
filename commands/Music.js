@@ -34,6 +34,17 @@ class Music extends Command {
 				this.Error(interaction, "Failed to parse YouTube URL - " + song);
 			}
 		},
+		info: async function(interaction) {
+			const embed = new MessageEmbed()
+			.setTitle(`${Styles.Emojis.Music}  Music Information`)
+			.addField("Current Song:", audio.CurrentSong)
+			.addField("Queue Size:", audio.Queue.Size())
+			.setColor(Styles.Colours.Theme)
+			.setTimestamp()
+			.setFooter({text: `Queued by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+			
+			interaction.reply({embeds: [embed]});
+		},
 		enqueue: async function(interaction) {
 			// var head = audio.Queue.Get();
 			const song = interaction.options.getString("song", true);
@@ -116,6 +127,9 @@ MusicCommand.GetData()
 	.addStringOption(option => 
 		option.setName("song").setDescription("Song to play").setRequired(true)
 	)
+)
+.addSubcommand(subcommand => 
+	subcommand.setName("info").setDescription("Gets information about current music state")
 )
 .addSubcommand(subcommand => 
 	subcommand.setName("enqueue").setDescription("Adds a song to the queue")

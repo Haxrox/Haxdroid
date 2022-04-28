@@ -22,6 +22,7 @@ class Audio {
         this.State = "Stopped"
         this.Player.on(AudioPlayerStatus.Idle, this.Idle.bind(this));
         this.Player.on("error", this.Error.bind(this));
+        this.Connection.on("error", this.Error.bind(this));
         this.Connection.subscribe(this.Player);
     }
 
