@@ -29,6 +29,7 @@
         "Play": ":arrow_forward:",
         "Pause": ":pause_button:",
         "Stop": ":stop_button:",
+        "Skip": ":fast_forward:",
         "Bullet": "‣"
     }
 }

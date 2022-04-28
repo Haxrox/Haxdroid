@@ -107,7 +107,7 @@ class Music extends Command {
 			audio?.Skip();
 			const embed = new MessageEmbed()
 			.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
-			.setTitle(`${Styles.Emojis.Stop}  Music Skipped`)
+			.setTitle(`${Styles.Emojis.Skip}  Song Skipped`)
 			.setColor(Styles.Colours.YouTube)
             .setTimestamp()
             .setFooter({text: `Skipped by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});

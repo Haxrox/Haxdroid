@@ -9,6 +9,7 @@ const { MessageEmbed } = require('discord.js');
 const { hyperlink } = require('@discordjs/builders');
 const Ytdl = require("ytdl-core");
 const Styles = require("../styles.json");
+const Random = require("../services/Random.js");
 const Queue = require("../utils/Queue.js");
 
 const YOUTUBE_URL = "https://www.youtube.com/watch";
@@ -102,7 +103,7 @@ class Audio {
     Skip() {
         this.Idle();
     }
-    
+
     Pause() {
         this.State = "Pause";
         this.Player.pause();
@@ -127,7 +128,7 @@ class Audio {
             this.Stop();
         } else if (this.Queue.Empty() && this.AutoPlay) {
             const url = new URL(YOUTUBE_URL);
-            url.searchParams.append("v", this.CurrentSong.RelatedVideos[0].id);
+            url.searchParams.append("v", this.CurrentSong.RelatedVideos[Math.round(Random.Generate(0, this.CurrentSong.RelatedVideos))].id);
             this.Play(url.href, this.Client.user);
         } else {
             this.PlaySong();
