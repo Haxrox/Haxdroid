@@ -39,6 +39,7 @@ class Song {
             .setFooter({text: `Queued by: ${this.User?.username}`, iconURL: this.User?.avatarURL()});
     }
 }
+
 class Audio {
     constructor(client, channel, autoplay = true) {
         this.Client = client;
@@ -98,6 +99,10 @@ class Audio {
         return this.CurrentSong;
     }
 
+    Skip() {
+        this.Idle();
+    }
+    
     Pause() {
         this.State = "Pause";
         this.Player.pause();
@@ -109,6 +114,8 @@ class Audio {
     }
 
     Stop() {
+        this.CurrentSong = null;
+        this.Channel = null;
         this.State = "Stopped";
         this.Player.stop();
         this.Queue.Clear();
@@ -117,7 +124,6 @@ class Audio {
 
     Idle() {
         if ((this.Channel.members.size < 2 && this.State !== "Stopped" && this.Connection) || (this.Queue.Empty() && !this.AutoPlay)) {
-            console.log("Stop");
             this.Stop();
         } else if (this.Queue.Empty() && this.AutoPlay) {
             const url = new URL(YOUTUBE_URL);

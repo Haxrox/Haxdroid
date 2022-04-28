@@ -42,7 +42,7 @@ class Music extends Command {
 			const embed = new MessageEmbed()
 			.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
 			.setTitle(`${Styles.Emojis.Music}  Music Information`)
-			.setDescription(`${bold("Current Song:")} ${hyperlink(audio?.CurrentSong.Title || "None", audio?.CurrentSong.Url || "https://www.youtube.com/")}\n${bold("Channel:")} <#${audio?.Channel.id || "None"}>\n${bold("Autoplay:")} ${audio?.AutoPlay}`)
+			.setDescription(`${bold("Current Song:")} ${hyperlink(audio?.CurrentSong?.Title || "None", audio?.CurrentSong?.Url || "https://www.youtube.com/")}\n${bold("Channel:")} <#${audio?.Channel?.id || "None"}>\n${bold("Autoplay:")} ${audio?.AutoPlay || "None"}`)
 			.addField(`Queue [${audio?.Queue.Size || "0"}]:`, audio?.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${hyperlink(song.Title, song.Url)} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "") || "Empty", true)
 			.setColor(Styles.Colours.YouTube)
 			.setTimestamp()
@@ -102,6 +102,16 @@ class Music extends Command {
 			} else {
 				this.Error(interaction, "Failed to parse YouTube URL - " + song);
 			}
+		},
+		skip: async function(interaction) {
+			audio?.Skip();
+			const embed = new MessageEmbed()
+			.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
+			.setTitle(`${Styles.Emojis.Stop}  Music Skipped`)
+			.setColor(Styles.Colours.YouTube)
+            .setTimestamp()
+            .setFooter({text: `Skipped by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+			interaction.reply({embeds: [embed]});
 		},
 		pause: async function(interaction) {
 			audio?.Pause();
@@ -193,6 +203,9 @@ MusicCommand.GetData()
 	.addStringOption(option => 
 		option.setName("song").setDescription("song to queue").setRequired(true)
 	)
+)
+.addSubcommand(subcommand => 
+	subcommand.setName("skip").setDescription("skips the current song")
 )
 .addSubcommand(subcommand => 
 	subcommand.setName("pause").setDescription("Pauses the music")
