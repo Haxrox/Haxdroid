@@ -93,7 +93,7 @@ class Audio {
     PlaySong() {
         this.CurrentSong = this.Queue.Pop();
         this.State = "Playing";
-        this.Client.user.setPresence({activities: [{name: `${this.CurrentSong.Title} by ${this.CurrentSong.Artist.name}`, type: "LISTENING", url: this.CurrentSong.Url}], status: "dnd"})
+        this.Client.user.setPresence({activities: [{name: `${this.CurrentSong.Title} by ${this.CurrentSong.Artist.name}`, type: "STREAMING", url: this.CurrentSong.Url}], status: "dnd"})
         this.Player.play(this.CurrentSong.Audio);
         return this.CurrentSong;
     }
