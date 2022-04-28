@@ -103,7 +103,7 @@ class UBCGrades extends Command {
 
             const attachment = new MessageAttachment(image, "distribution.png");
             const embed = new MessageEmbed()
-            .setAuthor({name: "UBCGrades", url: "https://ubcgrades.com/", iconURL: "https://pbs.twimg.com/profile_images/1174018931532550144/jRmFjhVX_400x400.png"})
+            .setAuthor({name: "UBCGrades", url: "https://ubcgrades.com/", iconURL: Styles.Icons.UBC})
             .setTitle(`Grade Summary of ${format}`)
             .setDescription(description)
             .setURL(webUrl)

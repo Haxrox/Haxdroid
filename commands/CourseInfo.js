@@ -1,4 +1,5 @@
 const Command = require('./Command.js');
+const Styles = require("../styles.json");
 const {MessageEmbed} = require('discord.js');
 const {blockQuote} = require('@discordjs/builders');
 const Axios = require('axios');
@@ -31,14 +32,14 @@ class CourseInfo extends Command {
             const coReqs = paragraphElements[3] ? paragraphElements[3].slice(8).trim() : "None"; // paragraphElements[2].search("Pre-reqs:")
 
             const embed = new MessageEmbed()
-                .setAuthor({name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-all-departments", iconURL: "https://pbs.twimg.com/profile_images/1174018931532550144/jRmFjhVX_400x400.png"})
+                .setAuthor({name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-all-departments", iconURL: Styles.Icons.UBC})
                 .setTitle(`${title} Information`)
                 .setDescription(blockQuote(paragraphElements[0].trim()))
                 .setURL(queryUrl.href)
                 .addField("Credits", `${credits} Credits`)
                 .addField("Pre-Requisites", `${preReqs}`)
                 .addField("Co-Requisites", `${coReqs}`)
-                .setColor('#0c2344')
+                .setColor(Styles.Colours.UBC)
                 .setTimestamp()
                 .setFooter({text: `Requested by: ${interaction.user.username} | Data from UBC SSC Course Schedule`, iconURL: interaction.user.avatarURL()});
 

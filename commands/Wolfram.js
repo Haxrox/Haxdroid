@@ -24,7 +24,7 @@ class Wolfram extends Command {
                 var fieldCount = 0;
 
                 const embed = new MessageEmbed()
-                .setAuthor({name: "WolframAlpha", url: "https://www.wolframalpha.com/", iconURL: "https://pbs.twimg.com/profile_images/1134537628123115521/RqPloDPr_400x400.png"})
+                .setAuthor({name: "WolframAlpha", url: "https://www.wolframalpha.com/", iconURL: Styles.Icons.Wolfram})
                 .setTitle("Wolfram Query")
                 .setURL(url.href)
                 .setImage(plotPod ? plotPod.subpods[0].img.src : "")
