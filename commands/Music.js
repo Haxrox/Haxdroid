@@ -5,6 +5,8 @@ const {MessageEmbed, Message} = require('discord.js');
 const {bold, hyperlink} = require('@discordjs/builders');
 
 const GUILD_VOICE = 2;
+const YOUTUBE_URL = "https://www.youtube.com/results";
+const YOUTUBE_MUSIC_URL = "https://music.youtube.com/search";
 var audio;
 // const stream = Ytdl('https://www.youtube.com/watch?v=F90Cw4l-8NY', {
 // 	fmt: "mp3",
@@ -49,7 +51,27 @@ class Music extends Command {
 			interaction.reply({embeds: [embed]});
 		},
 		search: async function(interaction) {
-
+			var url;
+			switch (interation.options.getString("provider", true)) {
+				case "youtube":
+					url = new URL(YOUTUBE_URL)
+					url.searchParams.append("search_query", interaction.options.getString("query", true));
+					break;
+				case "youtube_music":
+					url = new URL(YOUTUBE_MUSIC_URL)
+					url.searchParams.append("q", interaction.options.getString("query", true));
+				default:
+					break;
+			}
+			const embed = new MessageEmbed()
+				.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
+				.setTitle(`${Styles.Emojis.Music}  Search`)
+				.setURL(url.href)
+				.setDescription(url.href)
+				.setColor(Styles.Colours.YouTube)
+				.setTimestamp()
+				.setFooter({text: `Searched by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+			interaction.reply({embeds: [embed]});
 		},
 		enqueue: async function(interaction) {
 			await interaction.deferReply();
@@ -133,9 +155,12 @@ MusicCommand.GetData()
 .addSubcommand(subcommand => 
 	subcommand.setName("search").setDescription("Searches for a song")
 	.addStringOption(option => 
-		option.setName("provider").setDescription("Where to search for the song")
+		option.setName("provider").setDescription("where to search for the song").setRequired(true)
 		.addChoice("YouTube", "youtube")
 		.addChoice("YouTube Music", "youtube_music")
+	)
+	.addStringOption(option => 
+		option.setName("query").setDescription("song to search for").setRequired(true)
 	)
 )
 .addSubcommand(subcommand => 
