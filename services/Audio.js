@@ -15,10 +15,11 @@ class Song {
     constructor(videoDetails, audio, user) {
         this.Audio = audio; 
         this.Title = videoDetails?.title || "Unknown";
-        this.Url = videoDetails?.embed?.flashUrl || "Unknown";
+        this.Url = videoDetails?.video_url || "Unknown";
         this.Artist = videoDetails?.author
         this.Length = videoDetails?.lengthSeconds;
         this.Thumbnail = videoDetails?.thumbnails[videoDetails?.thumbnails.length - 2]?.url;
+        this.RelatedVideos = videoDetails?.related_videos;
         this.User = user || { username: "Haxdroid", avatarURL: () => Styles.Avatar};
     }
 
