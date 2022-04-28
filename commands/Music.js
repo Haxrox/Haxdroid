@@ -53,7 +53,7 @@ class Music extends Command {
 		set: async function(interaction) {
 			const autoplay = interaction.options.getBoolean("autoplay");
 			if (autoplay != undefined) {
-				audio?.AutoPlay = autoplay;
+				audio.AutoPlay = autoplay;
 				const embed = new MessageEmbed()
 				.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
 				.setTitle(`${Styles.Emojis.Music}  Setting changed`)
