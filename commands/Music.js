@@ -43,7 +43,7 @@ class Music extends Command {
 			.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
 			.setTitle(`${Styles.Emojis.Music}  Music Information`)
 			.setDescription(`${bold("Current Song:")} ${hyperlink(audio?.CurrentSong.Title || "None", audio?.CurrentSong.Url || "https://www.youtube.com/")}\n${bold("Channel:")} <#${audio?.Channel.id || "None"}>\n${bold("Autoplay:")} ${audio?.AutoPlay}`)
-			.addField(`Queue [${audio?.Queue.Size || "0"}]:`, audio?.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${hyperlink(song.Title, song.Url)} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, ""), true)
+			.addField(`Queue [${audio?.Queue.Size || "0"}]:`, audio?.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${hyperlink(song.Title, song.Url)} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "") || "Empty", true)
 			.setColor(Styles.Colours.YouTube)
 			.setTimestamp()
 			.setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
