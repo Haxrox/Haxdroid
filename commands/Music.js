@@ -2,6 +2,7 @@ const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const Audio = require("../services/Audio.js");
 const {MessageEmbed, Message} = require('discord.js');
+const {bold} = require('@discordjs/builders');
 
 const GUILD_VOICE = 2;
 var audio;
