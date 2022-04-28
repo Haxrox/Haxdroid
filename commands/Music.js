@@ -184,7 +184,9 @@ MusicCommand.GetData()
 )
 .addSubcommand(subcommand =>
 	subcommand.setName("set").setDescription("Set music configurations")
-	.addBooleanOption("autoplay").setDescription("toggles autoplay")
+	.addBooleanOption(option => 
+		option.setName("autoplay").setDescription("toggles autoplay")
+	)
 )
 .addSubcommand(subcommand => 
 	subcommand.setName("enqueue").setDescription("Adds a song to the queue")
