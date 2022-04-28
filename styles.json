@@ -17,6 +17,10 @@
         "Yellow_Circle": "yellow_circle",
         "Green_Circle": "green_circle",
         "Error": "octagonal_sign",
-        "Reminder": "alarm_clock"
+        "Reminder": "alarm_clock",
+        "Music": "musical_note",
+        "Play": "arrow_forward",
+        "Pause": "pause_button",
+        "Stop": "stop_button"
     }
 }
