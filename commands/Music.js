@@ -42,13 +42,29 @@ class Music extends Command {
 			const embed = new MessageEmbed()
 			.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
 			.setTitle(`${Styles.Emojis.Music}  Music Information`)
-			.setDescription(`${bold("Current Song:")} ${hyperlink(audio?.CurrentSong.Title || "None", audio?.CurrentSong.Url || "https://www.youtube.com/")}\n${bold("Channel:")} <#${audio?.Channel.id || "None"}>`)
+			.setDescription(`${bold("Current Song:")} ${hyperlink(audio?.CurrentSong.Title || "None", audio?.CurrentSong.Url || "https://www.youtube.com/")}\n${bold("Channel:")} <#${audio?.Channel.id || "None"}>\n${bold("Autoplay:")} ${audio?.AutoPlay}`)
 			.addField(`Queue [${audio?.Queue.Size || "0"}]:`, audio?.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${hyperlink(song.Title, song.Url)} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, ""), true)
 			.setColor(Styles.Colours.YouTube)
 			.setTimestamp()
 			.setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			
 			interaction.reply({embeds: [embed]});
+		},
+		set: async function(interaction) {
+			const autoplay = interaction.options.getBoolean("autoplay");
+			if (autoplay != undefined) {
+				audio?.AutoPlay = autoplay;
+				const embed = new MessageEmbed()
+				.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
+				.setTitle(`${Styles.Emojis.Music}  Setting changed`)
+				.setDescription(`Autoplay set to ${bold(autoplay)}`)
+				.setColor(Styles.Colours.YouTube)
+				.setTimestamp()
+				.setFooter({text: `Stopped by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+				interaction.reply({embeds: [embed]});
+			} else {
+				this.Error(interaction, "Invalid property");
+			}
 		},
 		search: async function(interaction) {
 			var url;
@@ -165,6 +181,10 @@ MusicCommand.GetData()
 	.addStringOption(option => 
 		option.setName("query").setDescription("song to search for").setRequired(true)
 	)
+)
+.addSubcommand(subcommand =>
+	subcommand.setName("set").setDescription("Set music configurations")
+	.addBooleanOption("autoplay").setDescription("toggles autoplay")
 )
 .addSubcommand(subcommand => 
 	subcommand.setName("enqueue").setDescription("Adds a song to the queue")

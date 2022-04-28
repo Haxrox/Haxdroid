@@ -41,7 +41,7 @@ class Song {
     }
 }
 class Audio {
-    constructor(client, channel) {
+    constructor(client, channel, autoplay) {
         this.Client = client;
         this.Channel = channel;
         this.Queue = new Queue();
@@ -50,9 +50,10 @@ class Audio {
 			guildId: channel.guildId,
 			adapterCreator: channel.guild.voiceAdapterCreator,
 		});
-        this.CurrentSong = "" 
+        this.CurrentSong = "";
         this.Player = createAudioPlayer();
-        this.State = "Stopped"
+        this.State = "Stopped";
+        this.AutoPlay = autoplay;
 
         this.Player.on(AudioPlayerStatus.Idle, this.Idle.bind(this));
         this.Player.on("error", this.Error.bind(this));
@@ -71,7 +72,7 @@ class Audio {
                     bitrate: 128
                 });
                 const info = await Ytdl.getBasicInfo(url);
-                const song = new Song(info, createAudioResource(stream, { inputType: StreamType.Arbitrary }), user);
+                const song = new Song(info, createAudioResource(stream, { inputType: StreamType.Arbitrary }), user, this.AutoPlay);
                 this.Queue.Push(song);
                 return song;
             } catch (error) {
