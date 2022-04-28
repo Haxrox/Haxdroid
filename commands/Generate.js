@@ -14,7 +14,7 @@ const ALL = ALPHABET + DIGITS + SPECIAL;
 
 class Generate extends Command {
     Subcommands = {
-        array: function(interaction) {
+        data: function(interaction) {
             const length = interaction.options.getInteger("length") || 10;
             const ordering = interaction.options.getString("order") || "unordered"
             const type = interaction.options.getString("type") || "int"
@@ -148,7 +148,7 @@ class Generate extends Command {
 const GenerateCommand = new Generate("Generate", "Generate uesful properties");
 GenerateCommand.GetData()
 .addSubcommand(subcommand => 
-    subcommand.setName("array").setDescription("Generates random array of X integers")
+    subcommand.setName("data").setDescription("Generates an array of X elements")
     .addIntegerOption(option => 
         option.setName("length").setDescription("length of array")
     )
