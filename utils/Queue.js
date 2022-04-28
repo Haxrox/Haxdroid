@@ -13,7 +13,7 @@ class Queue {
     }
 
     Get() {
-        return this.Head;
+        return this.Head?.Data;
     }
 
     Push(data) {
@@ -22,6 +22,7 @@ class Queue {
             this.Head = this.Tail;
         } else {
             this.Tail.Next = new Node(data);
+            this.Tail = this.Tail.Next;
         }
         this.Size++;
     }
@@ -41,6 +42,15 @@ class Queue {
     InsertFront(data) {
         this.Head = new Node(data, this.Head);
         this.Size++;
+    }
+
+    Reduce(func, init) {
+        var node = this.Head;
+        while (node != null) {
+            init += func(node.Data);
+            node = node.Next;
+        }
+        return init;
     }
 
     Clear() {

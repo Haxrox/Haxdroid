@@ -2,7 +2,7 @@ const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const Audio = require("../services/Audio.js");
 const {MessageEmbed, Message} = require('discord.js');
-const {bold} = require('@discordjs/builders');
+const {bold, hyperlink} = require('@discordjs/builders');
 
 const GUILD_VOICE = 2;
 var audio;
@@ -18,94 +18,91 @@ class Music extends Command {
 	Subcommands = {
 		init: async function(interaction) {
 			const channel = interaction.options.getChannel("channel", true);
-			const song = interaction.options.getString("song", true);
-			audio = new Audio(channel);
-			const status = audio.Play(song);
+			const url = interaction.options.getString("song", true);
+			audio = new Audio(interaction.client, channel);
+			const song = await audio.Play(url, interaction.user);
 
-			if (status) {
+			if (song) {
 				const embed = new MessageEmbed()
+				.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
 				.setTitle(`${Styles.Emojis.Music}  Music Initialized`)
-				.setDescription(song)
-				.setColor(Styles.Colours.Theme)
+				.setDescription(`${bold("Channel:")} <#${channel.id}>`)
+				.setColor(Styles.Colours.YouTube)
 				.setTimestamp()
 				.setFooter({text: `Initialized by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			
-				interaction.reply({embeds: [embed]});
+				interaction.reply({embeds: [embed, song.Embed()]});
 			} else {
-				this.Error(interaction, "Failed to parse YouTube URL - " + song);
+				this.Error(interaction, "Failed to parse YouTube URL - " + url);
 			}
 		},
 		info: async function(interaction) {
 			const embed = new MessageEmbed()
+			.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
 			.setTitle(`${Styles.Emojis.Music}  Music Information`)
-			.setDescription(`${bold("Current Song:")} ${audio.CurrentSong}`)
-			.addField("Channel:", audio.Channel, true)
-			.addField("Queue Size:", audio.Queue.Size(), true)
-			.setColor(Styles.Colours.Theme)
+			.setDescription(`${bold("Current Song:")} ${hyperlink(audio?.CurrentSong.Title || "None", audio?.CurrentSong.Url || "https://www.youtube.com/")}\n${bold("Channel:")} <#${audio?.Channel.id || "None"}>`)
+			.addField(`Queue [${audio?.Queue.Size || "0"}]:`, audio?.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${hyperlink(song.Title, song.Url)} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, ""), true)
+			.setColor(Styles.Colours.YouTube)
 			.setTimestamp()
-			.setFooter({text: `Queued by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+			.setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			
 			interaction.reply({embeds: [embed]});
 		},
-		enqueue: async function(interaction) {
-			// var head = audio.Queue.Get();
-			const song = interaction.options.getString("song", true);
-			const status = audio.Enqueue(song);
+		search: async function(interaction) {
 
-			if (status) {
-				const embed = new MessageEmbed()
-				.setTitle(`${Styles.Emojis.Music}  Song Queued [${audio.Queue.Size}/${audio.Queue.Size}]`)
-				.setDescription(song)
-				.setColor(Styles.Colours.Theme)
-				.setTimestamp()
-				.setFooter({text: `Queued by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
-				
-				interaction.reply({embeds: [embed]});
+		},
+		enqueue: async function(interaction) {
+			await interaction.deferReply();
+			// var head = audio.Queue.Get();
+			const url = interaction.options.getString("song", true);
+			const song = await audio?.Enqueue(url, interaction.user);
+
+			if (song) {
+				const embed = song.Embed()
+					.setTitle(`${Styles.Emojis.Play}  Queued Song: ${song.Title}`)
+				interaction.editReply({embeds: [embed]});
 			} else {
 				this.Error(interaction, "Failed to parse YouTube URL - " + song);
 			}
 		},
 		pause: async function(interaction) {
-			audio.Pause();
-			const embed = new MessageEmbed()
-			.setTitle(`${Styles.Emojis.Pause}  Music Paused`)
-			.setColor(Styles.Colours.Theme)
-            .setTimestamp()
-            .setFooter({text: `Paused by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
-			
+			audio?.Pause();
+			const embed = audio?.CurrentSong?.Embed()
+				.setTitle(`${Styles.Emojis.Pause}  Music Paused: ${audio?.CurrentSong?.Title}`)
+            	.setFooter({text: `Paused by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			interaction.reply({embeds: [embed]});
 		},
 		resume: async function(interaction) {
-			audio.Resume();
-			const embed = new MessageEmbed()
-			.setTitle(`${Styles.Emojis.Play}  Music Resumed`)
-			.setColor(Styles.Colours.Theme)
-            .setTimestamp()
-            .setFooter({text: `Resumed by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
-			
+			audio?.Resume();
+			const embed = audio?.CurrentSong?.Embed()
+			.setTitle(`${Styles.Emojis.Pause}  Music Resumed: ${audio?.CurrentSong?.Title}`)
+			.setFooter({text: `Paused by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			interaction.reply({embeds: [embed]});
 		},
 		stop: async function(interaction) {
-			audio.Stop();
+			audio?.Stop();
 			const embed = new MessageEmbed()
+			.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
 			.setTitle(`${Styles.Emojis.Stop}  Music Stopped`)
-			.setColor(Styles.Colours.Theme)
+			.setColor(Styles.Colours.YouTube)
             .setTimestamp()
             .setFooter({text: `Stopped by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			
 			interaction.reply({embeds: [embed]});
 		},
 		play: async function(interaction) {
-			const song = interaction.options.getString("song", true);
-			audio.Play(song);
-			const embed = new MessageEmbed()
-			.setTitle(`${Styles.Emojis.Play}  Playing Song`)
-			.setDescription(song)
-			.setColor(Styles.Colours.Theme)
-            .setTimestamp()
-            .setFooter({text: `Played by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+			const url = interaction.options.getString("song", true);
+			const song = await audio?.Play(url, interaction.user);
+			const embed = song.Embed()
+			.setFooter({text: `Played by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			
 			interaction.reply({embeds: [embed]});
+		}
+	}
+	constructor(name, description) {
+		super(name, description);
+		for (const [key, func] of Object.entries(this.Subcommands)) {
+			this.Subcommands[key] = func.bind(this);
 		}
 	}
     async Execute(interaction) {
@@ -132,6 +129,14 @@ MusicCommand.GetData()
 )
 .addSubcommand(subcommand => 
 	subcommand.setName("info").setDescription("Gets information about current music state")
+)
+.addSubcommand(subcommand => 
+	subcommand.setName("search").setDescription("Searches for a song")
+	.addStringOption(option => 
+		option.setName("provider").setDescription("Where to search for the song")
+		.addChoice("YouTube", "youtube")
+		.addChoice("YouTube Music", "youtube_music")
+	)
 )
 .addSubcommand(subcommand => 
 	subcommand.setName("enqueue").setDescription("Adds a song to the queue")
