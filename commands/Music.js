@@ -19,7 +19,7 @@ class Music extends Command {
 		init: async function(interaction) {
 			const channel = interaction.options.getChannel("channel", true);
 			const song = interaction.options.getString("song", true);
-			audio = !audio ? new Audio(channel) : audio;
+			audio = new Audio(channel);
 			const status = audio.Play(song);
 
 			if (status) {
