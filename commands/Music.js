@@ -37,8 +37,9 @@ class Music extends Command {
 		info: async function(interaction) {
 			const embed = new MessageEmbed()
 			.setTitle(`${Styles.Emojis.Music}  Music Information`)
-			.addField("Current Song:", audio.CurrentSong)
-			.addField("Queue Size:", audio.Queue.Size())
+			.setDescription(`${bold("Current Song:")} ${audio.CurrentSong}`)
+			.addField("Channel:", audio.Channel, true)
+			.addField("Queue Size:", audio.Queue.Size(), true)
 			.setColor(Styles.Colours.Theme)
 			.setTimestamp()
 			.setFooter({text: `Queued by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
