@@ -128,7 +128,7 @@ class Audio {
             this.Stop();
         } else if (this.Queue.Empty() && this.AutoPlay) {
             const url = new URL(YOUTUBE_URL);
-            url.searchParams.append("v", this.CurrentSong.RelatedVideos[Math.round(Random.Generate(0, this.CurrentSong.RelatedVideos))].id);
+            url.searchParams.append("v", this.CurrentSong.RelatedVideos[Math.round(Random.Generate(0, this.CurrentSong.RelatedVideos.length))].id);
             this.Play(url.href, this.Client.user);
         } else {
             this.PlaySong();
