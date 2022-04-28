@@ -11,6 +11,8 @@ const Ytdl = require("ytdl-core");
 const Styles = require("../styles.json");
 const Queue = require("../utils/Queue.js");
 
+const YOUTUBE_URL = "https://www.youtube.com/watch";
+
 class Song {
     constructor(info, audio, user, autoplay) {
         const videoDetails = info?.videoDetails;
@@ -22,7 +24,7 @@ class Song {
         this.Thumbnail = videoDetails?.thumbnails[videoDetails?.thumbnails.length - 2]?.url;
         this.AutoPlay = autoplay
         this.RelatedVideos = autoplay ? info?.related_videos : null;
-        this.User = user || { username: "Haxdroid", avatarURL: () => Styles.Avatar};
+        this.User = user || this.Client.user;
     }
 
     Embed() {
@@ -118,7 +120,9 @@ class Audio {
             if (!this.AutoPlay && this.State !== "Stopped" && this.Connection) {
                 this.Stop();
             } else {
-
+                const url = new URL(YOUTUBE_URL);
+                url.searchParams.append(this.CurrentSong.RelatedVideos[0].id);
+                this.Play(url.href, this.Client.user);
             }
         } else {
             this.PlaySong();
