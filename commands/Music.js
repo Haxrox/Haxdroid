@@ -52,7 +52,7 @@ class Music extends Command {
 		},
 		search: async function(interaction) {
 			var url;
-			switch (interation.options.getString("provider", true)) {
+			switch (interaction.options.getString("provider", true)) {
 				case "youtube":
 					url = new URL(YOUTUBE_URL)
 					url.searchParams.append("search_query", interaction.options.getString("query", true));
