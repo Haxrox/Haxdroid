@@ -40,7 +40,7 @@ class Song {
     }
 }
 class Audio {
-    constructor(client, channel, autoplay) {
+    constructor(client, channel, autoplay = true) {
         this.Client = client;
         this.Channel = channel;
         this.Queue = new Queue();
@@ -52,7 +52,7 @@ class Audio {
         this.CurrentSong = "";
         this.Player = createAudioPlayer();
         this.State = "Stopped";
-        this.AutoPlay = autoplay;
+        this.AutoPlay = autoplay === null ? true : autoplay;
 
         this.Player.on(AudioPlayerStatus.Idle, this.Idle.bind(this));
         this.Player.on("error", this.Error.bind(this));
@@ -116,14 +116,13 @@ class Audio {
     }
 
     Idle() {
-        if (this.Queue.Empty()) {
-            if (!this.AutoPlay && this.State !== "Stopped" && this.Connection) {
-                this.Stop();
-            } else {
-                const url = new URL(YOUTUBE_URL);
-                url.searchParams.append(this.CurrentSong.RelatedVideos[0].id);
-                this.Play(url.href, this.Client.user);
-            }
+        if ((this.Channel.members.size < 2 && this.State !== "Stopped" && this.Connection) || (this.Queue.Empty() && !this.AutoPlay)) {
+            console.log("Stop");
+            this.Stop();
+        } else if (this.Queue.Empty() && this.AutoPlay) {
+            const url = new URL(YOUTUBE_URL);
+            url.searchParams.append("v", this.CurrentSong.RelatedVideos[0].id);
+            this.Play(url.href, this.Client.user);
         } else {
             this.PlaySong();
         }

@@ -21,14 +21,14 @@ class Music extends Command {
 		init: async function(interaction) {
 			const channel = interaction.options.getChannel("channel", true);
 			const url = interaction.options.getString("song", true);
-			audio = new Audio(interaction.client, channel, interaction.options.getBoolean("autoplay") || true);
+			audio = new Audio(interaction.client, channel, interaction.options.getBoolean("autoplay"));
 			const song = await audio.Play(url, interaction.user);
 
 			if (song) {
 				const embed = new MessageEmbed()
 				.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
 				.setTitle(`${Styles.Emojis.Music}  Music Initialized`)
-				.setDescription(`${bold("Channel:")} <#${channel.id}>`)
+				.setDescription(`${bold("Channel:")} <#${channel.id}>\n${bold("Autoplay:")} ${audio?.AutoPlay}`)
 				.setColor(Styles.Colours.YouTube)
 				.setTimestamp()
 				.setFooter({text: `Initialized by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
