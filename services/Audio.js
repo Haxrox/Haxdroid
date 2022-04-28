@@ -22,7 +22,6 @@ class Song {
         this.Artist = videoDetails?.author
         this.Length = videoDetails?.lengthSeconds;
         this.Thumbnail = videoDetails?.thumbnails[videoDetails?.thumbnails.length - 2]?.url;
-        this.AutoPlay = autoplay
         this.RelatedVideos = autoplay ? info?.related_videos : null;
         this.User = user || this.Client.user;
     }

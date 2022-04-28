@@ -21,8 +21,8 @@ class Music extends Command {
 		init: async function(interaction) {
 			const channel = interaction.options.getChannel("channel", true);
 			const url = interaction.options.getString("song", true);
-			audio = new Audio(interaction.client, channel);
-			const song = await audio.Play(url, interaction.user, interaction.options.getBoolean("autoplay") || true);
+			audio = new Audio(interaction.client, channel, interaction.options.getBoolean("autoplay") || true);
+			const song = await audio.Play(url, interaction.user);
 
 			if (song) {
 				const embed = new MessageEmbed()
