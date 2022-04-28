@@ -2,6 +2,7 @@ const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const {MessageEmbed, Permissions} = require('discord.js');
 const {bold, blockQuote} = require('@discordjs/builders');
+const GUILD_TEXT = 0;
 
 const Reminders = {};
 
