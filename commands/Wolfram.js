@@ -5,7 +5,7 @@ const {bold, blockQuote} = require('@discordjs/builders');
 const WolframAlphaAPI = require('wolfram-alpha-api');
 const Configuration = require('../config.json');
 
-const wolframAPI = WolframAlphaAPI(Configuration.WOLFRAM_ID);
+const wolframAPI = WolframAlphaAPI(Configuration.WOLFRAM_KEY);
 const BASE_URL = `https://www.wolframalpha.com/input`;
 
 class Wolfram extends Command {
