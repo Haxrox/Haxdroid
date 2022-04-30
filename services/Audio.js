@@ -5,19 +5,22 @@ const {
 	createAudioResource,
 	joinVoiceChannel,
 } = require('@discordjs/voice');
+const Axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 const { hyperlink } = require('@discordjs/builders');
 const Ytdl = require("ytdl-core");
+const Config = require("../config.json");
 const Styles = require("../styles.json");
 const Random = require("../services/Random.js");
 const Queue = require("../utils/Queue.js");
+const { default: axios } = require('axios');
 
 const YOUTUBE_URL = "https://www.youtube.com/watch";
+const YOUTUBE_PLAYLIST_URL = "https://youtube.googleapis.com/youtube/v3/playlistItems"
 
 class Song {
-    constructor(info, audio, user, autoplay) {
+    constructor(info, user, autoplay) {
         const videoDetails = info?.videoDetails;
-        this.Audio = audio; 
         this.Title = videoDetails?.title || "Unknown";
         this.Url = videoDetails?.video_url || "Unknown";
         this.Artist = videoDetails?.author
@@ -65,22 +68,47 @@ class Audio {
     async Enqueue(url, user) {
         if (Ytdl.validateURL(url)) {
             try {
-                const stream = Ytdl(url, {
-                    fmt: "mp3",
-                    highWaterMark: 1 << 62,
-                    liveBuffer: 1 << 62,
-                    dlChunkSize: 0, //disabling chunking is recommended in discord bot
-                    bitrate: 128
-                });
                 const info = await Ytdl.getBasicInfo(url);
-                const song = new Song(info, createAudioResource(stream, { inputType: StreamType.Arbitrary }), user, this.AutoPlay);
+                const song = new Song(info, user, this.AutoPlay);
                 this.Queue.Push(song);
                 return song;
             } catch (error) {
                 return null;
             }
         } else {
-            return null;
+            return (await this.EnqueuePlaylist(url, user)).Get();
+        }
+    }
+
+    async EnqueuePlaylist(id, user) {
+        try {
+            const url = new URL(YOUTUBE_PLAYLIST_URL)
+            url.searchParams.append("key", Config.YOUTUBE_KEY)
+            url.searchParams.append("part", "contentDetails");
+            url.searchParams.append("playlistId", id);
+            url.searchParams.append("maxResults", 25);
+            const playlist = new Queue();
+            var nextPage = "";
+            do {
+                url.searchParams.set("pageToken", nextPage || "");
+                const response = await Axios.get(url.href);
+                if (response.status) {
+                    const data = response?.data;
+                    nextPage = response?.nextPageToken;
+                    for (const video of data.items) {
+                        const videoUrl = new URL(YOUTUBE_URL);
+                        videoUrl.searchParams.append("v", video?.contentDetails?.videoId);
+                        const info = await Ytdl.getBasicInfo(videoUrl.href);
+                        const song = new Song(info, user, this.AutoPlay);
+                        playlist.Push(song);
+                    }
+                }
+            } while (nextPage != "" && nextPage);
+            this.Queue.Concat(playlist);
+            return playlist;
+        } catch (error) {
+            console.log("Enqueue playlist error");
+            console.log(error.message);
         }
     }
 
@@ -92,11 +120,47 @@ class Audio {
         }
     }
 
+    async PlayPlaylist(id, user) {
+        const url = new URL(YOUTUBE_PLAYLIST_URL)
+        url.searchParams.append("key", Config.YOUTUBE_KEY)
+        url.searchParams.append("part", "contentDetails");
+        url.searchParams.append("playlistId", id);
+        url.searchParams.append("maxResults", 25);
+        const playlist = new Queue();
+        var nextPage = "";
+        do {
+            url.searchParams.set("pageToken", nextPage || "");
+            const response = await Axios.get(url.href);
+            if (response.status) {
+                const data = response?.data;
+                nextPage = response?.nextPageToken;
+                for (const video of data.items) {
+                    const videoUrl = new URL(YOUTUBE_URL);
+                    videoUrl.searchParams.append("v", video?.contentDetails?.videoId);
+                    const info = await Ytdl.getBasicInfo(videoUrl.href);
+                    const song = new Song(info, user, this.AutoPlay);
+                    playlist.Push(song);
+                }
+            }
+        } while (nextPage != "" && nextPage);
+        playlist.Concat(this.Queue);
+        this.Queue = playlist;
+        this.PlaySong();
+        return playlist;
+    }
+
     PlaySong() {
         this.CurrentSong = this.Queue.Pop();
         this.State = "Playing";
         this.Client.user.setPresence({activities: [{name: `${this.CurrentSong.Title} by ${this.CurrentSong.Artist.name}`, type: "STREAMING", url: this.CurrentSong.Url}], status: "dnd"})
-        this.Player.play(this.CurrentSong.Audio);
+        const stream = Ytdl(this.CurrentSong.Url, {
+            fmt: "mp3",
+            highWaterMark: 1 << 62,
+            liveBuffer: 1 << 62,
+            dlChunkSize: 0, //disabling chunking is recommended in discord bot
+            bitrate: 128
+        });
+        this.Player.play(createAudioResource(stream, { inputType: StreamType.Arbitrary }),);
         return this.CurrentSong;
     }
 
@@ -135,7 +199,7 @@ class Audio {
         }
     }
 
-    Error() {
+    Error(error) {
         console.log(error);
     }
 

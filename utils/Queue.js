@@ -44,11 +44,33 @@ class Queue {
         this.Size++;
     }
 
-    Reduce(func, init) {
+    Concat(queue) {
+        var node = queue.Head;
+        if (!this.Tail) {
+            this.Head = node;
+        } else {
+            this.Tail.Next = node;
+        }
+        while (!node?.Next) {
+            node = node.next;
+        }
+        this.Tail = node;
+        this.Size += queue.Size;
+    }
+
+    Reduce(func, init, maxSize) {
         var node = this.Head;
+        var processed = 0;
         while (node != null) {
-            init += func(node.Data);
-            node = node.Next;
+            const append = func(node.Data);
+            if ((init + append).length <= (maxSize - 24)) {
+                processed++;
+                init += append;
+                node = node.Next;
+            } else {
+                init += ` ${this.Size - processed} more`;
+                break;
+            }
         }
         return init;
     }

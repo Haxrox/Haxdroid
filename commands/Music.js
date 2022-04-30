@@ -7,6 +7,7 @@ const {bold, hyperlink} = require('@discordjs/builders');
 const GUILD_VOICE = 2;
 const YOUTUBE_URL = "https://www.youtube.com/results";
 const YOUTUBE_MUSIC_URL = "https://music.youtube.com/search";
+
 var audio;
 // const stream = Ytdl('https://www.youtube.com/watch?v=F90Cw4l-8NY', {
 // 	fmt: "mp3",
@@ -19,6 +20,7 @@ var audio;
 class Music extends Command {
 	Subcommands = {
 		init: async function(interaction) {
+			await interaction.deferReply();
 			const channel = interaction.options.getChannel("channel", true);
 			const url = interaction.options.getString("song", true);
 			audio = new Audio(interaction.client, channel, interaction.options.getBoolean("autoplay"));
@@ -33,9 +35,9 @@ class Music extends Command {
 				.setTimestamp()
 				.setFooter({text: `Initialized by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
 			
-				interaction.reply({embeds: [embed, song.Embed()]});
+				interaction.editReply({embeds: [embed, song.Embed()]});
 			} else {
-				this.Error(interaction, "Failed to parse YouTube URL - " + url);
+				this.DeferError(interaction, "Failed to parse YouTube URL - " + url);
 			}
 		},
 		info: async function(interaction) {
@@ -43,7 +45,7 @@ class Music extends Command {
 			.setAuthor({name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube})
 			.setTitle(`${Styles.Emojis.Music}  Music Information`)
 			.setDescription(`${bold("Current Song:")} ${hyperlink(audio?.CurrentSong?.Title || "None", audio?.CurrentSong?.Url || "https://www.youtube.com/")}\n${bold("Channel:")} <#${audio?.Channel?.id || "None"}>\n${bold("Autoplay:")} ${audio?.AutoPlay || "None"}`)
-			.addField(`Queue [${audio?.Queue.Size || "0"}]:`, audio?.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${hyperlink(song.Title, song.Url)} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "") || "Empty", true)
+			.addField(`Queue [${audio?.Queue.Size || "0"}]:`, audio?.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${hyperlink(song.Title, song.Url)} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "", 1024) || "Empty", true)
 			.setColor(Styles.Colours.YouTube)
 			.setTimestamp()
 			.setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
@@ -139,12 +141,16 @@ class Music extends Command {
 			interaction.reply({embeds: [embed]});
 		},
 		play: async function(interaction) {
+			await interaction.deferReply();
 			const url = interaction.options.getString("song", true);
 			const song = await audio?.Play(url, interaction.user);
-			const embed = song.Embed()
-			.setFooter({text: `Played by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
-			
-			interaction.reply({embeds: [embed]});
+			if (song) {
+				const embed = song.Embed()
+				.setFooter({text: `Played by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+				interaction.editReply({embeds: [embed]});
+			} else {
+				this.DeferError(interaction, "Failed to play song: " + url);
+			}
 		}
 	}
 	constructor(name, description) {
