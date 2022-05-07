@@ -294,11 +294,6 @@ class Audio {
     }
 
     Skip(interaction) {
-        const temp = this.Repeat;
-        this.Repeat = false;
-        this.Idle();
-        this.Repeat = temp;
-
         const embed = new MessageEmbed()
             .setAuthor({ name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube })
             .setTitle(`${Styles.Emojis.Skip}  Song Skipped`)
@@ -307,6 +302,11 @@ class Audio {
             .setTimestamp()
             .setFooter({ text: `Skipped by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
         this.HistoryChannel?.send({ embeds: [embed] });
+        
+        const temp = this.Repeat;
+        this.Repeat = false;
+        this.Idle();
+        this.Repeat = temp;
 
         return embed;
     }
