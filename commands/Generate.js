@@ -196,7 +196,7 @@ GenerateCommand.GetData()
 // https://www.baeldung.com/java-uuid
 // https://en.wikipedia.org/wiki/Universally_unique_identifier
 .addSubcommand(subcommand =>
-    subcommand.setName('uuid').setDescription('Generates an X bit UUID')
+    subcommand.setName('uuid').setDescription('Generates a UUID')
     .addStringOption(option => 
         option.setName("version").setDescription("version of the UUID to generate").setRequired(true)
         .addChoice("Version 1 (date-time + MAC address)", "v1")
