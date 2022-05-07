@@ -1,12 +1,16 @@
+const Config = require("../config.json");
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const Audio = require("../services/Audio.js");
+const Axios = require("axios");
 const { MessageEmbed, Message, MessageActionRow, MessageButton } = require('discord.js');
 const { bold, hyperlink } = require('@discordjs/builders');
 
 const GUILD_VOICE = 2;
+const YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch";
 const YOUTUBE_URL = "https://www.youtube.com/results";
 const YOUTUBE_MUSIC_URL = "https://music.youtube.com/search";
+const YOUTUBE_SEARCH_URL = "https:/youtube.googleapis.com/youtube/v3/search"
 
 const ID = {
     MUSIC_PAUSE: "music_pause",
@@ -82,27 +86,61 @@ class Music extends Command {
 			}
 		},
 		search: async function (interaction) {
+			await interaction.deferReply();
+			const embed = new MessageEmbed()
+				.setAuthor({ name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube })
+				.setTitle(`${Styles.Emojis.Music}  Search Results`)
+				.setColor(Styles.Colours.YouTube)
+				.setTimestamp()
+				.setFooter({ text: `Searched by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
 			var url;
+
 			switch (interaction.options.getString("provider", true)) {
 				case "youtube":
+					const searchUrl = new URL(YOUTUBE_SEARCH_URL)
+					searchUrl.searchParams.append("key", Config.YOUTUBE_KEY);
+					searchUrl.searchParams.append("part", "snippet");
+					searchUrl.searchParams.append("maxResults", 10);
+					searchUrl.searchParams.append("type", "video");
+					searchUrl.searchParams.append("q", interaction.options.getString("query", true));
+
 					url = new URL(YOUTUBE_URL)
 					url.searchParams.append("search_query", interaction.options.getString("query", true));
+					
+					var results = "";
+					var processed = 0;
+
+					const response = await Axios.get(searchUrl.href);
+
+					if (response.status) {
+						response.data?.items?.some(song => {
+							const videoUrl = new URL(YOUTUBE_VIDEO_URL)
+							videoUrl.searchParams.append("v", song.id?.videoId);
+							const append = `${Styles.Emojis.Bullet} ${hyperlink(song.snippet?.title, videoUrl.href)} - ${song.snippet?.channelTitle}\n`;
+							if (results.length + append.length <= 2000) {
+								processed ++;
+								results += append;
+							} else {
+								append += ` ${response.length - processed} more`
+							}
+							return results.length > 2000;
+						});
+					}
+					embed.setURL(url.href)
+					.setDescription(response.status && results || "None");
 					break;
 				case "youtube_music":
 					url = new URL(YOUTUBE_MUSIC_URL)
 					url.searchParams.append("q", interaction.options.getString("query", true));
+
+					embed.setURL(url.href)
+					.setDescription(url.href);
+					break;
 				default:
 					break;
 			}
-			const embed = new MessageEmbed()
-				.setAuthor({ name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube })
-				.setTitle(`${Styles.Emojis.Music}  Search`)
-				.setURL(url.href)
-				.setDescription(url.href)
-				.setColor(Styles.Colours.YouTube)
-				.setTimestamp()
-				.setFooter({ text: `Searched by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
-			interaction.reply({ embeds: [embed] });
+			
+			interaction.editReply({ embeds: [embed] });
 		},
 		enqueue: async function (interaction) {
 			await interaction.deferReply();
