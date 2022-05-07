@@ -41,6 +41,38 @@ module.exports = class Command {
     }
 
     /**
+     * Executes the given button interaction / SlashCommand
+     * @param {CommandInteraction} interaction 
+     */
+    ExecuteButton(interaction) {
+        console.debug(`${this.commandName} button executed`);
+    }
+
+    /**
+     * Executes the given context menu interaction / SlashCommand
+     * @param {CommandInteraction} interaction 
+     */
+    ExecuteContextMenu(interaction) {
+        console.debug(`${this.commandName} context menu executed`);
+    }
+
+    /**
+     * Executes the given select menu interaction / SlashCommand
+     * @param {CommandInteraction} interaction 
+     */
+    ExecuteSelectMenu(interaction) {
+        console.debug(`${this.commandName} select menu executed`);
+    }
+
+    /**
+     * Executes the given user context menu interaction / SlashCommand
+     * @param {CommandInteraction} interaction 
+     */
+     ExecuteUserContextMenu(interaction) {
+        console.debug(`${this.commandName} user context menu executed`);
+    }
+
+    /**
      * Called when the command errors
      * @param {CommandInteraction} interaction 
      * @param {String} message error message
