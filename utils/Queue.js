@@ -72,7 +72,7 @@ class Queue {
                 break;
             }
         }
-        return init;
+        return [processed, init];
     }
 
     Clear() {

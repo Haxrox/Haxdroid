@@ -26,10 +26,13 @@
         "Error": "octagonal_sign",
         "Reminder": "alarm_clock",
         "Music": ":musical_note:",
-        "Play": ":arrow_forward:",
-        "Pause": ":pause_button:",
-        "Stop": ":stop_button:",
-        "Skip": ":fast_forward:",
+        "Play": "▶️",
+        "Pause": "⏸️",
+        "Stop": "⏹️",
+        "Skip": "⏩",
+        "Repeat": "🔁",
+        "AutoPlay": "♾️",
         "Bullet": "‣"
+
     }
 }

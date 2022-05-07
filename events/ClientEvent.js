@@ -5,6 +5,6 @@ module.exports = class ClientEvent {
     }
     Execute(client, args) {
         console.debug(`${this.eventName} emitted`);
-        this.client = client;
+        this.Client = client;
     }
 }
