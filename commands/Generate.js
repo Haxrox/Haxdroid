@@ -49,9 +49,7 @@ class Generate extends Command {
 
             if (Uuid[version]) {
                 return Uuid[version]();
-            } else if (version === "v2") {
-                return Uuid.v2();
-            } else if (version === "v4") {
+            } else {
                 return Uuid.v4();
             }
         },
