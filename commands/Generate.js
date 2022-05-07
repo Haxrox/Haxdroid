@@ -1,6 +1,7 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const {MessageEmbed} = require('discord.js');
+const Uuid = require("uuid"); // might write own algorithm for each version
 const {blockQuote, inlineCode, spoiler} = require('@discordjs/builders');
 const RNG = require('./RNG.js');
 const Random = require("../services/Random");
@@ -44,7 +45,13 @@ class Generate extends Command {
             return [...input].reverse().join("")
         },
         uuid: function(interaction) {
-    
+            const version = interaction.options.getString("version", true);
+
+            if (Uuid[version]) {
+                return Uuid[version]();
+            } else {
+                return this.uuid.v4();
+            }
         },
         password: function(interaction) {
             const length = interaction.options.getInteger("length", true);
@@ -190,13 +197,13 @@ GenerateCommand.GetData()
 // https://en.wikipedia.org/wiki/Universally_unique_identifier
 .addSubcommand(subcommand =>
     subcommand.setName('uuid').setDescription('Generates an X bit UUID')
-    .addIntegerOption(option => 
+    .addStringOption(option => 
         option.setName("version").setDescription("version of the UUID to generate").setRequired(true)
-        .addChoice("Version 1 (date-time + MAC address)", 1)
-        .addChoice("Version 2 (date-time + MAC address, DCE security version", 2)
-        .addChoice("Version 3 (namespace name-based w/ MD5 hashing)", 3)
-        .addChoice("Version 4 (random)", 4)
-        .addChoice("Version 5 (namespace name-based w/ SHA-1 hashing)", 5)
+        .addChoice("Version 1 (date-time + MAC address)", "v1")
+        .addChoice("Version 2 (date-time + MAC address, DCE security version", "v2")
+        .addChoice("Version 3 (namespace name-based w/ MD5 hashing)", "v3")
+        .addChoice("Version 4 (random)", "v4")
+        .addChoice("Version 5 (namespace name-based w/ SHA-1 hashing)", "v5")
     )
 )
 .addSubcommand(subcommand =>
