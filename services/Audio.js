@@ -72,11 +72,19 @@ class Song {
     }
 
     Embed() {
+        const padVal = (val) => val < 10 ? `0${val}` : val.toString();
+        const parse = (val, pad, forceAppend) => pad ? padVal(val).concat(":") : ((val > 0 || forceAppend) ? val.toString().concat(":") : "");
+        const seconds = this.Length % 60;
+        const minutes = Math.floor(this.Length / 60) % 60;
+        const hours = Math.floor(this.Length / 3600) % 24;
+        const days = Math.floor(this.Length / (3600 * 24));
+
+        const duration = parse(days, false) + parse(hours, days > 0) + parse(minutes, (hours > 0 || days > 0), true) + padVal(seconds);
         return new MessageEmbed()
             .setAuthor({ name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube })
             .setTitle(`${Styles.Emojis.Music}  ${this.Title}`)
             .setURL(this.Url)
-            .addField("Length", `${this.Length} seconds`, true)
+            .addField("Duration", duration, true)
             .addField("Artist", hyperlink(this.Artist.name, this.Artist.channel_url), true)
             .setImage(this.Thumbnail)
             .setColor(Styles.Colours.YouTube)
@@ -302,7 +310,7 @@ class Audio {
             .setTimestamp()
             .setFooter({ text: `Skipped by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
         this.HistoryChannel?.send({ embeds: [embed] });
-        
+
         const temp = this.Repeat;
         this.Repeat = false;
         this.Idle();
