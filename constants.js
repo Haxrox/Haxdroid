@@ -1,4 +1,4 @@
-module.exports = Objects.freeze({
+module.exports = Object.freeze({
     YOUTUBE_URL: "https://www.youtube.com/",
     YOUTUBE_VIDEO_URL: "https://www.youtube.com/watch",
     YOUTUBE_PLAYLIST_URL: "https://youtube.googleapis.com/youtube/v3/playlistItems",
