@@ -8,6 +8,8 @@ const Constants = require("../constants.js");
 const Command = require('./Command.js');
 const Audio = require("../services/Audio.js");
 
+const YOUTUBE = "youtube";
+const YOUTUBE_MUSIC = "youtube_music"
 var audio;
 
 class Music extends Command {
@@ -64,7 +66,7 @@ class Music extends Command {
 			var url;
 
 			switch (interaction.options.getString("provider", true)) {
-				case "youtube":
+				case YOUTUBE:
 					const searchUrl = new URL(Constants.YOUTUBE_SEARCH_URL)
 					searchUrl.searchParams.append("key", Config.YOUTUBE_KEY);
 					searchUrl.searchParams.append("part", "snippet");
@@ -97,7 +99,7 @@ class Music extends Command {
 					embed.setURL(url.href)
 						.setDescription(response.status && results || "None");
 					break;
-				case "youtube_music":
+				case YOUTUBE_MUSIC:
 					url = new URL(Constants.YOUTUBE_MUSIC_SEARCH_RESULT_URL)
 					url.searchParams.append("q", interaction.options.getString("query", true));
 
@@ -162,10 +164,10 @@ class Music extends Command {
 		const subcommand = interaction.options.getSubcommand();
 
 		if (this.Subcommands[subcommand]) {
-			if (audio?.State !== audio?.STATES?.DEAD || subcommand === "init") {
+			if (audio?.State !== audio?.STATES?.DEAD || subcommand === "init" || subcommand === "search") {
 				this.Subcommands[subcommand](interaction);
 			} else {
-				this.Error(interaction, "Music not initialized. Use the command **/music init `channel` `song` [autoplay] [repeat]** to initialize")
+				this.Error(interaction, "Music not initialized. Use the command:\n>>> **/music init `channel` `song` [autoplay] [repeat]** to initialize")
 			}
 		} else {
 			this.Error(interaction, "Invalid subcommand - " + subcommand);
@@ -225,8 +227,8 @@ MusicCommand.GetData()
 		subcommand.setName("search").setDescription("Searches for a song")
 			.addStringOption(option =>
 				option.setName("provider").setDescription("where to search for the song").setRequired(true)
-					.addChoice("YouTube", "youtube")
-					.addChoice("YouTube Music", "youtube_music")
+					.addChoice("YouTube", YOUTUBE)
+					.addChoice("YouTube Music", YOUTUBE_MUSIC)
 			)
 			.addStringOption(option =>
 				option.setName("query").setDescription("song to search for").setRequired(true)
