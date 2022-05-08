@@ -182,11 +182,11 @@ class Music extends Command {
 				audio.Skip(interaction);
 				break;
 			case audio?.ID.MUSIC_AUTOPLAY:
-				audio?.Buttons.components[2] = audio?.AutoPlay ? audio?.AutoPlayOnButton : audio?.AutoPlayOffButton
+				audio.Buttons.components[2] = audio?.AutoPlay ? audio?.AutoPlayOnButton : audio?.AutoPlayOffButton
 				audio?.UpdateSetting(interaction, "AutoPlay", !audio?.AutoPlay);
 				break;
 			case audio?.ID.MUSIC_REPEAT:
-				audio?.Buttons.components[3] = audio?.Repeat ? audio?.RepeatOnButton : audio?.RepeatOffButton
+				audio.Buttons.components[3] = audio?.Repeat ? audio?.RepeatOnButton : audio?.RepeatOffButton
 				audio?.UpdateSetting(interaction, "Repeat", !audio?.Repeat);
 				break;
 			case audio?.ID.MUSIC_STOP:
