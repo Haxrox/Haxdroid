@@ -1,16 +1,13 @@
-const Config = require("../config.json");
-const Styles = require("../styles.json");
-const Command = require('./Command.js');
-const Audio = require("../services/Audio.js");
 const Axios = require("axios");
-const { MessageEmbed, Message, MessageActionRow, MessageButton } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const { bold, hyperlink } = require('@discordjs/builders');
 
-const GUILD_VOICE = 2;
-const YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch";
-const YOUTUBE_URL = "https://www.youtube.com/results";
-const YOUTUBE_MUSIC_URL = "https://music.youtube.com/search";
-const YOUTUBE_SEARCH_URL = "https:/youtube.googleapis.com/youtube/v3/search"
+const Config = require("../config.json");
+const Styles = require("../styles.json");
+const Constants = require("../constants.js");
+const Command = require('./Command.js');
+const Audio = require("../services/Audio.js");
+
 var audio;
 
 class Music extends Command {
@@ -23,7 +20,7 @@ class Music extends Command {
 			const song = await audio.Play(url, interaction.user);
 
 			if (song) {
-				interaction.editReply({ embeds: [audio.InitEmbed, song.Embed()]});
+				interaction.editReply({ embeds: [audio.InitEmbed, song.Embed()] });
 			} else {
 				this.DeferError(interaction, "Failed to parse YouTube URL - " + url);
 				audio.Stop();
@@ -68,16 +65,16 @@ class Music extends Command {
 
 			switch (interaction.options.getString("provider", true)) {
 				case "youtube":
-					const searchUrl = new URL(YOUTUBE_SEARCH_URL)
+					const searchUrl = new URL(Constants.YOUTUBE_SEARCH_URL)
 					searchUrl.searchParams.append("key", Config.YOUTUBE_KEY);
 					searchUrl.searchParams.append("part", "snippet");
 					searchUrl.searchParams.append("maxResults", 10);
 					searchUrl.searchParams.append("type", "video");
 					searchUrl.searchParams.append("q", interaction.options.getString("query", true));
 
-					url = new URL(YOUTUBE_URL)
+					url = new URL(Constants.YOUTUBE_SEARCH_REULTS_URL)
 					url.searchParams.append("search_query", interaction.options.getString("query", true));
-					
+
 					var results = "";
 					var processed = 0;
 
@@ -85,11 +82,11 @@ class Music extends Command {
 
 					if (response.status) {
 						response.data?.items?.some(song => {
-							const videoUrl = new URL(YOUTUBE_VIDEO_URL)
+							const videoUrl = new URL(Constants.YOUTUBE_VIDEO_URL)
 							videoUrl.searchParams.append("v", song.id?.videoId);
 							const append = `${Styles.Emojis.Bullet} ${hyperlink(song.snippet?.title, videoUrl.href)} - ${song.snippet?.channelTitle}\n`;
 							if (results.length + append.length <= 2000) {
-								processed ++;
+								processed++;
 								results += append;
 							} else {
 								append += ` ${response.length - processed} more`
@@ -98,24 +95,23 @@ class Music extends Command {
 						});
 					}
 					embed.setURL(url.href)
-					.setDescription(response.status && results || "None");
+						.setDescription(response.status && results || "None");
 					break;
 				case "youtube_music":
-					url = new URL(YOUTUBE_MUSIC_URL)
+					url = new URL(Constants.YOUTUBE_MUSIC_SEARCH_RESULT_URL)
 					url.searchParams.append("q", interaction.options.getString("query", true));
 
 					embed.setURL(url.href)
-					.setDescription(url.href);
+						.setDescription(url.href);
 					break;
 				default:
 					break;
 			}
-			
+
 			interaction.editReply({ embeds: [embed] });
 		},
 		enqueue: async function (interaction) {
 			await interaction.deferReply();
-			// var head = audio.Queue.Get();
 			const url = interaction.options.getString("song", true);
 			const song = await audio?.Enqueue(url, interaction.user);
 
@@ -166,38 +162,41 @@ class Music extends Command {
 		const subcommand = interaction.options.getSubcommand();
 
 		if (this.Subcommands[subcommand]) {
-			if (audio && audio.State != )
-			this.Subcommands[subcommand](interaction);
+			if (audio?.State !== audio?.STATES?.DEAD || subcommand === "init") {
+				this.Subcommands[subcommand](interaction);
+			} else {
+				this.Error(interaction, "Music not initialized. Use the command **/music init `channel` `song` [autoplay] [repeat]** to initialize")
+			}
 		} else {
 			this.Error(interaction, "Invalid subcommand - " + subcommand);
 		}
 	}
 
 	async ExecuteButton(interaction) {
-		switch(interaction.customId) {
-            case audio?.ID.MUSIC_PAUSE:
-                audio.State === audio?.STATES.PLAY ? audio.Pause(interaction) : audio.Resume(interaction);
+		switch (interaction.customId) {
+			case audio?.ID.MUSIC_PAUSE:
+				audio.State === audio?.STATES.PLAY ? audio.Pause(interaction) : audio.Resume(interaction);
 				audio.Buttons.components[0] = audio.State === audio?.STATES.PLAY ? audio.PauseButton : audio.ResumeButton;
-                break;
-            case audio?.ID.MUSIC_SKIP:
-                audio.Skip(interaction);
-                break;
-            case audio?.ID.MUSIC_AUTOPLAY:
+				break;
+			case audio?.ID.MUSIC_SKIP:
+				audio.Skip(interaction);
+				break;
+			case audio?.ID.MUSIC_AUTOPLAY:
 				audio?.Buttons.components[2] = audio?.AutoPlay ? audio?.AutoPlayOnButton : audio?.AutoPlayOffButton
 				audio?.UpdateSetting(interaction, "AutoPlay", !audio?.AutoPlay);
-                break;
-            case audio?.ID.MUSIC_REPEAT:
+				break;
+			case audio?.ID.MUSIC_REPEAT:
 				audio?.Buttons.components[3] = audio?.Repeat ? audio?.RepeatOnButton : audio?.RepeatOffButton
 				audio?.UpdateSetting(interaction, "Repeat", !audio?.Repeat);
-                break;
-            case audio?.ID.MUSIC_STOP:
-                audio.Stop(interaction);
-                break;				
-        }
+				break;
+			case audio?.ID.MUSIC_STOP:
+				audio.Stop(interaction);
+				break;
+		}
 
 		if (interaction.customId != audio?.ID.MUSIC_STOP) {
 			audio?.UpdateQueue();
-			interaction.update({embeds: [audio?.InitEmbed, audio?.CurrentSong?.Embed(), audio?.QueueEmbed], components: [audio.Buttons]});
+			interaction.update({ embeds: [audio?.InitEmbed, audio?.CurrentSong?.Embed(), audio?.QueueEmbed], components: [audio.Buttons] });
 		}
 	}
 }
@@ -207,7 +206,7 @@ MusicCommand.GetData()
 	.addSubcommand(subcommand =>
 		subcommand.setName("init").setDescription("Initializes the music player")
 			.addChannelOption(option =>
-				option.setName("channel").setDescription("Voice channel to join").setRequired(true).addChannelType(GUILD_VOICE)
+				option.setName("channel").setDescription("Voice channel to join").setRequired(true).addChannelType(Constants.GUILD_VOICE)
 			)
 			.addStringOption(option =>
 				option.setName("song").setDescription("Song to play").setRequired(true)
