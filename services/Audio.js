@@ -16,9 +16,6 @@ const Constants = require("../constants.js");
 const Random = require("../services/Random.js");
 const Queue = require("../utils/Queue.js");
 
-const PLAYER_CHANNEL_ID = "972616680100483132";
-const HISTORY_CHANNEL_ID = "972616713256443974";
-
 async function fetchPlaylists(id) {
     const url = new URL(Constants.YOUTUBE_PLAYLIST_URL)
     url.searchParams.append("key", Config.YOUTUBE_KEY)
@@ -132,8 +129,8 @@ class Audio {
         this.Connection.subscribe(this.Player);
 
         (async () => {
-            this.PlayerChannel = await interaction.guild.channels.fetch(PLAYER_CHANNEL_ID);
-            this.HistoryChannel = await interaction.guild.channels.fetch(HISTORY_CHANNEL_ID);
+            this.PlayerChannel = await interaction.guild.channels.fetch(Constants.MUSIC_PLAYER_CHANNEL_ID);
+            this.HistoryChannel = await interaction.guild.channels.fetch(Constants.MUSIC_HISTORY_CHANNEL_ID);
 
             this.InitEmbed = new MessageEmbed()
                 .setAuthor({ name: "YouTube", url: Constants.Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
