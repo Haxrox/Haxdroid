@@ -73,7 +73,7 @@ class Song {
 
         const duration = parse(days, false) + parse(hours, days > 0) + parse(minutes, (hours > 0 || days > 0), true) + padVal(seconds);
         return new MessageEmbed()
-            .setAuthor({ name: "YouTube", url: Constants.Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
+            .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
             .setTitle(`${Styles.Emojis.Music}  ${this.Title}`)
             .setURL(this.Url)
             .addField("Duration", duration, true)
@@ -133,7 +133,7 @@ class Audio {
             this.HistoryChannel = await interaction.guild.channels.fetch(Constants.MUSIC_HISTORY_CHANNEL_ID);
 
             this.InitEmbed = new MessageEmbed()
-                .setAuthor({ name: "YouTube", url: Constants.Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
+                .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
                 .setTitle(`${Styles.Emojis.Music}  Music Initialized`)
                 .setDescription(`${bold("Channel:")} <#${channel.id}>\n${bold("Autoplay:")} ${this.AutoPlay}\n${bold("Repeat:")} ${this.Repeat}`)
                 .setColor(Styles.Colours.YouTube)
@@ -218,7 +218,7 @@ class Audio {
         if (this[setting] != undefined) {
             this[setting] = value;
             const embed = new MessageEmbed()
-                .setAuthor({ name: "YouTube", url: Constants.Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
+                .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
                 .setTitle(`${Styles.Emojis.Music}  Setting changed`)
                 .setDescription(`${setting} set to ${bold(value)}`)
                 .setColor(Styles.Colours.YouTube)
@@ -376,7 +376,7 @@ class Audio {
      */
     Skip(interaction) {
         const embed = new MessageEmbed()
-            .setAuthor({ name: "YouTube", url: Constants.Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
+            .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
             .setTitle(`${Styles.Emojis.Skip}  Song Skipped`)
             .setDescription(`${hyperlink(this.CurrentSong.Title, this.CurrentSong.Url)}`)
             .setColor(Styles.Colours.YouTube)
@@ -442,7 +442,7 @@ class Audio {
 
         if (interaction) {
             const embed = new MessageEmbed()
-                .setAuthor({ name: "YouTube", url: Constants.Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
+                .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
                 .setTitle(`${Styles.Emojis.Stop}  Music Stopped`)
                 .setColor(Styles.Colours.YouTube)
                 .setTimestamp()
