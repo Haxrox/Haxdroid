@@ -11,21 +11,6 @@ const YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch";
 const YOUTUBE_URL = "https://www.youtube.com/results";
 const YOUTUBE_MUSIC_URL = "https://music.youtube.com/search";
 const YOUTUBE_SEARCH_URL = "https:/youtube.googleapis.com/youtube/v3/search"
-
-const ID = {
-    MUSIC_PAUSE: "music_pause",
-    MUSIC_SKIP: "music_skip",
-    MUSIC_REPEAT: "music_repeat",
-    MUSIC_AUTOPLAY: "music_autoplay",
-    MUSIC_STOP: "music_stop"
-}
-
-const STATES = {
-    PLAY: "Play",
-    STOP: "Stop",
-    PAUSE: "Pause"
-}
-
 var audio;
 
 class Music extends Command {
@@ -62,24 +47,10 @@ class Music extends Command {
 			const autoplay = interaction.options.getBoolean("autoplay");
 			const repeat = interaction.options.getBoolean("repeat");
 			if (autoplay != undefined) {
-				audio.AutoPlay = autoplay;
-				const embed = new MessageEmbed()
-					.setAuthor({ name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube })
-					.setTitle(`${Styles.Emojis.Music}  Setting changed`)
-					.setDescription(`Autoplay set to ${bold(autoplay)}`)
-					.setColor(Styles.Colours.YouTube)
-					.setTimestamp()
-					.setFooter({ text: `Set by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
+				const embed = audio?.UpdateSetting(interaction, "AutoPlay", autoplay);
 				interaction.reply({ embeds: [embed] });
 			} else if (repeat != undefined) {
-				audio.Repeat = repeat;
-				const embed = new MessageEmbed()
-					.setAuthor({ name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube })
-					.setTitle(`${Styles.Emojis.Music}  Setting changed`)
-					.setDescription(`Repeat set to ${bold(repeat)}`)
-					.setColor(Styles.Colours.YouTube)
-					.setTimestamp()
-					.setFooter({ text: `Set by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
+				const embed = audio?.UpdateSetting(interaction, "Repeat", autoplay);
 				interaction.reply({ embeds: [embed] });
 			} else {
 				this.Error(interaction, "Invalid property");
@@ -195,6 +166,7 @@ class Music extends Command {
 		const subcommand = interaction.options.getSubcommand();
 
 		if (this.Subcommands[subcommand]) {
+			if (audio && audio.State != )
 			this.Subcommands[subcommand](interaction);
 		} else {
 			this.Error(interaction, "Invalid subcommand - " + subcommand);
@@ -203,29 +175,27 @@ class Music extends Command {
 
 	async ExecuteButton(interaction) {
 		switch(interaction.customId) {
-            case ID.MUSIC_PAUSE:
-                audio.State === STATES.PLAY ? audio.Pause(interaction) : audio.Resume(interaction);
-				audio.Buttons.components[0] = audio.State === STATES.PLAY ? audio.PauseButton : audio.ResumeButton;
+            case audio?.ID.MUSIC_PAUSE:
+                audio.State === audio?.STATES.PLAY ? audio.Pause(interaction) : audio.Resume(interaction);
+				audio.Buttons.components[0] = audio.State === audio?.STATES.PLAY ? audio.PauseButton : audio.ResumeButton;
                 break;
-            case ID.MUSIC_SKIP:
+            case audio?.ID.MUSIC_SKIP:
                 audio.Skip(interaction);
                 break;
-            case ID.MUSIC_AUTOPLAY:
-                audio.AutoPlay = !audio.AutoPlay;
-				audio.Buttons.components[2] = audio.AutoPlay ? audio.AutoPlayOnButton : audio.AutoPlayOffButton
-				audio.InitEmbed.setDescription(`${bold("Channel:")} <#${audio.Channel.id}>\n${bold("Autoplay:")} ${audio.AutoPlay}\n${bold("Repeat:")} ${audio.Repeat}`)
+            case audio?.ID.MUSIC_AUTOPLAY:
+				audio?.Buttons.components[2] = audio?.AutoPlay ? audio?.AutoPlayOnButton : audio?.AutoPlayOffButton
+				audio?.UpdateSetting(interaction, "AutoPlay", !audio?.AutoPlay);
                 break;
-            case ID.MUSIC_REPEAT:
-				audio.Repeat = !audio.Repeat;
-				audio.Buttons.components[3] = audio.Repeat ? audio.RepeatOnButton : audio.RepeatOffButton
-				audio.InitEmbed.setDescription(`${bold("Channel:")} <#${audio.Channel.id}>\n${bold("Autoplay:")} ${audio.AutoPlay}\n${bold("Repeat:")} ${audio.Repeat}`)
+            case audio?.ID.MUSIC_REPEAT:
+				audio?.Buttons.components[3] = audio?.Repeat ? audio?.RepeatOnButton : audio?.RepeatOffButton
+				audio?.UpdateSetting(interaction, "Repeat", !audio?.Repeat);
                 break;
-            case ID.MUSIC_STOP:
+            case audio?.ID.MUSIC_STOP:
                 audio.Stop(interaction);
                 break;				
         }
 
-		if (interaction.customId != ID.MUSIC_STOP) {
+		if (interaction.customId != audio?.ID.MUSIC_STOP) {
 			audio?.UpdateQueue();
 			interaction.update({embeds: [audio?.InitEmbed, audio?.CurrentSong?.Embed(), audio?.QueueEmbed], components: [audio.Buttons]});
 		}

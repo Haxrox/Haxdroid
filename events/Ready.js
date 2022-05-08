@@ -2,6 +2,10 @@ const ClientEvent = require("./ClientEvent.js");
 
 class Ready extends ClientEvent {
     CurrentPresence = 0;
+    /**
+     * Event that handles when the Client is ready
+     * @param {Client} client that emitted the event
+     */
     Execute(client) {
         super.Execute(client);
 
