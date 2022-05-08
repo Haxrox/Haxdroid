@@ -129,8 +129,8 @@ class Audio {
         this.Connection.subscribe(this.Player);
 
         (async () => {
-            this.PlayerChannel = await interaction.guild.channels.fetch(Constants.MUSIC_PLAYER_CHANNEL_ID);
-            this.HistoryChannel = await interaction.guild.channels.fetch(Constants.MUSIC_HISTORY_CHANNEL_ID);
+            this.PlayerChannel = await interaction.guild.channels.fetch(Config.MUSIC_PLAYER_CHANNEL_ID);
+            this.HistoryChannel = await interaction.guild.channels.fetch(Config.MUSIC_HISTORY_CHANNEL_ID);
 
             this.InitEmbed = new MessageEmbed()
                 .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
