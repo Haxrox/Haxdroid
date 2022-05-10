@@ -24,27 +24,3 @@ FileSystem.readdirSync('./events').filter(file => (file.endsWith('.js') && file 
 });
 
 client.login(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN);
-/*
-Client.once("ready", client => {
-    console.log("Client ready");
-
-    Client.on("messageCreate", message => {
-        console.log("Message: " + message.content);
-    })
-    
-    Client.on("interactionCreate", async interaction => {
-        if (!interaction.isCommand()) {
-            console.log("Not an interaction - " + interaction.type);
-            return;
-        }
-    
-        const command = interaction.commandName;
-    
-        console.log("Interaction - " + command);
-        if (command === "ping") {
-            await interaction.reply("Pong!");
-        }
-    
-    })
-})
-*/

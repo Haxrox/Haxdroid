@@ -4,7 +4,7 @@ const { bold, hyperlink } = require('@discordjs/builders');
 
 const Config = require("../config.json");
 const Styles = require("../styles.json");
-const Constants = require("../constants.js");
+const Constants = require("../Constants.js");
 const Command = require('./Command.js');
 const Audio = require("../services/Audio.js");
 
