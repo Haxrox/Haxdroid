@@ -1,17 +1,11 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
+const {LOWER_CASE, UPPER_CASE, SPECIAL, DIGITS} = require("../Constants.js");
 const {MessageEmbed} = require('discord.js');
 const Uuid = require("uuid"); // might write own algorithm for each version
 const {blockQuote, inlineCode, spoiler} = require('@discordjs/builders');
 const RNG = require('./RNG.js');
 const Random = require("../services/Random");
-
-const LOWER_CASE = "abcdefghijklmnopqrstuvwxyz"
-const UPPER_CASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const DIGITS = "0123456789"
-const SPECIAL = "!\"#$%&'*+,./:;=?@\\^`|~_-[]{}()<>"
-const ALPHABET = LOWER_CASE + UPPER_CASE;
-const ALL = ALPHABET + DIGITS + SPECIAL;
 
 class Generate extends Command {
     Subcommands = {
@@ -39,10 +33,6 @@ class Generate extends Command {
             // Sort on insert rather than sorting entire array for better optimization
             data = ordering == "unordered" ? data : data.sort((a, b) => ordering == "ascending" ? a - b : b - a)
             return inlineCode(data.join(", "));
-        },
-        reverse: function(interaction) {
-            const input = interaction.options.getString("input", true);
-            return [...input].reverse().join("")
         },
         uuid: function(interaction) {
             const version = interaction.options.getString("version", true);
@@ -176,12 +166,6 @@ GenerateCommand.GetData()
     )
     .addIntegerOption(option => 
         option.setName("max").setDescription("Enter upper-bound (exclusive)")
-    )
-)
-.addSubcommand(subcommand => 
-    subcommand.setName("reverse").setDescription("Reverses the given input")
-    .addStringOption(option => 
-        option.setName("input").setDescription("string to reverse").setRequired(true)
     )
 )
 .addSubcommand(subcommand => 
