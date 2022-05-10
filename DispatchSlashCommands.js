@@ -15,9 +15,14 @@ const applicationCommands = DISPATCH_GUILD_COMMANDS ? Routes.applicationGuildCom
     if (DISPATCH_COMMANDS) {
         console.log("Dispatching %scommands ...", DISPATCH_GUILD_COMMANDS ? "guild " : "");
     
-        const commandFiles = FileSystem.readdirSync('./commands').filter(file => (file.endsWith('.js') && file != 'Command.js' && file != 'SlashCommand.js'))
+        const commandFiles = FileSystem.readdirSync('./commands').filter(file => (file != 'Command.js' && file != 'SlashCommand.js'));
         commandFiles.filter(command => true).forEach(file => {
-            const command = require(`./commands/${file}`);
+            if (file.endsWith('.js')) {
+                var command = require(`./commands/${file}`);
+            } else {
+                var commandFile = FileSystem.readdirSync(`./commands/${file}`).filter(subFile => subFile.endsWith('.js')).find(subFile => subFile.toUpperCase().startsWith(file.toUpperCase()));
+                var command = require(`./commands/${file}/${commandFile}`);
+            }
             const commandData = command.GetData()
             .setDefaultPermission(command.defaultPermission);
             commands.push(commandData.toJSON());
