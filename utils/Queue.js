@@ -73,7 +73,7 @@ class Queue {
      * @param {Queue} queue the queue to concatenate
      */
     Concat(queue) {
-        var node = queue.Head;
+        var node = queue?.Head;
         if (!this.Tail) {
             this.Head = node;
         } else {
@@ -103,7 +103,7 @@ class Queue {
                 init += append;
                 node = node.Next;
             } else {
-                init += ` ${this.Size - processed} more`;
+                init += `+ ${this.Size - processed} more`;
                 break;
             }
         }
