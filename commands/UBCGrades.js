@@ -10,7 +10,7 @@ const WEB_URL = "https://ubcgrades.com/#CAMPUS-SESSION-SUBJECT-COURSE-SECTION"
 const COURSE_FORMAT = "CAMPUS - SESSION SUBJECT COURSE SECTION";
 
 const GRADE_DISTRIBUTION = ["<50%", "50-54%", "55-59%", "60-63%", "64-67%", "68-71%", "72-75%", "76-79%", "80-84%", "85-89%", "90-100%"];
-const CURRENT_YEAR = 2020;
+const CURRENT_YEAR = 2021;
 const SUBJECTS = [
     "APSC - Applied Sciences",
     "CPEN - Computer Engineering",
