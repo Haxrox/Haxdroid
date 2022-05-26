@@ -10,7 +10,7 @@ const Random = require("../services/Random");
 class Generate extends Command {
     Subcommands = {
         data: function(interaction) {
-            const length = interaction.options.getInteger("length") || 10;
+            const length = interaction.options.getInteger("length") || Random.Generate(10);
             const ordering = interaction.options.getString("order") || "unordered"
             const type = interaction.options.getString("type") || "int"
             var min = interaction.options.getInteger("min");
