@@ -1,6 +1,6 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const {Permissions, MessageEmbed, MessageMentions: { USERS_PATTERN,ROLES_PATTERN }} = require('discord.js');
+const { Permissions, MessageEmbed, MessageMentions: { USERS_PATTERN, ROLES_PATTERN } } = require('discord.js');
 
 const GUILD_TEXT = "GUILD_TEXT";
 const GUILD_VOICE = "GUILD_VOICE";
@@ -36,7 +36,7 @@ class Create extends Command {
                             id: matches[1],
                             allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
                         })
-                    } 
+                    }
                 });
 
                 denyData?.split(" ").forEach(permission => {
@@ -81,29 +81,29 @@ class Create extends Command {
 const CreateCommand = new Create("Create", "Creates stuff in the discord server");
 CreateCommand.defaultPermission = true;
 CreateCommand.GetData()
-.addSubcommand(subcommand => 
-    subcommand.setName("channel").setDescription("creates a channel in the discord server")
-    .addStringOption(option => 
-        option.setName("name").setDescription("sets the channel name").setRequired(true)
-    )
-    .addStringOption(option => 
-        option.setName("type").setDescription("type of the channel").setRequired(true)
-        .addChoice("text", GUILD_TEXT)
-        .addChoice("voice", GUILD_VOICE)
-        .addChoice("category", GUILD_CATEGORY)
-    )
-    .addStringOption(option => 
-        option.setName("category").setDescription("category for the channel")
-    )   
-    .addStringOption(option => 
-        option.setName("allow").setDescription("user/roles that can see this channel")
-    )
-    .addStringOption(option => 
-        option.setName("deny").setDescription("user/roles that cannot see this channel")
-    )
-    .addStringOption(option => 
-        option.setName("reason").setDescription("reason for creating the channel")
-    )
-);
+    .addSubcommand(subcommand =>
+        subcommand.setName("channel").setDescription("creates a channel in the discord server")
+            .addStringOption(option =>
+                option.setName("name").setDescription("sets the channel name").setRequired(true)
+            )
+            .addStringOption(option =>
+                option.setName("type").setDescription("type of the channel").setRequired(true)
+                    .addChoice("text", GUILD_TEXT)
+                    .addChoice("voice", GUILD_VOICE)
+                    .addChoice("category", GUILD_CATEGORY)
+            )
+            .addStringOption(option =>
+                option.setName("category").setDescription("category for the channel")
+            )
+            .addStringOption(option =>
+                option.setName("allow").setDescription("user/roles that can see this channel")
+            )
+            .addStringOption(option =>
+                option.setName("deny").setDescription("user/roles that cannot see this channel")
+            )
+            .addStringOption(option =>
+                option.setName("reason").setDescription("reason for creating the channel")
+            )
+    );
 
 module.exports = CreateCommand;

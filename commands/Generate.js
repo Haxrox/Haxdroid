@@ -1,15 +1,15 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const {LOWER_CASE, UPPER_CASE, SPECIAL, DIGITS} = require("../Constants.js");
-const {MessageEmbed} = require('discord.js');
+const { LOWER_CASE, UPPER_CASE, SPECIAL, DIGITS } = require("../Constants.js");
+const { MessageEmbed } = require('discord.js');
 const Uuid = require("uuid"); // might write own algorithm for each version
-const {blockQuote, inlineCode, spoiler} = require('@discordjs/builders');
+const { blockQuote, inlineCode, spoiler } = require('@discordjs/builders');
 const RNG = require('./RNG.js');
 const Random = require("../services/Random");
 
 class Generate extends Command {
     Subcommands = {
-        data: function(interaction) {
+        data: function (interaction) {
             const length = interaction.options.getInteger("length") || Random.Generate(10);
             const ordering = interaction.options.getString("order") || "unordered"
             const type = interaction.options.getString("type") || "int"
@@ -34,7 +34,7 @@ class Generate extends Command {
             data = ordering == "unordered" ? data : data.sort((a, b) => ordering == "ascending" ? a - b : b - a)
             return inlineCode(data.join(", "));
         },
-        uuid: function(interaction) {
+        uuid: function (interaction) {
             const version = interaction.options.getString("version", true);
 
             if (Uuid[version]) {
@@ -43,7 +43,7 @@ class Generate extends Command {
                 return Uuid.v4();
             }
         },
-        password: function(interaction) {
+        password: function (interaction) {
             const length = interaction.options.getInteger("length", true);
             const strength = interaction.options.getString("strength", true);
             var upperCase = interaction.options.getBoolean("upper");
@@ -120,7 +120,7 @@ class Generate extends Command {
             }
             return spoiler(password.join(""));
         },
-        random_number: function(interaction) {
+        random_number: function (interaction) {
             return Random.Generate(interaction.options.getInteger("min"), interaction.options.getInteger("max"));
         }
     }
@@ -129,13 +129,13 @@ class Generate extends Command {
         if (this.Subcommands[subcommand]) {
             const data = await this.Subcommands[subcommand](interaction);
             const embed = new MessageEmbed()
-            .setTitle(`Generated ${subcommand} data`)
-            .setDescription(blockQuote(data || "none"))
-            .setColor(Styles.Colours.Theme)
-            .setTimestamp()
-            .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
-			
-            interaction.reply({embeds: [embed], ephemeral: subcommand == "password"});
+                .setTitle(`Generated ${subcommand} data`)
+                .setDescription(blockQuote(data || "none"))
+                .setColor(Styles.Colours.Theme)
+                .setTimestamp()
+                .setFooter({ text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
+
+            interaction.reply({ embeds: [embed], ephemeral: subcommand == "password" });
         } else {
             this.Error(interaction, "Invalid subcommand - " + subcommand);
         }
@@ -144,71 +144,71 @@ class Generate extends Command {
 
 const GenerateCommand = new Generate("Generate", "Generate uesful properties");
 GenerateCommand.GetData()
-.addSubcommand(subcommand => 
-    subcommand.setName("data").setDescription("Generates an array of X elements")
-    .addIntegerOption(option => 
-        option.setName("length").setDescription("length of array")
+    .addSubcommand(subcommand =>
+        subcommand.setName("data").setDescription("Generates an array of X elements")
+            .addIntegerOption(option =>
+                option.setName("length").setDescription("length of array")
+            )
+            .addStringOption(option =>
+                option.setName("type").setDescription("type of the data")
+                    .addChoice("Integer", "int")
+                    .addChoice("Float", "float")
+                    .addChoice("Double", "double")
+            )
+            .addStringOption(option =>
+                option.setName("order").setDescription("whether the array is in ascending, descending, or unsorted order")
+                    .addChoice("Unordered", "unordered")
+                    .addChoice("Ascending", "ascending")
+                    .addChoice("Descending", "descending")
+            )
+            .addIntegerOption(option =>
+                option.setName("min").setDescription("Enter lower-bound")
+            )
+            .addIntegerOption(option =>
+                option.setName("max").setDescription("Enter upper-bound (exclusive)")
+            )
     )
-    .addStringOption(option => 
-        option.setName("type").setDescription("type of the data")
-        .addChoice("Integer", "int")
-        .addChoice("Float", "float")
-        .addChoice("Double", "double")
+    .addSubcommand(subcommand =>
+        subcommand.setName("random_number").setDescription("Generates random number (alias of RNG command)")
+            .addIntegerOption(option =>
+                option.setName("min").setDescription("Enter lower-bound")
+            )
+            .addIntegerOption(option =>
+                option.setName("max").setDescription("Enter upper-bound (exclusive)")
+            )
     )
-    .addStringOption(option => 
-        option.setName("order").setDescription("whether the array is in ascending, descending, or unsorted order")
-        .addChoice("Unordered", "unordered")
-        .addChoice("Ascending", "ascending")
-        .addChoice("Descending", "descending")
+    // https://www.baeldung.com/java-uuid
+    // https://en.wikipedia.org/wiki/Universally_unique_identifier
+    .addSubcommand(subcommand =>
+        subcommand.setName('uuid').setDescription('Generates a UUID')
+            .addStringOption(option =>
+                option.setName("version").setDescription("version of the UUID to generate").setRequired(true)
+                    .addChoice("Version 1 (date-time + MAC address)", "v1")
+                    .addChoice("Version 2 (date-time + MAC address, DCE security version", "v2")
+                    .addChoice("Version 3 (namespace name-based w/ MD5 hashing)", "v3")
+                    .addChoice("Version 4 (random)", "v4")
+                    .addChoice("Version 5 (namespace name-based w/ SHA-1 hashing)", "v5")
+            )
     )
-    .addIntegerOption(option => 
-        option.setName("min").setDescription("Enter lower-bound")
-    )
-    .addIntegerOption(option => 
-        option.setName("max").setDescription("Enter upper-bound (exclusive)")
-    )
-)
-.addSubcommand(subcommand => 
-    subcommand.setName("random_number").setDescription("Generates random number (alias of RNG command)")
-    .addIntegerOption(option => 
-        option.setName("min").setDescription("Enter lower-bound")
-    )
-    .addIntegerOption(option => 
-        option.setName("max").setDescription("Enter upper-bound (exclusive)")
-    )
-)
-// https://www.baeldung.com/java-uuid
-// https://en.wikipedia.org/wiki/Universally_unique_identifier
-.addSubcommand(subcommand =>
-    subcommand.setName('uuid').setDescription('Generates a UUID')
-    .addStringOption(option => 
-        option.setName("version").setDescription("version of the UUID to generate").setRequired(true)
-        .addChoice("Version 1 (date-time + MAC address)", "v1")
-        .addChoice("Version 2 (date-time + MAC address, DCE security version", "v2")
-        .addChoice("Version 3 (namespace name-based w/ MD5 hashing)", "v3")
-        .addChoice("Version 4 (random)", "v4")
-        .addChoice("Version 5 (namespace name-based w/ SHA-1 hashing)", "v5")
-    )
-)
-.addSubcommand(subcommand =>
-    subcommand.setName('password').setDescription('Generates a password. NOTE: these passwords shouldn\' be used for personal or security-heavy accounts')
-    .addIntegerOption(option => 
-        option.setName("length").setDescription("Length of the password").setMinValue(8).setRequired(true)
-    )
-    .addStringOption(option => 
-        option.setName("strength").setDescription("Strength of the password").setRequired(true)
-        .addChoice("Weak", "weak")
-        .addChoice("Medium", "medium")
-        .addChoice("Strong", "strong")
-    )
-    .addBooleanOption(option => 
-        option.setName("upper").setDescription(`Adds 2 uppercase letters to password (${inlineCode(UPPER_CASE)})`)
-    )
-    .addBooleanOption(option => 
-        option.setName("digits").setDescription(`Adds 2 digits to the password (${inlineCode(DIGITS)})`)
-    )
-    .addBooleanOption(option => 
-        option.setName("special").setDescription(`Adds 2 special characters to the password (${inlineCode(SPECIAL)})`)
-)   )
+    .addSubcommand(subcommand =>
+        subcommand.setName('password').setDescription('Generates a password. NOTE: these passwords shouldn\' be used for personal or security-heavy accounts')
+            .addIntegerOption(option =>
+                option.setName("length").setDescription("Length of the password").setMinValue(8).setRequired(true)
+            )
+            .addStringOption(option =>
+                option.setName("strength").setDescription("Strength of the password").setRequired(true)
+                    .addChoice("Weak", "weak")
+                    .addChoice("Medium", "medium")
+                    .addChoice("Strong", "strong")
+            )
+            .addBooleanOption(option =>
+                option.setName("upper").setDescription(`Adds 2 uppercase letters to password (${inlineCode(UPPER_CASE)})`)
+            )
+            .addBooleanOption(option =>
+                option.setName("digits").setDescription(`Adds 2 digits to the password (${inlineCode(DIGITS)})`)
+            )
+            .addBooleanOption(option =>
+                option.setName("special").setDescription(`Adds 2 special characters to the password (${inlineCode(SPECIAL)})`)
+            ))
 
 module.exports = GenerateCommand;

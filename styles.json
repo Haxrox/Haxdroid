@@ -14,7 +14,7 @@
         "Reminder_Set": "#78b159",
         "Reminder_Confirmation": "#fdcb58",
         "Reminder_Alarm": "#dd2e44",
-        "Yellow": "#fdcb58", 
+        "Yellow": "#fdcb58",
         "Green": "#78b159",
         "Wolfram": "#fd745c",
         "UBC": "#0c2344",
@@ -35,6 +35,5 @@
         "Repeat": "🔁",
         "AutoPlay": "⏭️",
         "Bullet": "‣"
-
     }
 }

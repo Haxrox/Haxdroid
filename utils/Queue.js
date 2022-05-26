@@ -54,7 +54,7 @@ class Queue {
         if (!this.Head) {
             this.Tail = null;
         }
-        
+
         this.Size--;
         return data;
     }

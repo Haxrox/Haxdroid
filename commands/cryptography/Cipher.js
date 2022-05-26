@@ -6,11 +6,15 @@ class Cipher {
     EncryptKey = false;
     DecryptKey = false;
 
-    Encrypt() {
+    Verify(key, key2) {
+        return true;
+    }
+
+    Encrypt(message, key, key2) {
 
     }
 
-    Decrypt() {
+    Decrypt(message, key, key2) {
 
     }
 }

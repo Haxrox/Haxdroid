@@ -1,6 +1,6 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const {MessageEmbed} = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 class Ping extends Command {
     async Execute(interaction) {
@@ -10,8 +10,8 @@ class Ping extends Command {
             .setDescription(`${interaction.client.ws.ping}ms`)
             .setColor(Styles.Colours.Theme)
             .setTimestamp()
-            .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
-        await interaction.reply({embeds: [embed]});
+            .setFooter({ text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
+        await interaction.reply({ embeds: [embed] });
     }
 }
 

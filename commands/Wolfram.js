@@ -1,7 +1,7 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const {MessageEmbed, MessageAttachment} = require('discord.js');
-const {bold, blockQuote} = require('@discordjs/builders');
+const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { bold, blockQuote } = require('@discordjs/builders');
 const WolframAlphaAPI = require('wolfram-alpha-api');
 const Configuration = require('../config.json');
 
@@ -14,7 +14,7 @@ class Wolfram extends Command {
         const query = interaction.options.getString("query", true);
 
         const url = new URL(BASE_URL);
-        url.searchParams.append("i", query);       
+        url.searchParams.append("i", query);
 
         wolframAPI.getFull({
             input: query
@@ -24,14 +24,14 @@ class Wolfram extends Command {
                 var fieldCount = 0;
 
                 const embed = new MessageEmbed()
-                .setAuthor({name: "WolframAlpha", url: "https://www.wolframalpha.com/", iconURL: Styles.Icons.Wolfram})
-                .setTitle("Wolfram Query")
-                .setURL(url.href)
-                .setImage(plotPod ? plotPod.subpods[0].img.src : "")
-                .setColor(Styles.Colours.Wolfram)
-                .setTimestamp()
-                .setFooter({text: `Queried by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
-                
+                    .setAuthor({ name: "WolframAlpha", url: "https://www.wolframalpha.com/", iconURL: Styles.Icons.Wolfram })
+                    .setTitle("Wolfram Query")
+                    .setURL(url.href)
+                    .setImage(plotPod ? plotPod.subpods[0].img.src : "")
+                    .setColor(Styles.Colours.Wolfram)
+                    .setTimestamp()
+                    .setFooter({ text: `Queried by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
+
                 response.pods.forEach(pod => {
                     if (!pod.id.includes("Plot")) {
                         var data = "";
@@ -40,11 +40,11 @@ class Wolfram extends Command {
                         })
                         if (data != "" && data != "\n" && fieldCount < 25) {
                             embed.addField(pod.id, blockQuote(data), fieldCount != 0 && fieldCount % 3 != 0);
-                            fieldCount ++;
+                            fieldCount++;
                         }
                     }
                 })
-                interaction.editReply({embeds: [embed]});
+                interaction.editReply({ embeds: [embed] });
             } else {
                 this.DeferError(interaction, `Query failed. Visit this **[link](${url.href})** to fix your query`);
             }
@@ -56,8 +56,8 @@ class Wolfram extends Command {
 
 const WolframCommand = new Wolfram("Wolfram", "Get answers from WolframAlpha");
 WolframCommand.GetData()
-.addStringOption(option => 
-    option.setName("query").setDescription("WolframAlpha Query").setRequired(true)
-);
+    .addStringOption(option =>
+        option.setName("query").setDescription("WolframAlpha Query").setRequired(true)
+    );
 
 module.exports = WolframCommand;

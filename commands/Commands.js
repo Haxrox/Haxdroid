@@ -1,5 +1,5 @@
 const FileSystem = require('fs');
-const {MessageEmbed} = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 const Command = require('./Command.js');
 
@@ -21,8 +21,8 @@ class Commands extends Command {
             .setDescription(this.commands)
             .setColor('#cacaca')
             .setTimestamp()
-            .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
-        await interaction.reply({embeds: [embed]});
+            .setFooter({ text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
+        await interaction.reply({ embeds: [embed] });
     }
 }
 

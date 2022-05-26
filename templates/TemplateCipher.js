@@ -1,15 +1,19 @@
 const Cipher = require("./Cipher.js");
-const {ALL} = require("../../Constants.js");
+const { ALL } = require("../../Constants.js");
 const Random = require("../../services/Random.js");
 
 class CIPHER_NAME extends Cipher {
     Name = "CIPHER_NAME";
 
-    Encrypt(message, key) {
+    Verify(key, key2) {
+        return true;
+    }
+
+    Encrypt(message, key, key2) {
         return [key, translated];
     }
-    
-    Decrypt(message, key) {
+
+    Decrypt(message, key, key2) {
         return [key, translated];
     }
 }

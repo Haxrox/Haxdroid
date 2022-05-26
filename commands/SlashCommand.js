@@ -1,4 +1,4 @@
-const {MessageEmbed} = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class Command {
     slash = false;
@@ -43,7 +43,7 @@ module.exports = class Command {
      * @param {Message} message - the message that was sent
      */
     Execute(message) {
-        
+
     }
 
     /**
@@ -51,6 +51,6 @@ module.exports = class Command {
      * @param {Interaction} interaction 
      */
     ExecuteSlash(interaction) {
-        
-    }    
+
+    }
 }

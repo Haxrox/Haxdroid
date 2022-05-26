@@ -25,19 +25,25 @@ class Cryptography extends Command {
         if (ciphers.has(cipher)) {
             const cipherClass = ciphers.get(cipher);
             const key = interaction.options.getString("key");
+            const key2 = interaction.options.getString("key2");
             let mode = interaction.options.getSubcommand();
             mode = mode === "encrypt" ? "Encrypt" : "Decrypt";
 
             if (key != undefined || !cipherClass[`${mode}Key`] ) {
-                const data = cipherClass[mode](interaction.options.getString("message", true), key);
+                if (cipherClass.Verify(key, key2)) {
+                    const data = cipherClass[mode](interaction.options.getString("message", true), key, key2);
 
-                const embed = new MessageEmbed()
-                .setTitle(`${mode}ed Message`)
-                .setDescription((key ? (bold("Key: ") + spoiler(data[0]) + "\n") : "") + bold("Message: ") + spoiler(data[1]))
-                .setColor(Styles.Colours.Theme)
-                .setTimestamp()            
-                .setFooter({text: `${mode}ed by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
-                interaction.reply({embeds: [embed], ephemeral: true});
+                    const embed = new MessageEmbed()
+                    .setTitle(`${mode}ed Message`)
+                    .setDescription(bold("Cipher: ") + cipher + "\n" + (key ? (bold("Key: ") + spoiler(data[0]) + "\n") : "") + bold("Message: ") + spoiler(data[1]))
+                    .setColor(Styles.Colours.Theme)
+                    .setTimestamp()            
+                    .setFooter({text: `${mode}ed by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+                    
+                    interaction.reply({embeds: [embed], ephemeral: true});
+                } else {
+                    this.Error(interaction, "Key failed verification");
+                }
             } else {
                 this.Error(interaction, "Key required for this cipher");
             }
@@ -62,6 +68,9 @@ CryptographyCommand.GetData()
     .addStringOption(option => 
         option.setName("key").setDescription("Key to encrypt message (auto-generated if not specified)")
     )
+    .addStringOption(option => 
+        option.setName("key2").setDescription("Second key to encrypt message (auto-generated if not specified)")
+    )
 )
 .addSubcommand(subcommand => 
     subcommand.setName("decrypt").setDescription("Decrypts the message")
@@ -75,6 +84,9 @@ CryptographyCommand.GetData()
     )
     .addStringOption(option => 
         option.setName("key").setDescription("Key to decrypt message (if key is not given, will attempt to brute-force)")
+    )
+    .addStringOption(option => 
+        option.setName("key2").setDescription("Second key to encrypt message (auto-generated if not specified)")
     )
 )
 

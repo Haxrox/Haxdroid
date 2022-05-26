@@ -1,12 +1,12 @@
-const {REST} = require("@discordjs/rest");
-const {Routes} = require("discord-api-types/v9");
+const { REST } = require("@discordjs/rest");
+const { Routes } = require("discord-api-types/v9");
 const FileSystem = require('fs');
 const Configuration = require('./config.json');
 
 const DISPATCH_GUILD_COMMANDS = true;
 const DISPATCH_COMMANDS = true;
 
-const rest = new REST({version: '9'}).setToken(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN);
+const rest = new REST({ version: '9' }).setToken(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN);
 const commands = [];
 
 const applicationCommands = DISPATCH_GUILD_COMMANDS ? Routes.applicationGuildCommands(Configuration.TESTING ? Configuration.TEST_CLIENT_ID : Configuration.CLIENT_ID, Configuration.GUILD_ID) : Routes.applicationCommands(Configuration.TESTING ? Configuration.TEST_CLIENT_ID : Configuration.CLIENT_ID);
@@ -14,7 +14,7 @@ const applicationCommands = DISPATCH_GUILD_COMMANDS ? Routes.applicationGuildCom
 (async () => {
     if (DISPATCH_COMMANDS) {
         console.log("Dispatching %scommands ...", DISPATCH_GUILD_COMMANDS ? "guild " : "");
-    
+
         const commandFiles = FileSystem.readdirSync('./commands').filter(file => (file != 'Command.js' && file != 'SlashCommand.js'));
         commandFiles.filter(command => true).forEach(file => {
             if (file.endsWith('.js')) {
@@ -24,7 +24,7 @@ const applicationCommands = DISPATCH_GUILD_COMMANDS ? Routes.applicationGuildCom
                 var command = require(`./commands/${file}/${commandFile}`);
             }
             const commandData = command.GetData()
-            .setDefaultPermission(command.defaultPermission);
+                .setDefaultPermission(command.defaultPermission);
             commands.push(commandData.toJSON());
         });
     } else {
@@ -40,8 +40,8 @@ const applicationCommands = DISPATCH_GUILD_COMMANDS ? Routes.applicationGuildCom
         });
         return data;
     })
-    .catch(console.error)
-    .finally(() => {
-        console.log("Dispatched %scommands complete", DISPATCH_GUILD_COMMANDS ? "guild " : "");
-    });
+        .catch(console.error)
+        .finally(() => {
+            console.log("Dispatched %scommands complete", DISPATCH_GUILD_COMMANDS ? "guild " : "");
+        });
 })();

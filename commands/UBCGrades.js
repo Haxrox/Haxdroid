@@ -1,9 +1,9 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const Axios = require('axios');
-const {MessageEmbed, MessageAttachment, DiscordAPIError} = require('discord.js');
+const { MessageEmbed, MessageAttachment, DiscordAPIError } = require('discord.js');
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
-const {bold, blockQuote} = require('@discordjs/builders');
+const { bold, blockQuote } = require('@discordjs/builders');
 
 const API_URL = "https://ubcgrades.com/api/v2/grades/CAMPUS/SESSION/SUBJECT/COURSE/SECTION";
 const WEB_URL = "https://ubcgrades.com/#CAMPUS-SESSION-SUBJECT-COURSE-SECTION"
@@ -27,7 +27,7 @@ class UBCGrades extends Command {
         const subject = interaction.options.getString("subject", true);
         const course = interaction.options.getString("course", true);
         const section = interaction.options.getString("section") || "OVERALL";
-        
+
         const format = COURSE_FORMAT.replace(/CAMPUS/, campus).replace(/SESSION/, session).replace(/SUBJECT/, subject).replace(/COURSE/, course).replace(/SECTION/, section);
         const apiUrl = API_URL.replace(/CAMPUS/, campus).replace(/SESSION/, session).replace(/SUBJECT/, subject).replace(/COURSE/, course).replace(/SECTION/, section);
 
@@ -93,7 +93,7 @@ class UBCGrades extends Command {
                                     drawTicks: true,
                                     color: "rgba(235, 252, 255, 0.5)",
                                     lineWidth: 1
-                                } 
+                                }
                             }
                         }
 
@@ -103,24 +103,24 @@ class UBCGrades extends Command {
 
             const attachment = new MessageAttachment(image, "distribution.png");
             const embed = new MessageEmbed()
-            .setAuthor({name: "UBCGrades", url: "https://ubcgrades.com/", iconURL: Styles.Icons.UBC})
-            .setTitle(`Grade Summary of ${format}`)
-            .setDescription(description)
-            .setURL(webUrl)
-            .addField("Enrolled", `${response.data.enrolled} Student(s)`, true)
-            .addField("Average", `${parseFloat(response.data.average).toFixed(4)}%`, true)
-            .addField("Standard Deviation", `${parseFloat(response.data.stdev).toFixed(4)}%`, true)
-            .addField("Passed", `${response.data.enrolled - response.data.grades["<50%"]} Student(s) (${parseFloat((response.data.enrolled - response.data.grades["<50%"])/response.data.enrolled*100).toFixed(4)}%)`, true)
-            .addField("Failed", `${response.data.grades["<50%"]} Student(s)`, true)
-            .addField('\u200b', '\u200b', true)
-            .addField("Highest", `${response.data.high}%`, true)
-            .addField("Lowest", `${response.data.low}%`, true)
-            .addField('\u200b', '\u200b', true)
-            .setImage("attachment://distribution.png")
-            .setColor(Styles.Colours.UBC)
-            .setTimestamp()
-            .setFooter({text: `Requested by: ${interaction.user.username} | Data from ubcgrades.com`, iconURL: interaction.user.avatarURL()});
-            await interaction.reply({embeds: [embed], files: [attachment]});
+                .setAuthor({ name: "UBCGrades", url: "https://ubcgrades.com/", iconURL: Styles.Icons.UBC })
+                .setTitle(`Grade Summary of ${format}`)
+                .setDescription(description)
+                .setURL(webUrl)
+                .addField("Enrolled", `${response.data.enrolled} Student(s)`, true)
+                .addField("Average", `${parseFloat(response.data.average).toFixed(4)}%`, true)
+                .addField("Standard Deviation", `${parseFloat(response.data.stdev).toFixed(4)}%`, true)
+                .addField("Passed", `${response.data.enrolled - response.data.grades["<50%"]} Student(s) (${parseFloat((response.data.enrolled - response.data.grades["<50%"]) / response.data.enrolled * 100).toFixed(4)}%)`, true)
+                .addField("Failed", `${response.data.grades["<50%"]} Student(s)`, true)
+                .addField('\u200b', '\u200b', true)
+                .addField("Highest", `${response.data.high}%`, true)
+                .addField("Lowest", `${response.data.low}%`, true)
+                .addField('\u200b', '\u200b', true)
+                .setImage("attachment://distribution.png")
+                .setColor(Styles.Colours.UBC)
+                .setTimestamp()
+                .setFooter({ text: `Requested by: ${interaction.user.username} | Data from ubcgrades.com`, iconURL: interaction.user.avatarURL() });
+            await interaction.reply({ embeds: [embed], files: [attachment] });
         }).catch(async error => {
             if (error.response) {
                 await this.Error(interaction, `Grades of ${bold(format)} - ${error.response.data.error}.\nRetry, or find the course using **[this](https://ubcgrades.com)** link`);
@@ -135,30 +135,30 @@ class UBCGrades extends Command {
 
 const UBCGradesCommand = new UBCGrades("UBCGrades", "Retrieves grade information for a course");
 UBCGradesCommand.GetData()
-.addStringOption(option => {
-    option.setName("session").setDescription("Course session").setRequired(true);
-    for (var index = CURRENT_YEAR ; index >= CURRENT_YEAR - 10; index--) {
-        option.addChoice(index.toString().concat("W"), index.toString().concat("W"));
-        option.addChoice(index.toString().concat("S"), index.toString().concat("S"));
-    }
-    return option;
-})
-.addStringOption(option => {
-    option.setName("subject").setDescription("Subject code").setRequired(true);
-    for (var code of SUBJECTS) {
-        option.addChoice(code, code.slice(0, 4));
-    }
-    return option;
-})
-.addStringOption(option => 
-    option.setName("course").setDescription("Course code").setRequired(true)
-)
-.addStringOption(option => 
-    option.setName("campus").setDescription("Campus for the course").addChoice("Vancouver Campus", "UBCV").addChoice("Okanagan Campus", "UBCO")
-)
-.addStringOption(option => 
-    option.setName("section").setDescription("Section of the course")
-)
+    .addStringOption(option => {
+        option.setName("session").setDescription("Course session").setRequired(true);
+        for (var index = CURRENT_YEAR; index >= CURRENT_YEAR - 10; index--) {
+            option.addChoice(index.toString().concat("W"), index.toString().concat("W"));
+            option.addChoice(index.toString().concat("S"), index.toString().concat("S"));
+        }
+        return option;
+    })
+    .addStringOption(option => {
+        option.setName("subject").setDescription("Subject code").setRequired(true);
+        for (var code of SUBJECTS) {
+            option.addChoice(code, code.slice(0, 4));
+        }
+        return option;
+    })
+    .addStringOption(option =>
+        option.setName("course").setDescription("Course code").setRequired(true)
+    )
+    .addStringOption(option =>
+        option.setName("campus").setDescription("Campus for the course").addChoice("Vancouver Campus", "UBCV").addChoice("Okanagan Campus", "UBCO")
+    )
+    .addStringOption(option =>
+        option.setName("section").setDescription("Section of the course")
+    )
 
 
 module.exports = UBCGradesCommand;

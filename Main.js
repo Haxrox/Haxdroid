@@ -16,11 +16,11 @@ const client = new Discord.Client({
 
 FileSystem.readdirSync('./events').filter(file => (file.endsWith('.js') && file != "ClientEvent.js")).forEach(file => {
     const event = require(`./events/${file}`);
-	if (event.once) {
-		client.once(event.eventName, (...args) => event.Execute(client, ...args));
-	} else {
-		client.on(event.eventName, (...args) => event.Execute(client, ...args));
-	}
+    if (event.once) {
+        client.once(event.eventName, (...args) => event.Execute(client, ...args));
+    } else {
+        client.on(event.eventName, (...args) => event.Execute(client, ...args));
+    }
 });
 
 client.login(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN);

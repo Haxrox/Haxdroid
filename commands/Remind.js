@@ -1,7 +1,7 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const {MessageEmbed, Permissions} = require('discord.js');
-const {bold, blockQuote} = require('@discordjs/builders');
+const { MessageEmbed, Permissions } = require('discord.js');
+const { bold, blockQuote } = require('@discordjs/builders');
 const GUILD_TEXT = 0;
 
 const Reminders = {};
@@ -23,8 +23,8 @@ class Remind extends Command {
                         .addField("Reminder", `${reminderInfo.Reminder}`, true)
                         .setColor(Styles.Colours.Reminder_Cancelled)
                         .setTimestamp()
-                        .setFooter({text: `Reminder cancelled by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
-                    interaction.reply({embeds: [embed]});
+                        .setFooter({ text: `Reminder cancelled by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
+                    interaction.reply({ embeds: [embed] });
                 } else {
                     await this.Error(interaction, "You are not related to this reminder. Cannot delete");
                 }
@@ -37,14 +37,14 @@ class Remind extends Command {
             const remindTime = interaction.options.getNumber("time", true);
             const unitTime = interaction.options.getInteger("unit", true);
             const unitString = unitTime == 60 ? "minute" : (unitTime == 60 * 60 ? "hour" : "day");
-            const remindDate = new Date(currentTime + (remindTime* 1000 * unitTime));
+            const remindDate = new Date(currentTime + (remindTime * 1000 * unitTime));
             const dateString = unitTime == 60 * 60 * 24 ? remindDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: true }) : remindDate.toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })
             const reminderDescription = `to do ${bold(task)} at ${bold(`${dateString} PST (${remindTime} ${unitString}(s))`)}`;
             var mention;
             var remindChannel;
 
             const replyEmbed = new MessageEmbed()
-                .setTitle(`:${Styles.Emojis.Reminder}:  ${interaction.client.user.username} Reminder Set!`) 
+                .setTitle(`:${Styles.Emojis.Reminder}:  ${interaction.client.user.username} Reminder Set!`)
                 .setColor(Styles.Colours.Reminder_Set)
                 .setTimestamp()
 
@@ -56,14 +56,14 @@ class Remind extends Command {
 
                 if (channel == null) {
                     const confirmationEmbed = new MessageEmbed()
-                        .setAuthor({name: author.username, iconURL: author.avatarURL()})
+                        .setAuthor({ name: author.username, iconURL: author.avatarURL() })
                         .setTitle(`:${Styles.Emojis.Reminder}:  ${interaction.client.user.username} Reminder`)
                         .setDescription(`Reminder ${reminderDescription}`)
                         .setColor(Stules.Colours.Reminder_Confirmation)
                         .setTimestamp()
-                        .setFooter({text: `Reminder set by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
+                        .setFooter({ text: `Reminder set by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
 
-                    await user.send({embeds: [confirmationEmbed]}).then(() => {
+                    await user.send({ embeds: [confirmationEmbed] }).then(() => {
                         remindChannel = user.dmChannel;
                         replyEmbed.setDescription(`${interaction.client.user} will DM ${user} ${reminderDescription}`);
                     }).catch(error => {
@@ -91,7 +91,7 @@ class Remind extends Command {
                 } else {
                     return await this.Error(interaction, `Cannot send messages in ${channel}`);
                 }
-            } 
+            }
 
             if (remindChannel) {
                 const reminderID = setTimeout(() => {
@@ -99,29 +99,29 @@ class Remind extends Command {
                         .setTitle(`:${Styles.Emojis.Reminder}:  ${interaction.client.user.username} Reminder`)
                         .setDescription(blockQuote(task))
                         .setColor(Styles.Colours.Reminder_Alarm)
-                        .setFooter({text: `Reminder set by: ${interaction.user.username} | ID: ${reminderID}`, iconURL: interaction.user.avatarURL()});
+                        .setFooter({ text: `Reminder set by: ${interaction.user.username} | ID: ${reminderID}`, iconURL: interaction.user.avatarURL() });
 
                     if (remindChannel.type == "DM") {
                         const author = mention === interaction.user ? interaction.client.user : interaction.user;
-                        remindEmbed.setAuthor({name: author.username, iconURL: author.avatarURL()})
+                        remindEmbed.setAuthor({ name: author.username, iconURL: author.avatarURL() })
                     }
 
                     remindChannel.send({
                         content: `${mention}`,
                         embeds: [remindEmbed]
                     });
-                    
+
                     delete Reminders[reminderID];
                 }, remindTime * 1000 * unitTime);
-                    
+
                 Reminders[reminderID] = {
                     Reminder: interaction.user,
                     Task: task,
                     Target: mention,
                     Date: dateString
                 };
-                replyEmbed.setFooter({text: `Reminder set by: ${interaction.user.username} | ID: ${reminderID}`, iconURL: interaction.user.avatarURL()});
-                await interaction.reply({embeds: [replyEmbed]});
+                replyEmbed.setFooter({ text: `Reminder set by: ${interaction.user.username} | ID: ${reminderID}`, iconURL: interaction.user.avatarURL() });
+                await interaction.reply({ embeds: [replyEmbed] });
             } else {
                 await this.Error(interaction, "Failed to create reminder");
             }
@@ -131,52 +131,52 @@ class Remind extends Command {
 
 const RemindCommand = new Remind("Remind", "Remind a user/role");
 RemindCommand.GetData()
-.addSubcommand(subcommand => 
-    subcommand.setName('user').setDescription('Remind a user')
-    .addStringOption(option => 
-        option.setName("task").setDescription("What to remind the user").setRequired(true)
+    .addSubcommand(subcommand =>
+        subcommand.setName('user').setDescription('Remind a user')
+            .addStringOption(option =>
+                option.setName("task").setDescription("What to remind the user").setRequired(true)
+            )
+            .addNumberOption(option =>
+                option.setName("time").setDescription("When to remind the user").setRequired(true)
+            )
+            .addIntegerOption(option =>
+                option.setName("unit").setDescription("Unit of time").setRequired(true)
+                    .addChoice("Minutes", 60)
+                    .addChoice("Hours", 60 * 60)
+                    .addChoice("Days", 24 * 60 * 60)
+            )
+            .addUserOption(option =>
+                option.setName('target').setDescription('The user')
+            )
+            .addChannelOption(option =>
+                option.setName("channel").setDescription("Where to remind everyone").addChannelType(GUILD_TEXT)
+            )
     )
-    .addNumberOption(option => 
-        option.setName("time").setDescription("When to remind the user").setRequired(true)
+    .addSubcommand(subcommand =>
+        subcommand.setName('role').setDescription('Remind all users with the role')
+            .addStringOption(option =>
+                option.setName("task").setDescription("What to remind the role").setRequired(true)
+            )
+            .addNumberOption(option =>
+                option.setName("time").setDescription("When to remind the role (minutes)").setRequired(true)
+            )
+            .addIntegerOption(option =>
+                option.setName("unit").setDescription("Unit of time").setRequired(true)
+                    .addChoice("Minutes", 60)
+                    .addChoice("Hours", 60 * 60)
+                    .addChoice("Days", 24 * 60 * 60)
+            )
+            .addRoleOption(option =>
+                option.setName("target").setDescription("The role")
+            )
+            .addChannelOption(option =>
+                option.setName("channel").setDescription("Where to remind everyone")
+            )
     )
-    .addIntegerOption(option => 
-        option.setName("unit").setDescription("Unit of time").setRequired(true)
-        .addChoice("Minutes", 60)
-        .addChoice("Hours", 60 * 60)
-        .addChoice("Days", 24 * 60 * 60)
+    .addSubcommand(subcommand =>
+        subcommand.setName("cancel").setDescription("Cancel a reminder").addIntegerOption(option =>
+            option.setName("id").setDescription("ID given when setting the reminder").setRequired(true)
+        )
     )
-    .addUserOption(option => 
-        option.setName('target').setDescription('The user')
-    )
-    .addChannelOption(option => 
-        option.setName("channel").setDescription("Where to remind everyone").addChannelType(GUILD_TEXT)
-    )
-)
-.addSubcommand(subcommand => 
-    subcommand.setName('role').setDescription('Remind all users with the role')
-    .addStringOption(option => 
-        option.setName("task").setDescription("What to remind the role").setRequired(true)
-    )
-    .addNumberOption(option => 
-        option.setName("time").setDescription("When to remind the role (minutes)").setRequired(true)
-    )
-    .addIntegerOption(option => 
-        option.setName("unit").setDescription("Unit of time").setRequired(true)
-        .addChoice("Minutes", 60)
-        .addChoice("Hours", 60 * 60)
-        .addChoice("Days", 24 * 60 * 60)
-    )
-    .addRoleOption(option => 
-        option.setName("target").setDescription("The role")
-    )
-    .addChannelOption(option => 
-        option.setName("channel").setDescription("Where to remind everyone")
-    )
-)
-.addSubcommand(subcommand => 
-    subcommand.setName("cancel").setDescription("Cancel a reminder").addIntegerOption(option => 
-        option.setName("id").setDescription("ID given when setting the reminder").setRequired(true)
-    )
-)
 
 module.exports = RemindCommand;
