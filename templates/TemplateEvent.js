@@ -1,9 +1,13 @@
 const ClientEvent = require("./ClientEvent.js");
+const Config = require("../config.json");
+const Styles = require("../styles.json");
 
 class EVENT_NAME extends ClientEvent {
-    Execute(client) {
-        super(client);
+    Execute() {
+        super();
     }
 }
 
-module.exports = new EVENT_NAME("EVENT_NAME", false);
+module.exports = (client) => {
+    return new EVENT_NAME(client, "EVENT_NAME", false);
+}
