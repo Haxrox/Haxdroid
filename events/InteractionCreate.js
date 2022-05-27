@@ -16,8 +16,8 @@ FileSystem.readdirSync('./commands').filter(file => (file != 'Command.js' && fil
 });
 
 class InteractionCreate extends ClientEvent {
-    async Execute(client, interaction) {
-        super.Execute(client, interaction);
+    async Execute(interaction) {
+        super.Execute(interaction);
 
         if (interaction.isCommand()) {
             const command = slashCommands.get(interaction.commandName.toUpperCase());
@@ -61,4 +61,6 @@ class InteractionCreate extends ClientEvent {
     }
 }
 
-module.exports = new InteractionCreate("interactionCreate", false);
+module.exports = (client) => {
+    return new InteractionCreate(client, "interactionCreate", false);
+}

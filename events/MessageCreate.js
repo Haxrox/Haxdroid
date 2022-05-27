@@ -1,10 +1,12 @@
 const ClientEvent = require("./ClientEvent.js");
 
 class MessageCreate extends ClientEvent {
-    Execute(client, message) {
-        super.Execute(client, message);
+    Execute(message) {
+        super.Execute(message);
         console.log(message.content);
     }
 }
 
-module.exports = new MessageCreate("messageCreate", false);
+module.exports = (client) => {
+    return new MessageCreate(client, "messageCreate", false);
+}

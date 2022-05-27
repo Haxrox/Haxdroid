@@ -1,10 +1,10 @@
 module.exports = class ClientEvent {
-    constructor(eventName, once) {
+    constructor(client, eventName, once) {
+        this.client = client;
         this.eventName = eventName;
         this.once = once;
     }
-    Execute(client, args) {
-        console.debug(`${this.eventName} emitted`);
-        this.Client = client;
+    Execute(...args) {
+        console.debug(`${this.eventName} emitted | Args: ${args}`);
     }
 }
