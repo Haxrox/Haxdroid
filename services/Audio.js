@@ -66,7 +66,7 @@ class Song {
      */
     Embed() {
         const duration = Time.SecondsToDuration(this.Length);
-        
+
         return new MessageEmbed()
             .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
             .setTitle(`${Styles.Emojis.Music}  ${this.Title}`)
@@ -107,9 +107,10 @@ class Audio {
         this.InitChannel = interaction.channel;
 
         this.Queue = new Queue();
+        
         this.Connection = joinVoiceChannel({
             channelId: channel.id,
-            guildId: channel.guildId,
+            guildId: channel.guild.id,
             adapterCreator: channel.guild.voiceAdapterCreator,
         });
         this.CurrentSong = "";
