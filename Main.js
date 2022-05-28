@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const Ready = require('./events/Ready.js');
+const ReadyEvent = require('./events/Ready.js');
 const Configuration = require('./config.json');
 
 const client = new Discord.Client({
@@ -15,7 +15,7 @@ const client = new Discord.Client({
     ]
 });
 
-Ready.init(client);
+const Ready = ReadyEvent(client);
 client.once(Ready.eventName, Ready.Execute.bind(Ready));
 
 client.login(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN);

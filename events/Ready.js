@@ -23,8 +23,7 @@ class Ready extends ClientEvent {
         setPresence();
 
         FileSystem.readdirSync('./events').filter(file => (file.endsWith('.js') && file !== "ClientEvent.js" && file !== "Ready.js")).forEach(file => {
-            const event = require(`./${file}`);
-            event.init(this.client);
+            const event = require(`./${file}`)(this.client);
             if (event.once) {
                 this.client.once(event.eventName, (...args) => event.Execute(...args));
             } else {
@@ -34,7 +33,6 @@ class Ready extends ClientEvent {
     }
 }
 
-// module.exports = (client) => {
-//     return new Ready(client, "ready", true);
-// }
-module.exports = new Ready("ready", true);
+module.exports = (client) => {
+    return new Ready(client, "ready", true);
+}
