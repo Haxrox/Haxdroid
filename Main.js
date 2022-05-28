@@ -1,8 +1,9 @@
 const Discord = require('discord.js');
-const FileSystem = require('fs');
+const Ready = require('./events/Ready.js');
 const Configuration = require('./config.json');
 
 const client = new Discord.Client({
+    shards: 'auto',
     intents: [
         Discord.Intents.FLAGS.GUILDS,
         Discord.Intents.FLAGS.GUILD_MEMBERS,
@@ -14,13 +15,7 @@ const client = new Discord.Client({
     ]
 });
 
-FileSystem.readdirSync('./events').filter(file => (file.endsWith('.js') && file != "ClientEvent.js")).forEach(file => {
-    const event = require(`./events/${file}`)(client);
-    if (event.once) {
-        client.once(event.eventName, (...args) => event.Execute(...args));
-    } else {
-        client.on(event.eventName, (...args) => event.Execute(...args) );
-    }
-});
+Ready.init(client);
+client.once(Ready.eventName, Ready.Execute.bind(Ready));
 
 client.login(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN);

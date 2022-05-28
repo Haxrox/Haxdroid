@@ -1,3 +1,4 @@
+const FileSystem = require('fs');
 const ClientEvent = require("./ClientEvent.js");
 
 class Ready extends ClientEvent {
@@ -20,9 +21,20 @@ class Ready extends ClientEvent {
 
         setInterval(setPresence, 10000);
         setPresence();
+
+        FileSystem.readdirSync('./events').filter(file => (file.endsWith('.js') && file !== "ClientEvent.js" && file !== "Ready.js")).forEach(file => {
+            const event = require(`./${file}`);
+            event.init(this.client);
+            if (event.once) {
+                this.client.once(event.eventName, (...args) => event.Execute(...args));
+            } else {
+                this.client.on(event.eventName, (...args) => event.Execute(...args));
+            }
+        });
     }
 }
 
-module.exports = (client) => {
-    return new Ready(client, "ready", true);
-}
+// module.exports = (client) => {
+//     return new Ready(client, "ready", true);
+// }
+module.exports = new Ready("ready", true);
