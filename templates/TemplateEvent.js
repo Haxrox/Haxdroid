@@ -4,7 +4,7 @@ const Styles = require("../styles.json");
 
 class EVENT_NAME extends ClientEvent {
     Execute() {
-        super();
+        super.Execute();
     }
 }
 
