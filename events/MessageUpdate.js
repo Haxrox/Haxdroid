@@ -17,10 +17,11 @@ class MessageUpdate extends ClientEvent {
     Execute(oldMessage, newMessage) {
         super.Execute(oldMessage, newMessage);
         
-        if (this.logChannel) {
+        if (this.logChannel && !newMessage.author.bot) {
             const headerEmbed = new MessageEmbed()
                 .setAuthor({ name: newMessage.author.username, iconURL: newMessage.author.avatarURL() })
                 .setTitle("Message Updated")
+                .setURL(newMessage.url)
                 .setColor(Styles.Colours.Yellow)
                 .addField("Created At", newMessage.createdAt.toLocaleString(), true)
                 .addField("Edited At", newMessage?.editedAt?.toLocaleString() || "None", true)
