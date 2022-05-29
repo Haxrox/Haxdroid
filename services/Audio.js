@@ -107,7 +107,7 @@ class Audio {
         this.InitChannel = interaction.channel;
 
         this.Queue = new Queue();
-        
+
         this.Connection = joinVoiceChannel({
             channelId: channel.id,
             guildId: channel.guild.id,
@@ -356,6 +356,9 @@ class Audio {
         }
         const stream = Ytdl(this.CurrentSong.Url, {
             fmt: "mp3",
+            format: "audio",
+            quality: "highestaudio",
+            codecs: 'opus',
             highWaterMark: 1 << 62,
             liveBuffer: 1 << 62,
             dlChunkSize: 0,
