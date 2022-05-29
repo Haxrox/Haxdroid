@@ -27,20 +27,20 @@ class VoiceStateUpdate extends ClientEvent {
                     .setTimestamp();
 
                 if (oldState.channel && newState.channel) {
-                    const duration = Time.SecondsToDuration(Math.round((Date.now() - Users[newState.memberId]) / 1000));
+                    const duration = Time.SecondsToDuration(Math.round((Date.now() - Users[newState.member.id]) / 1000));
                     embed.setTitle(`${Styles.Emojis.Voice_Moved}  Moved Voice Channel`)
                         .setDescription(`${bold("Channel:")} ${oldState.channel} -> ${newState.channel}`)
                         .addField("Duration", duration)
                         .setColor(Styles.Colours.Yellow)
                 } else if (!newState.channel) {
-                    const duration = Time.SecondsToDuration(Math.round((Date.now() - Users[newState.memberId])/1000));
-                    Users[newState.memberId] = Date.now();
+                    const duration = Time.SecondsToDuration(Math.round((Date.now() - Users[newState.member.id])/1000));
+                    delete Users[newState.member.id];
                     embed.setTitle(`${Styles.Emojis.Voice_Left}  Left Voice Channel`, true)
                         .setDescription(`${bold("Channel:")} ${oldState.channel.toString() || "None"}`)
                         .addField("Duration", duration)
                         .setColor(Styles.Colours.Red)
                 } else if (newState.channel) {
-                    Users[newState.memberId] = Date.now();
+                    Users[newState.member.id] = Date.now();
                     embed.setTitle(`${Styles.Emojis.Voice_Join}  Joined Voice Channel`)
                         .setDescription(`${bold("Channel:")} ${newState.channel.toString() || "None"}`)
                         .setColor(Styles.Colours.Green)
