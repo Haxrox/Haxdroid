@@ -17,17 +17,17 @@ class GuildMemberRemove extends ClientEvent {
     Execute(member) {
         super.Execute(member);
 
-        const embed = new MessageEmbed()
-            .setTitle("Member Left")
-            .setDescription(`${bold("User:")} ${member}`)
-            .setColor(Styles.Colours.Red)
-            .addField("Created On", member.user.createdAt.toDateString(), true)
-            .addField("Tag", member.user.tag, true)
-            .addField("ID", member.user.id, true)
-            .setThumbnail(member.user.avatarURL())
-            .setTimestamp();
-
         if (this.logChannel) {
+            const embed = new MessageEmbed()
+                .setTitle("Member Left")
+                .setDescription(`${bold("User:")} ${member}`)
+                .setColor(Styles.Colours.Red)
+                .addField("Created On", member.user.createdAt.toDateString(), true)
+                .addField("Tag", member.user.tag, true)
+                .addField("ID", member.user.id, true)
+                .setThumbnail(member.user.avatarURL())
+                .setTimestamp();
+            
             this.logChannel.send({ embeds: [embed] });
         }
     }

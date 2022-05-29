@@ -15,14 +15,14 @@ class Error extends ClientEvent {
 
     Execute(error) {
         super.Execute(error);
-
-        const embed = new MessageEmbed()
-            .setTitle("Bot Error")
-            .setDescription(`:${Styles.Emojis.Error}:  ${message}`)
-            .setColor(Styles.Colours.Error)
-            .setTimestamp();
         
         if (this.logChannel) {
+            const embed = new MessageEmbed()
+                .setTitle("Bot Error")
+                .setDescription(`:${Styles.Emojis.Error}:  ${message}`)
+                .setColor(Styles.Colours.Error)
+                .setTimestamp();
+            
             this.logChannel.send({ embeds: [embed] });
         }
     }

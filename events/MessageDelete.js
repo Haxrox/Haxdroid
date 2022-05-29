@@ -1,10 +1,10 @@
 const { MessageEmbed } = require('discord.js');
-const { bold } = require('@discordjs/builders');
+
 const ClientEvent = require("./ClientEvent.js");
 const Config = require("../config.json");
 const Styles = require("../styles.json");
 
-class GuildMemberAdd extends ClientEvent {
+class MessageDelete extends ClientEvent {
     constructor(client, eventName, once) {
         super(client, eventName, once);
 
@@ -14,19 +14,19 @@ class GuildMemberAdd extends ClientEvent {
         })();
     }
 
-    Execute(member) {
-        super.Execute(member);
+    Execute(message) {
+        super.Execute(message);
 
         if (this.logChannel) {
             const embed = new MessageEmbed()
-                .setTitle("Member Joined")
-                .setDescription(`${bold("User:")} ${member}`)
-                .setColor(Styles.Colours.Green)
-                .addField("Created On", member.user.createdAt.toDateString(), true)
-                .addField("Tag", member.user.tag, true)
-                .addField("ID", member.user.id, true)
-                .setThumbnail(member.user.avatarURL())
-                .setTimestamp();
+                .setAuthor({ name: message.author.username, iconURL: message.author.avatarURL() })
+                .setTitle("Message Deleted")
+                .setDescription(message.content || "None")
+                .setColor(Styles.Colours.Red)
+                .addField("Created At", message.createdAt.toLocaleString(), true)
+                .addField("Edited", message?.editedAt?.toLocaleString() || "None", true)
+                .setFooter({ text: message.id })
+                .setTimestamp()
             
             this.logChannel.send({ embeds: [embed] });
         }
@@ -34,5 +34,5 @@ class GuildMemberAdd extends ClientEvent {
 }
 
 module.exports = (client) => {
-    return new GuildMemberAdd(client, "guildMemberAdd", false);
+    return new MessageDelete(client, "messageDelete", false);
 }
