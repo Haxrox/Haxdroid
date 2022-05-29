@@ -17,7 +17,7 @@ class MessageDelete extends ClientEvent {
     Execute(message) {
         super.Execute(message);
 
-        if (this.logChannel && !newMessage.author.bot) {
+        if (this.logChannel && !message.author.bot) {
             const embed = new MessageEmbed()
                 .setAuthor({ name: message.author.username, iconURL: message.author.avatarURL() })
                 .setTitle("Message Deleted")
