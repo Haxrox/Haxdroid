@@ -57,6 +57,8 @@ class Song {
         this.Length = videoDetails?.lengthSeconds;
         this.Thumbnail = videoDetails?.thumbnails[videoDetails?.thumbnails.length - 2]?.url;
         this.RelatedVideos = autoplay ? info?.related_videos : null;
+        this.Views = parseInt(videoDetails?.viewCount);
+        this.Likes = parseInt(videoDetails?.likes);
         this.User = user || this.Client.user;
     }
 
@@ -73,6 +75,10 @@ class Song {
             .setURL(this.Url)
             .addField("Duration", duration, true)
             .addField("Artist", hyperlink(this.Artist.name, this.Artist.channel_url), true)
+            .addField('\u200b', '\u200b', true)
+            .addField("ViewCount", this.Views.toLocaleString("en-US") || "0", true)
+            .addField("Likes", this.Likes.toLocaleString("en-US") || "0", true)
+            .addField("Subscribers", this.Artist?.subscriber_count.toLocaleString("en-US") || "0", true)
             .setImage(this.Thumbnail)
             .setColor(Styles.Colours.YouTube)
             .setTimestamp()
@@ -460,7 +466,10 @@ class Audio {
             this.Stop();
         } else if (this.Queue.Empty() && this.AutoPlay && !this.Repeat) {
             const url = new URL(Constants.YOUTUBE_VIDEO_URL);
-            url.searchParams.append("v", this.CurrentSong.RelatedVideos[Math.round(Random.Generate(0, this.CurrentSong.RelatedVideos.length / 2))].id);
+            // implement fuzzy search w/ video title
+            const filtered = this.CurrentSong.RelatedVideos.filter((video) => parseInt(video.view_count) > Constants.VIDEO_THRESHOLD && !video.title.toUpperCase().includes(this.CurrentSong.Title.toUpperCase()));
+            var song = filtered.length / 4 > 0 ? filtered[Math.round(Random.Generate(0, filtered.length / 4))] : this.CurrentSong.RelatedVideos[Math.round(Random.Generate(0, this.CurrentSong.RelatedVideos.length / 4))];
+            url.searchParams.append("v", song.id);
             this.Play(url.href, this.Client.user);
         } else {
             this.PlaySong();

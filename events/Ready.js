@@ -22,7 +22,7 @@ class Ready extends ClientEvent {
         setInterval(setPresence, 10000);
         setPresence();
 
-        FileSystem.readdirSync('./events').filter(file => (file.endsWith('.js') && file !== "ClientEvent.js" && file !== "Ready.js")).forEach(file => {
+        FileSystem.readdirSync('./events').filter(file => (file.endsWith('.js') && file !== "ClientEvent.js" && file !== "Ready.js" && file !== "MessageCreate.js")).forEach(file => {
             const event = require(`./${file}`)(this.client);
             if (event.once) {
                 this.client.once(event.eventName, (...args) => event.Execute(...args));
