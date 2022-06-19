@@ -22,27 +22,31 @@ class InteractionCreate extends ClientEvent {
         if (interaction.isCommand()) {
             const command = slashCommands.get(interaction.commandName.toUpperCase());
             if (command) {
-                await command.Execute(interaction);
+                if (command.Validate(interaction.member)) {
+                    command.Execute(interaction);
+                } else {
+                    command.Error(interaction, "Cannot execute command");
+                }
             } else {
-                await interaction.reply("Command not ready");
+                interaction.reply("Command not ready");
             }
         } else if (interaction.isSelectMenu()) {
             const commandId = interaction.commandId;
             const index = commandId.indexOf("_");
             const command = index > -1 && slashCommands.get(commandId.slice(0, index).toUpperCase());
             if (command) {
-                await command.ExecuteSelectionMenu(interaction);
+                command.ExecuteSelectionMenu(interaction);
             } else {
-                await interaction.reply("Invalid menu");
+                interaction.reply("Invalid menu");
             }
         } else if (interaction.isButton()) {
             const commandId = interaction.customId;
             const index = commandId.indexOf("_");
             const command = index > -1 && slashCommands.get(commandId.slice(0, index).toUpperCase());
             if (command) {
-                await command.ExecuteButton(interaction);
+                command.ExecuteButton(interaction);
             } else {
-                await interaction.reply("Invalid button");
+                interaction.reply("Invalid button");
             }
         }
         // } else if (interaction.isButton()) {

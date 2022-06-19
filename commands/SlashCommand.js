@@ -39,6 +39,14 @@ module.exports = class Command {
     }
 
     /**
+     * Returns whether the GuildMember has permissions to execute this command
+     * @param {GuildMember} member
+     * @return whether the member can execute this command
+     */
+    Validate(member) {
+        return true;
+    }
+    /**
      * Executes the given command
      * @param {Message} message - the message that was sent
      */
