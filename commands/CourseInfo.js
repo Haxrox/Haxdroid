@@ -13,10 +13,16 @@ class CourseInfo extends Command {
 
         const department = interaction.options.getString("department", true);
         const course = interaction.options.getString("course", true);
+        // const section = interaction.options.getString("section");
+        // const sessionYear = interaction.options.getString("year");
+        // const session = interaction.options.getString("session");
 
         const queryUrl = new URL(BASE_URL);
         queryUrl.searchParams.append("dept", department);
         queryUrl.searchParams.append("course", course);
+        // queryUrl.searchParams.append("section", section);
+        // queryUrl.searchParams.append("sessyr", sessionYear);
+        // queryUrl.searchParams.append("sesscd", session);
 
         Axios.get(queryUrl.href).then(async response => {
             const htmlParser = Cheerio.load(response.data);
