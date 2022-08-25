@@ -34,6 +34,6 @@
     "libsodium-wrappers": "^0.7.10",
     "uuid": "^8.3.2",
     "wolfram-alpha-api": "https://products.wolframalpha.com/api/libraries/javascript/wolfram-alpha-api-1.0.0-rc.1.tgz",
-    "ytdl-core": "^4.11.0"
+    "ytdl-core": "^4.10.0"
   }
 }

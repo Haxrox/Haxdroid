@@ -10,10 +10,11 @@ class Create extends Command {
     async CreateCategory(channelManager, name, channelOptions) {
         return await channelManager.create(name, channelOptions);
     }
+
     async CreateChannel(name, channelOptions, category) {
         return await category.createChannel(name, channelOptions);
-
     }
+
     async Execute(interaction) {
         await interaction.deferReply();
         if (interaction.options.getSubcommand() == "channel") {
@@ -41,7 +42,6 @@ class Create extends Command {
                     });
 
                     denyData?.split(" ").forEach(permission => {
-                        console.log(permission);
                         const matches = permission.matchAll(USERS_PATTERN).next().value || permission.matchAll(ROLES_PATTERN).next().value;
 
                         if (matches) {
@@ -73,7 +73,7 @@ class Create extends Command {
 
                     const embed = new MessageEmbed()
                         .setTitle(`Channel created`)
-                        .setDescription(channelType === GUILD_CATEGORY ? `<${channel}>` : channel)
+                        .setDescription(channelType === GUILD_CATEGORY ? `<${channel}>` : channel.toString())
                         .setColor(Styles.Colours.Theme)
                         .setTimestamp()
                         .setFooter({ text: `Created by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
