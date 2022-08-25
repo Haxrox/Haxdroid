@@ -56,7 +56,7 @@ class Song {
         this.Artist = videoDetails?.author
         this.Length = videoDetails?.lengthSeconds;
         this.Thumbnail = videoDetails?.thumbnails[videoDetails?.thumbnails.length - 2]?.url;
-        this.RelatedVideos = autoplay ? info?.related_videos : null;
+        this.RelatedVideos = autoplay && info?.related_videos != null && info.related_videos.filter((video) => parseInt(video.view_count) > Constants.VIDEO_THRESHOLD && !video.title.toUpperCase().includes(this.Title.toUpperCase()));
         this.Views = parseInt(videoDetails?.viewCount);
         this.Likes = parseInt(videoDetails?.likes);
         this.User = user || this.Client.user;
@@ -83,6 +83,29 @@ class Song {
             .setColor(Styles.Colours.YouTube)
             .setTimestamp()
             .setFooter({ text: `Queued by: ${this.User?.username}`, iconURL: this.User?.avatarURL() });
+    }
+
+    /**
+     * Gets a MessageEmbed for the related videos
+     * @returns a MessageEmbed that represents the related videos
+     */
+    RelatedEmbed() {
+        return this.RelatedVideos != null && new MessageEmbed()
+            .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
+            .setTitle(`${Styles.Emojis.Music}  ${this.Title} - Related Videos`)
+            .setDescription(this.RelatedVideos.reduce((prev, song) => {
+                const url = new URL(Constants.YOUTUBE_VIDEO_URL);
+                url.searchParams.append("v", song.id);
+                const appended = prev + `${Styles.Emojis.Bullet} ${bold(hyperlink(song.title, url.href))} - ${hyperlink(song.author?.name, song.author?.channel_url)}\n`;
+                
+                if (appended.length > 1500) {
+                    return prev;
+                } else {
+                    return appended;
+                }
+            }, ""))
+            .setColor(Styles.Colours.YouTube)
+            .setTimestamp()
     }
 }
 
@@ -142,7 +165,7 @@ class Audio {
                 .setTimestamp()
                 .setFooter({ text: `Initialized by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
 
-            const reduce = this.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${hyperlink(song.Title, song.Url)} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "", 2048);
+            const reduce = this.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${bold(hyperlink(song.Title, song.Url))} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "", 2048);
             this.QueueEmbed = new MessageEmbed()
                 .setTitle(`${Styles.Emojis.Music}  Queue [${reduce[0]}/${this.Queue.Size || "0"}]`)
                 .setDescription(this.Queue.Size > 0 ? reduce[1] : "Empty", true)
@@ -203,10 +226,10 @@ class Audio {
      * Updates the queue embed
      */
     UpdateQueue() {
-        const reduce = this.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${hyperlink(song.Title, song.Url)} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "", 2048);
+        const reduce = this.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${bold(hyperlink(song.Title, song.Url))} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "", 2048);
         this.QueueEmbed.setTitle(`${Styles.Emojis.Music}  Queue [${reduce[0]}/${this.Queue.Size || "0"}]`)
             .setDescription(this.Queue.Size > 0 ? reduce[1] : "Empty", true);
-        this.Message?.edit({ embeds: [this.InitEmbed, this.CurrentSong.Embed(), this.QueueEmbed], components: [this.Buttons] });
+        this.Message?.edit({ embeds: [this.InitEmbed, this.CurrentSong.Embed(), this.Queue.Size > 0 ? this.QueueEmbed : this.CurrentSong.RelatedEmbed()], components: [this.Buttons] });
     }
 
     /**
@@ -227,8 +250,13 @@ class Audio {
                 .setTimestamp()
                 .setFooter({ text: `Set by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
 
+            this.Buttons = new MessageActionRow().addComponents(
+                this.PauseButton, this.SkipButton, this.AutoPlay ? this.AutoPlayOnButton : this.AutoPlayOffButton,
+                this.Repeat ? this.RepeatOnButton : this.RepeatOffButton, this.StopButton
+            );
+
             this.InitEmbed.setDescription(`${bold("Channel:")} <#${this.Channel.id}>\n${bold("Autoplay:")} ${this.AutoPlay}\n${bold("Repeat:")} ${this.Repeat}`)
-            this.Message?.edit({ embeds: [this.InitEmbed, this.CurrentSong.Embed(), this.QueueEmbed], components: [this.Buttons] });
+            this.Message?.edit({ embeds: [this.InitEmbed, this.CurrentSong.Embed(), this.Queue.Size > 0 ? this.QueueEmbed : this.CurrentSong.RelatedEmbed()], components: [this.Buttons] });
             this.HistoryChannel?.send({ embeds: [embed] });
             return embed;
         }
@@ -334,7 +362,7 @@ class Audio {
             if (response.status) {
                 const data = response?.data;
                 nextPage = response?.nextPageToken;
-                for (const video of data.items) {
+                for (const video of data.items) { // TODO: make this async
                     const videoUrl = new URL(Constants.YOUTUBE_VIDEO_URL);
                     videoUrl.searchParams.append("v", video?.contentDetails?.videoId);
                     const info = await Ytdl.getBasicInfo(videoUrl.href);
@@ -467,8 +495,11 @@ class Audio {
         } else if (this.Queue.Empty() && this.AutoPlay && !this.Repeat) {
             const url = new URL(Constants.YOUTUBE_VIDEO_URL);
             // implement fuzzy search w/ video title
-            const filtered = this.CurrentSong.RelatedVideos.filter((video) => parseInt(video.view_count) > Constants.VIDEO_THRESHOLD && !video.title.toUpperCase().includes(this.CurrentSong.Title.toUpperCase()));
-            var song = filtered.length / 4 > 0 ? filtered[Math.round(Random.Generate(0, filtered.length / 4))] : this.CurrentSong.RelatedVideos[Math.round(Random.Generate(0, this.CurrentSong.RelatedVideos.length / 4))];
+            // const filtered = this.CurrentSong.RelatedVideos.filter((video) => parseInt(video.view_count) > Constants.VIDEO_THRESHOLD && !video.title.toUpperCase().includes(this.CurrentSong.Title.toUpperCase()));
+            // var song = filtered.length / 4 > 0 ? filtered[Math.round(Random.Generate(0, filtered.length / 4))] : this.CurrentSong.RelatedVideos[Math.round(Random.Generate(0, this.CurrentSong.RelatedVideos.length / 4))];
+            var song = this.CurrentSong.RelatedVideos.length / 4 > 0 ?
+                this.CurrentSong.RelatedVideos[Math.round(Random.Generate(0, this.CurrentSong.RelatedVideos.length / 4))] :
+                this.CurrentSong.RelatedVideos[Math.round(Random.Generate(0, this.CurrentSong.RelatedVideos.length))];
             url.searchParams.append("v", song.id);
             this.Play(url.href, this.Client.user);
         } else {
