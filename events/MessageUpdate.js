@@ -17,7 +17,7 @@ class MessageUpdate extends ClientEvent {
     Execute(oldMessage, newMessage) {
         super.Execute(oldMessage, newMessage);
         
-        if (this.logChannel && !newMessage.author.bot) {
+        if (this.logChannel && !newMessage.author.bot && oldMessage.content != newMessage.content) {
             const headerEmbed = new MessageEmbed()
                 .setAuthor({ name: newMessage.author.username, iconURL: newMessage.author.avatarURL() })
                 .setTitle("Message Updated")
