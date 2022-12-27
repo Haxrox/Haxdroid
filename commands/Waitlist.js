@@ -117,7 +117,7 @@ class Waitlist extends Command {
 
             embed.setDescription(description);
             interaction.editReply({ embeds: [embed] });
-        } else if (subcommand === "deregister") {
+        } else if (subcommand === "unregister") {
             const id = interaction.options.getString("id", true);
             if (cache[id] && cache[id].user.id === interaction.user.id) {
                 clearInterval(id);
@@ -134,6 +134,8 @@ class Waitlist extends Command {
             } else {
                 this.DeferError(interaction, "Invalid alert id or no permissions to deregister");
             }
+        } else {
+            this.DeferError(interaction, "Invalid subcommand");
         }
     }
 }
