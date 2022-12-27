@@ -2,7 +2,7 @@ const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const { MessageEmbed, MessageAttachment } = require('discord.js');
 const { bold, blockQuote } = require('@discordjs/builders');
-const WolframAlphaAPI = require('wolfram-alpha-api');
+const WolframAlphaAPI = require("../services/WolframAlphaAPI.js")
 const Configuration = require('../config.json');
 
 const wolframAPI = WolframAlphaAPI(Configuration.WOLFRAM_KEY);
