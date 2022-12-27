@@ -18,4 +18,14 @@ const client = new Discord.Client({
 const Ready = ReadyEvent(client);
 client.once(Ready.eventName, Ready.Execute.bind(Ready));
 
-client.login(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN);
+var failCount = 0;
+
+function login() {
+    client.login(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN).then(() => {
+        failCount = 0; 
+    }).catch ((error) => {
+        console.error(error);
+        setTimeout(login, failCount * 5000);
+    });
+}
+login();
