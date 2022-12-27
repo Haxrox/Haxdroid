@@ -130,7 +130,6 @@ class Music extends Command {
 			const position = interaction.options.getInteger("position", true);
 			const song = audio?.Dequeue(position, interaction.user);
 			if (song) {
-				console.log(song);
 				const embed = song.Embed()
 					.setTitle("Dequeued Song: " + song.Title)
 				interaction.editReply({ embeds: [embed] });
