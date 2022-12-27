@@ -37,6 +37,7 @@
         "Bullet": "‣",
         "Voice_Join": ":loud_sound:",
         "Voice_Left": ":mute:",
-        "Voice_Moved": ":left_right_arrow:"
+        "Voice_Moved": ":left_right_arrow:",
+        "Blocked": ":no_entry_sign:"
     }
 }
