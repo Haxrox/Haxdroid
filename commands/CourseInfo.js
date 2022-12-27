@@ -1,11 +1,12 @@
 const Command = require('./Command.js');
 const Styles = require("../styles.json");
 const { MessageEmbed } = require('discord.js');
-const { blockQuote } = require('@discordjs/builders');
+const { bold, blockQuote, hyperlink } = require('@discordjs/builders');
 const Axios = require('axios');
 const Cheerio = require("cheerio");
 
-const BASE_URL = `https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-course`;
+const ORIGIN = "https://courses.students.ubc.ca";
+const BASE_URL = `${ORIGIN}/cs/courseschedule?pname=subjarea&tname=subj-course`;
 
 class CourseInfo extends Command {
     async Execute(interaction) {
@@ -37,6 +38,26 @@ class CourseInfo extends Command {
             const preReqs = paragraphElements[2] ? paragraphElements[2].slice(9).trim() : "None"; // paragraphElements[2].search("Pre-reqs:")
             const coReqs = paragraphElements[3] ? paragraphElements[3].slice(8).trim() : "None"; // paragraphElements[2].search("Pre-reqs:")
 
+            const sections = htmlParser(".section-summary > tbody").children();
+            var sectionsList = "";
+            var prevLength = 0;
+
+            for (let index = 0; index < sections.length && sectionsList.length < 1000; index++) {
+                const sectionInfo = htmlParser(sections.get(index)).children();
+                const status = htmlParser(sectionInfo.get(0)).text().trim();
+                const section = htmlParser(sectionInfo.get(1)).text().slice(-3).trim();
+                const url = htmlParser(sectionInfo.get(1)).find("a").attr("href");
+                const term = htmlParser(sectionInfo.get(3)).text().trim();
+                const days = htmlParser(sectionInfo.get(6)).text().trim();
+                const start = htmlParser(sectionInfo.get(7)).text().trim();
+                const end = htmlParser(sectionInfo.get(8)).text().trim();
+
+                prevLength = sectionsList.length;
+
+                sectionsList += `${status !== "" ? ":no_entry_sign:" : ""} ${bold(hyperlink(`${section} T${term}`, ORIGIN + url))} | `
+                sectionsList += ((days !== "" || start !== "") ? `${days} ${start} - ${end}` : "Waitlist") + "\n";
+            }
+
             const embed = new MessageEmbed()
                 .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-all-departments", iconURL: Styles.Icons.UBC })
                 .setTitle(`${title} Information`)
@@ -46,10 +67,15 @@ class CourseInfo extends Command {
                 .addField("Pre-Requisites", `${preReqs}`)
                 .addField("Co-Requisites", `${coReqs}`)
                 .setColor(Styles.Colours.UBC)
+
+            const sectionsEmbed = new MessageEmbed()
+                .setTitle(`Sections [${sections.length}]`)
+                .setDescription(sectionsList.slice(0, sectionsList.length < 1024 ? sectionsList.length : prevLength))
+                .setColor(Styles.Colours.UBC)
                 .setTimestamp()
                 .setFooter({ text: `Requested by: ${interaction.user.username} | Data from UBC SSC Course Schedule`, iconURL: interaction.user.avatarURL() });
-
-            await interaction.editReply({ embeds: [embed] })
+            
+            await interaction.editReply({ embeds: [embed, sectionsEmbed] })
         }).catch(async error => {
             console.log(error);
             await this.DeferError(interaction, `Failed to get course info. Please retry. If this command constantly fails, try to use this **[link](${queryUrl.href})** to manually find the course`);
