@@ -29,6 +29,35 @@ class Queue {
     }
 
     /**
+     * Removes the node at the given index
+     * @param {number} index the index of the node to remove
+     * @returns the data of the removed node
+     */
+    Remove(index) {
+        var data = this.Head?.Data;
+        if (index === 0) {
+            this.Head = this.Head.Next;
+        } else {
+            var node = this.Head;
+            for (var i = 0; i < index - 1; i++) {
+                node = node.Next;
+            }
+            data = node.Next.Data
+            node.Next = node.Next.Next;
+
+            if (!node.Next) {
+                this.Tail = node;
+            }
+        }
+        this.Size--;
+
+        if (this.Size === 0) {
+            this.Head = null;
+            this.Tail = null;
+        }
+        return data;
+    }
+    /**
      * Pushes data to the end of the queue
      * @param {*} data the data to push
      */
@@ -96,8 +125,9 @@ class Queue {
     Reduce(func, init, maxSize) {
         var node = this.Head;
         var processed = 0;
+        var index = 0;
         while (node != null) {
-            const append = func(node.Data);
+            const append = func(node.Data, index);
             if ((init + append).length <= (maxSize - 24)) {
                 processed++;
                 init += append;
@@ -106,6 +136,7 @@ class Queue {
                 init += `+ ${this.Size - processed} more`;
                 break;
             }
+            index++;
         }
         return [processed, init];
     }

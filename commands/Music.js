@@ -125,6 +125,19 @@ class Music extends Command {
 				this.Error(interaction, "Failed to parse YouTube URL - " + song);
 			}
 		},
+		dequeue: async function (interaction) {
+			await interaction.deferReply();
+			const position = interaction.options.getInteger("position", true);
+			const song = audio?.Dequeue(position, interaction.user);
+			if (song) {
+				console.log(song);
+				const embed = song.Embed()
+					.setTitle("Dequeued Song: " + song.Title)
+				interaction.editReply({ embeds: [embed] });
+			} else {
+				this.Error(interaction, "Invalid position");
+			}
+		},
 		skip: async function (interaction) {
 			const embed = audio?.Skip(interaction);
 			interaction.reply({ embeds: [embed] });
@@ -247,6 +260,12 @@ MusicCommand.GetData()
 		subcommand.setName("enqueue").setDescription("Adds a song to the queue")
 			.addStringOption(option =>
 				option.setName("song").setDescription("song to queue").setRequired(true)
+			)
+	)
+	.addSubcommand(subcommand =>
+		subcommand.setName("dequeue").setDescription("Removes a song from the queue")
+			.addIntegerOption(option =>
+				option.setName("position").setDescription("position in the queue").setRequired(true)
 			)
 	)
 	.addSubcommand(subcommand =>

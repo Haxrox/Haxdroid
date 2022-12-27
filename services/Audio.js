@@ -226,7 +226,7 @@ class Audio {
      * Updates the queue embed
      */
     UpdateQueue() {
-        const reduce = this.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${bold(hyperlink(song.Title, song.Url))} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "", 2048);
+        const reduce = this.Queue.Reduce((song, position) => `${position + 1}. ${bold(hyperlink(song.Title, song.Url))} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "", 2048);
         this.QueueEmbed.setTitle(`${Styles.Emojis.Music}  Queue [${reduce[0]}/${this.Queue.Size || "0"}]`)
             .setDescription(this.Queue.Size > 0 ? reduce[1] : "Empty", true);
         this.Message?.edit({ embeds: [this.InitEmbed, this.CurrentSong.Embed(), this.Queue.Size > 0 ? this.QueueEmbed : this.CurrentSong.RelatedEmbed()], components: [this.Buttons] });
@@ -286,6 +286,13 @@ class Audio {
         }
     }
 
+    Dequeue(index) {
+        const song = (index > 0 && index <= this.Queue.Size) ? this.Queue.Remove(index - 1) : null;
+        if (song) {
+            this.UpdateQueue();
+        }
+        return song;
+    }
     /**
      * Enqueue's the given playlist to the end of the queue
      * @param {String} id of the given playlist
