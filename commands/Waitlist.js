@@ -51,6 +51,8 @@ function initAlert(user, title, url) {
                 }, ALERT_INTERVAL);
             }
             user.send({ content: seatsRemaining > 0 ? user.toString() : null, embeds: [embed] });
+            
+            cache[id].timestamp = new Date();
         }).catch(error => {
             const embed = new MessageEmbed()
                 .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=welcome&tname=welcome", iconURL: Styles.Icons.UBC })
@@ -67,7 +69,8 @@ function initAlert(user, title, url) {
     cache[id] = {
         url: url,
         title: title,
-        user: user
+        user: user,
+        timestamp: Date.now()
     }
     return id;
 }
@@ -107,7 +110,7 @@ class Waitlist extends Command {
             var description = "";
             for (const id in cache) {
                 if (cache[id].user.id === interaction.user.id) {
-                    description += `${inlineCode(id)} - ${bold(hyperlink(cache[id].title, cache[id].url))}\n`;
+                    description += `${inlineCode(id)} - ${bold(hyperlink(cache[id].title, cache[id].url))} - ${(Date.now() - cache[id].timestamp) / 60000}min\n`;
                 }
             }
 
