@@ -2,9 +2,22 @@ const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 const FileSystem = require('fs');
 const Configuration = require('./config.json');
+const yargs = require('yargs');
 
-const DISPATCH_GUILD_COMMANDS = true;
-const DISPATCH_COMMANDS = true;
+const argv = yargs.option('guild_commands', {
+    alias: 'g',
+    description: 'Dispatch guild commands',
+    type: 'boolean',
+    default: false
+}).options("dispatch_commands", {
+    alias: 'd',
+    description: 'Dispatch commands',
+    type: 'boolean',
+    default: false
+}).argv;
+
+const DISPATCH_GUILD_COMMANDS = argv.guild_commands;
+const DISPATCH_COMMANDS = argv.dispatch_commands;
 
 const rest = new REST({ version: '9' }).setToken(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN);
 const commands = [];
