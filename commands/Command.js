@@ -90,7 +90,7 @@ module.exports = class Command {
         console.log(this.commandName +  " error: " + message);
         const embed = new MessageEmbed() 
             .setTitle(`${this.commandName} Error`)
-            .setDescription(`:${Styles.Emojis.Error}:  ${message}`)
+            .setDescription(`${Styles.Emojis.Error}  ${message}`)
             .setColor(Styles.Colours.Error)
             .setTimestamp()
             .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
@@ -106,7 +106,7 @@ module.exports = class Command {
         console.log(this.commandName + " error: " + message);
         const embed = new MessageEmbed() 
             .setTitle(`${this.commandName} Error`)
-            .setDescription(`:${Styles.Emojis.Error}:  ${message}`)
+            .setDescription(`${Styles.Emojis.Error}  ${message}`)
             .setColor(Styles.Colours.Error)
             .setTimestamp()
             .setFooter({text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});

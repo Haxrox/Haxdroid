@@ -22,10 +22,10 @@
         "Dictionary": "00248b"
     },
     "Emojis": {
-        "Red_Circle": "red_circle",
-        "Yellow_Circle": "yellow_circle",
-        "Green_Circle": "green_circle",
-        "Error": "octagonal_sign",
+        "Red_Circle": ":red_circle:",
+        "Yellow_Circle": ":yellow_circle:",
+        "Green_Circle": ":green_circle:",
+        "Error": ":octagonal_sign:",
         "Reminder": "alarm_clock",
         "Music": ":musical_note:",
         "Play": "▶️",

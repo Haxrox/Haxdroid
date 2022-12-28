@@ -19,7 +19,7 @@ class Error extends ClientEvent {
         if (this.logChannel) {
             const embed = new MessageEmbed()
                 .setTitle("Bot Error")
-                .setDescription(`:${Styles.Emojis.Error}:  ${message}`)
+                .setDescription(`${Styles.Emojis.Error}  ${message}`)
                 .setColor(Styles.Colours.Error)
                 .setTimestamp();
             

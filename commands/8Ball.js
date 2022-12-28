@@ -50,7 +50,7 @@ class Magic8Ball extends Command {
         const embed = new MessageEmbed()
             // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
             .setTitle(`Magic :8ball:,  ${interaction.options.getString("question", true)}?`)
-            .setDescription(`:${RESPONSE_DATA[responseColour].Emoji}:  ${RESPONSES[responseIndex]}.`)
+            .setDescription(`${RESPONSE_DATA[responseColour].Emoji}  ${RESPONSES[responseIndex]}.`)
             .setColor(RESPONSE_DATA[responseColour].Colour)
             .setTimestamp()
             .setFooter({text: `Asked by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL()});
