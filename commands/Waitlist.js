@@ -116,7 +116,7 @@ class Waitlist extends Command {
             var description = "";
             for (const id in cache) {
                 if (cache[id].user.id === interaction.user.id) {
-                    description += `${cache[id].toggle ? Styles.Emojis.Green_Circle : Styles.Emojis.Red_Circle} ${inlineCode(id)} - ${bold(hyperlink(cache[id].title, cache[id].url))} - ${Math.round((Date.now() - cache[id].timestamp) / 600) / 100 }min\n`;
+                    description += `${cache[id].toggle ? Styles.Emojis.Green_Circle : Styles.Emojis.Red_Circle} ${inlineCode(id)} - ${bold(hyperlink(cache[id].title, cache[id].url))} - ${Math.round((Date.now() - cache[id].timestamp) / 10) / 100 }s\n`;
                 }
             }
 
