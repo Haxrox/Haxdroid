@@ -6,7 +6,7 @@ const Axios = require("axios");
 const Cheerio = require("cheerio");
 
 const cache = {};
-const INTERVAL = 600000; // 10 minutes
+const INTERVAL = 60000; // 1 minute
 const ALERT_INTERVAL = 1000;
 const ALERT_COUNT = 10;
     
@@ -29,7 +29,7 @@ function getSeatInfo(url) {
     });
 }
 
-function initAlert(user, title, url) {
+function initAlert(user, title, url, toggle = false) {
     const id = setInterval(() => {
         getSeatInfo(url).then(([title, description, seatsRemaining]) => {
             const embed = new MessageEmbed()
@@ -50,19 +50,24 @@ function initAlert(user, title, url) {
                     count--;
                 }, ALERT_INTERVAL);
             }
-            user.send({ content: seatsRemaining > 0 ? user.toString() : null, embeds: [embed] });
+
+            if (cache[id].toggle) {
+                user.send({ content: seatsRemaining > 0 ? user.toString() : null, embeds: [embed] });
+            }
             
             cache[id].timestamp = new Date();
         }).catch(error => {
-            const embed = new MessageEmbed()
-                .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=welcome&tname=welcome", iconURL: Styles.Icons.UBC })
-                .setTitle("Waitlist Alert Failed")
-                .setColor(Styles.Colours.Red)
-                .setTimestamp()
-                .setDescription(`Failed to retrieve seat information: ${error.message}`)
-                .setFooter({ text: `ID: ${id}`, iconURL: Styles.Icons.UBC });
-            
-            user.send({ embeds: [embed] });
+            if (cache[id].toggle) {
+                const embed = new MessageEmbed()
+                    .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=welcome&tname=welcome", iconURL: Styles.Icons.UBC })
+                    .setTitle(`${cache[id].title} Alert Failed`)
+                    .setColor(Styles.Colours.Red)
+                    .setTimestamp()
+                    .setDescription(`Failed to retrieve seat information: ${error.message}`)
+                    .setFooter({ text: `ID: ${id}`, iconURL: Styles.Icons.UBC });
+                
+                user.send({ embeds: [embed] });
+            }
         });
     }, INTERVAL);
     
@@ -70,6 +75,7 @@ function initAlert(user, title, url) {
         url: url,
         title: title,
         user: user,
+        toggle: toggle,
         timestamp: Date.now()
     }
     return id;
@@ -92,7 +98,7 @@ class Waitlist extends Command {
                 
                 embed.setDescription(description);
                 
-                const alertID = initAlert(interaction.user, title, url);
+                const alertID = initAlert(interaction.user, title, url, interaction.options.getBoolean("toggle"));
                 embed.setFooter({ text: `Requested by: ${interaction.user.username} | ID: ${alertID}`, iconURL: interaction.user.avatarURL() });   
 
                 interaction.editReply({ embeds: [embed] });
@@ -110,7 +116,7 @@ class Waitlist extends Command {
             var description = "";
             for (const id in cache) {
                 if (cache[id].user.id === interaction.user.id) {
-                    description += `${inlineCode(id)} - ${bold(hyperlink(cache[id].title, cache[id].url))} - ${(Date.now() - cache[id].timestamp) / 60000}min\n`;
+                    description += `[${cache[id].toggle ? Styles.Emojis.Green_Circle : Styles.Emojis.Red_Circle}] ${inlineCode(id)} - ${bold(hyperlink(cache[id].title, cache[id].url))} - ${(Date.now() - cache[id].timestamp) / 60000}min\n`;
                 }
             }
 
@@ -134,8 +140,24 @@ class Waitlist extends Command {
                     .setFooter({ text: `Deregistered by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
                 
                 interaction.editReply({ embeds: [embed] });
-            } else {
+            }  else {
                 this.DeferError(interaction, "Invalid alert id or no permissions to deregister");
+            }
+        } else if (subcommand === "settings") {
+            const id = interaction.options.getString("id", true);
+            if (cache[id] && cache[id].user.id === interaction.user.id) {
+                cache[id].toggle = interaction.options.getBoolean("toggle", true);
+                const embed = new MessageEmbed()
+                    .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=welcome&tname=welcome", iconURL: Styles.Icons.UBC })
+                    .setTitle("Waitlist Alerts")
+                    .setDescription(`Toggle: ${inlineCode(cache[id].toggle)}`)
+                    .setColor(Styles.Colours.UBC)
+                    .setTimestamp()
+                    .setFooter({ text: `Set by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
+
+                interaction.editReply({ embeds: [embed] });
+            } else {
+                this.DeferError(interaction, "Invalid alert id or no permissions to toggle settings");
             }
         } else {
             this.DeferError(interaction, "Invalid subcommand");
@@ -150,6 +172,9 @@ WaitlistCommand.GetData()
         .addStringOption(option =>
             option.setName("url").setDescription("The class url you want to Waitlist for.").setRequired(true)
         )
+        .addBooleanOption(option => 
+            option.setName("toggle").setDescription("Toggle alert messages on/off").setRequired(false)
+        )    
     )   
     .addSubcommand(subcommand =>
         subcommand.setName("unregister").setDescription("Unregister alerts for a class")
@@ -159,7 +184,16 @@ WaitlistCommand.GetData()
     )
     .addSubcommand(subcommand => 
         subcommand.setName("list").setDescription("List all your alerts")
-    );
+)
+    .addSubcommand(subcommand => 
+        subcommand.setName("settings").setDescription("Toggle settings")
+        .addStringOption(option => 
+            option.setName("id").setDescription("Id of the alert").setRequired(true)
+        )
+        .addBooleanOption(option =>
+            option.setName("toggle").setDescription("Toggle alert messages on/off")
+        )
+    )
     
 module.exports = WaitlistCommand;
 
