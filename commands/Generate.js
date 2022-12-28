@@ -9,7 +9,7 @@ const Random = require("../services/Random");
 
 class Generate extends Command {
     Subcommands = {
-        data: function (interaction) {
+        array: function (interaction) {
             const length = interaction.options.getInteger("length") || Random.Generate(10);
             const ordering = interaction.options.getString("order") || "unordered"
             const type = interaction.options.getString("type") || "int"
@@ -145,7 +145,7 @@ class Generate extends Command {
 const GenerateCommand = new Generate("Generate", "Generate uesful properties");
 GenerateCommand.GetData()
     .addSubcommand(subcommand =>
-        subcommand.setName("data").setDescription("Generates an array of X elements")
+        subcommand.setName("array").setDescription("Generates an array of X elements")
             .addIntegerOption(option =>
                 option.setName("length").setDescription("length of array")
             )
