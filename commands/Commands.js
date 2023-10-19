@@ -1,5 +1,5 @@
 const FileSystem = require('fs');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 const Command = require('./Command.js');
 
@@ -15,7 +15,7 @@ class Commands extends Command {
         });
     }
     async Execute(interaction) {
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
             .setTitle(`List of commands [${this.commandCount}]`)
             .setDescription(this.commands)

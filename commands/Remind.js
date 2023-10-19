@@ -1,7 +1,7 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const { MessageEmbed, Permissions } = require('discord.js');
-const { bold, blockQuote } = require('@discordjs/builders');
+const CONSTANTS = require('../Constants.js');
+const { EmbedBuilder, Permissions, bold, blockQuote } = require('discord.js');
 const GUILD_TEXT = 0;
 
 const Reminders = {};
@@ -16,11 +16,13 @@ class Remind extends Command {
                     clearTimeout(id);
                     delete Reminders[id];
 
-                    const embed = new MessageEmbed()
+                    const embed = new EmbedBuilder()
                         .setTitle(`${interaction.client.user.username} Reminder Deleted`)
-                        .addField("Task", reminderInfo.Task, true)
-                        .addField("Time", reminderInfo.Date, true)
-                        .addField("Reminder", `${reminderInfo.Reminder}`, true)
+                        .addFields(
+                            {name: "Task", value: reminderInfo.Task, inline: true},
+                            {name: "Time", value: reminderInfo.Date, inline: true},
+                            {name: "Reminder", value: reminderInfo.Reminder, inline: true}
+                        )
                         .setColor(Styles.Colours.Reminder_Cancelled)
                         .setTimestamp()
                         .setFooter({ text: `Reminder cancelled by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
@@ -43,7 +45,7 @@ class Remind extends Command {
             var mention;
             var remindChannel;
 
-            const replyEmbed = new MessageEmbed()
+            const replyEmbed = new EmbedBuilder()
                 .setTitle(`${Styles.Emojis.Reminder}  ${interaction.client.user.username} Reminder Set!`)
                 .setColor(Styles.Colours.Reminder_Set)
                 .setTimestamp()
@@ -55,7 +57,7 @@ class Remind extends Command {
                 mention = user;
 
                 if (channel == null) {
-                    const confirmationEmbed = new MessageEmbed()
+                    const confirmationEmbed = new EmbedBuilder()
                         .setAuthor({ name: author.username, iconURL: author.avatarURL() })
                         .setTitle(`${Styles.Emojis.Reminder}  ${interaction.client.user.username} Reminder`)
                         .setDescription(`Reminder ${reminderDescription}`)
@@ -95,7 +97,7 @@ class Remind extends Command {
 
             if (remindChannel) {
                 const reminderID = setTimeout(() => {
-                    const remindEmbed = new MessageEmbed()
+                    const remindEmbed = new EmbedBuilder()
                         .setTitle(`${Styles.Emojis.Reminder}  ${interaction.client.user.username} Reminder`)
                         .setDescription(blockQuote(task))
                         .setColor(Styles.Colours.Reminder_Alarm)
@@ -141,15 +143,17 @@ RemindCommand.GetData()
             )
             .addIntegerOption(option =>
                 option.setName("unit").setDescription("Unit of time").setRequired(true)
-                    .addChoice("Minutes", 60)
-                    .addChoice("Hours", 60 * 60)
-                    .addChoice("Days", 24 * 60 * 60)
+                    .addChoices(
+                        { name: "Minutes", value: CONSTANTS.SECONDS_TO_MINUTES },
+                        { name: "Hours", value: CONSTANTS.SECONDS_TO_HOURS },
+                        { name: "Days", value: CONSTANTS.SECONDS_TO_DAYS }
+                    )
             )
             .addUserOption(option =>
                 option.setName('target').setDescription('The user')
             )
             .addChannelOption(option =>
-                option.setName("channel").setDescription("Where to remind everyone").addChannelType(GUILD_TEXT)
+                option.setName("channel").setDescription("Where to remind everyone").addChannelTypes(GUILD_TEXT)
             )
     )
     .addSubcommand(subcommand =>
@@ -162,9 +166,11 @@ RemindCommand.GetData()
             )
             .addIntegerOption(option =>
                 option.setName("unit").setDescription("Unit of time").setRequired(true)
-                    .addChoice("Minutes", 60)
-                    .addChoice("Hours", 60 * 60)
-                    .addChoice("Days", 24 * 60 * 60)
+                    .addChoices(
+                        { name: "Minutes", value: CONSTANTS.SECONDS_TO_MINUTES },
+                        { name: "Hours", value: CONSTANTS.SECONDS_TO_HOURS },
+                        { name: "Days", value: CONSTANTS.SECONDS_TO_DAYS }
+                    )
             )
             .addRoleOption(option =>
                 option.setName("target").setDescription("The role")

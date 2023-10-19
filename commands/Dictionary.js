@@ -3,7 +3,7 @@ const { DICTIONARY_BROWSE_URL, DICTIONARY_URL, THESAURUS_URL } = require("../Con
 const Command = require('./Command.js');
 const Config = require("../config.json");
 const Axios = require('axios');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { bold, blockQuote, hyperlink } = require('@discordjs/builders');
 
 class Dictionary extends Command {
@@ -20,7 +20,7 @@ class Dictionary extends Command {
                 getSynonyms = getSynonyms !== null ? getSynonyms : true;
                 const browseURL = new URL(DICTIONARY_BROWSE_URL.concat("/" + word)).href;
 
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setAuthor({ name: "Dictionary.com", url: "https://www.dictionary.com/", iconURL: Styles.Icons.Dictionary })
                     .setTitle(word)
                     .setURL(browseURL)
@@ -39,8 +39,10 @@ class Dictionary extends Command {
                         const synonyms = thesaurusData.meta.syns[0]?.length > 0 ? thesaurusData.meta.syns[0].reduce((previousValue, currentValue) => previousValue.concat(hyperlink(currentValue, new URL(DICTIONARY_BROWSE_URL.concat("/" + currentValue)).href)) + ", ", "").slice(0, -2) : "None"
                         const antonyms = thesaurusData.meta.ants[0]?.length > 0 ? thesaurusData.meta.ants[0].reduce((previousValue, currentValue) => previousValue.concat(hyperlink(currentValue, new URL(DICTIONARY_BROWSE_URL.concat("/" + currentValue)).href)) + ", ", "").slice(0, -2) : "None";
 
-                        embed.addField("Synonyms", synonyms.slice(0, 1024), true);
-                        embed.addField("Antonyms", antonyms.slice(0, 1024), true);
+                        embed.addFields(
+                            { name: "Synonyms", value: synonyms.slice(0, 1024), inline: true },
+                            { name: "Antonyms", value: antonyms.slice(0, 1024), inline: true }
+                        );
                     }
                 }
                 interaction.editReply({ embeds: [embed] });

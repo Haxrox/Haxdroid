@@ -1,7 +1,7 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const Random = require('../services/Random.js');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 class RandomNumberGenerator extends Command {
     async Execute(interaction) {
@@ -10,7 +10,7 @@ class RandomNumberGenerator extends Command {
 
         if (min <= max) {
             const num = Math.round(Random.Generate(min, max));
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
                 .setTitle(`RNG [${min}-${max}]`)
                 .setDescription(num.toString())

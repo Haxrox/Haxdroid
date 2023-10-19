@@ -1,7 +1,7 @@
 const Styles = require("../styles.json");
 const Config = require("../config.json");
 const Command = require('./Command.js');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { blockQuote, bold } = require('@discordjs/builders');
 
 const ALERT_RATE = 500; // rate to send each message (ms / message)
@@ -9,12 +9,12 @@ const MAX_ALERT = 25; // number of messages
 const MAX_LENGTH = 300; // in seconds
 
 function alert(alerter, target, message, duration, count) {
-    const alertEmbed = new MessageEmbed()
+    const alertEmbed = new EmbedBuilder()
         .setTitle(message)
         .setColor(Styles.Colours.Theme)
         .setFooter({ text: `Alerted by: ${alerter.username}`, iconURL: alerter.avatarURL() });
 
-    const resultEmbed = new MessageEmbed()
+    const resultEmbed = new EmbedBuilder()
         .setTitle("Alert Complete")
         .setColor(Styles.Colours.Green)
 
@@ -67,7 +67,7 @@ class Alert extends Command {
             if (duration != null || count != null) {
                 alert(interaction.user, target, message, duration, count);
 
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setTitle("Alert Initialized")
                     .setDescription(`Alerting ${target} ${duration ? `for ${bold(Math.min(duration, MAX_LENGTH))} seconds` : `${bold(Math.min(count, MAX_ALERT))} times`} with message:\n${blockQuote(message)}`)
                     .setColor(Styles.Colours.Theme)

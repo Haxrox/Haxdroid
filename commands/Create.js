@@ -1,24 +1,16 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const { Permissions, MessageEmbed, MessageMentions: { USERS_PATTERN, ROLES_PATTERN } } = require('discord.js');
-
-const GUILD_TEXT = "GUILD_TEXT";
-const GUILD_VOICE = "GUILD_VOICE";
-const GUILD_CATEGORY = "GUILD_CATEGORY";
+const { ChannelType, PermissionsBitField, EmbedBuilder, MessageMentions: { USERS_PATTERN, ROLES_PATTERN } } = require('discord.js');
 
 class Create extends Command {
-    async CreateCategory(channelManager, name, channelOptions) {
+    async CreateChannel(channelManager, name, channelOptions) {
         return await channelManager.create(name, channelOptions);
-    }
-
-    async CreateChannel(name, channelOptions, category) {
-        return await category.createChannel(name, channelOptions);
     }
 
     async Execute(interaction) {
         await interaction.deferReply();
         if (interaction.options.getSubcommand() == "channel") {
-            if (interaction.member.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS), true) {
+            if (interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels), true) {
                 try {
                     var reason = interaction.options.getString("reason");
                     var categoryId = interaction.options.getString("category") || interaction.guild.systemChannel.parentId;
@@ -36,7 +28,7 @@ class Create extends Command {
                         if (matches) {
                             permissions.push({
                                 id: matches[1],
-                                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
                             })
                         }
                     });
@@ -47,13 +39,13 @@ class Create extends Command {
                         if (matches) {
                             permissions.push({
                                 id: matches[1],
-                                deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                                deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
                             })
                         } else if (permission.includes("everyone")) {
                             interaction.guild.roles.cache.every(role => {
                                 permissions.push({
                                     id: role.id,
-                                    deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                                    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
                                 })
                             })
                         }
@@ -65,15 +57,11 @@ class Create extends Command {
                         reason: `created by ${interaction.client.user.username} ${reason}`,
                     };
 
-                    if (channelType == GUILD_CATEGORY) {
-                        var channel = await this.CreateCategory(interaction.guild.channels, interaction.options.getString("name", true), channelOptions);
-                    } else {
-                        var channel = await this.CreateChannel(interaction.options.getString("name", true), channelOptions, await interaction.guild.channels.fetch(categoryId));
-                    }
+                    var channel = await this.CreateChannel(interaction.guild.channels, interaction.options.getString("name", true), channelOptions);
 
-                    const embed = new MessageEmbed()
+                    const embed = new EmbedBuilder()
                         .setTitle(`Channel created`)
-                        .setDescription(channelType === GUILD_CATEGORY ? `<${channel}>` : channel.toString())
+                        .setDescription(channelMention(channel.id))
                         .setColor(Styles.Colours.Theme)
                         .setTimestamp()
                         .setFooter({ text: `Created by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
@@ -98,9 +86,11 @@ CreateCommand.GetData()
             )
             .addStringOption(option =>
                 option.setName("type").setDescription("type of the channel").setRequired(true)
-                    .addChoice("text", GUILD_TEXT)
-                    .addChoice("voice", GUILD_VOICE)
-                    .addChoice("category", GUILD_CATEGORY)
+                    .addChoices(
+                        { name: "text", value: `${ChannelType.GuildText}` },
+                        { name: "voice", value: `${ChannelType.GuildVoice}` },
+                        { name: "category", value: `${ChannelType.GuildCategory}` }
+                    )
             )
             .addStringOption(option =>
                 option.setName("category").setDescription("category for the channel")

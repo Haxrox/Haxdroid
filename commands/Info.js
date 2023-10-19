@@ -1,11 +1,11 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { blockQuote } = require('@discordjs/builders');
 
 class Info extends Command {
     async Execute(interaction) {
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
             .setTimestamp()
             .setFooter({ text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
@@ -18,8 +18,10 @@ class Info extends Command {
                 .setURL(user === interaction.user && "https://haxtech.web.app/projects/Haxdroid")
                 .setDescription(`**Profile:** ${user}`)
                 .setThumbnail(user.avatarURL())
-                .addField("Created", user.createdAt.toDateString(), true)
-                .addField("Tag", user.tag, true);
+                .addFields(
+                    { name: "Created", value: user.createdAt.toDateString(), inline: true },
+                    { name: "Tag", value: user.tag, inline: true }
+                );
         } else if (interaction.options.getSubcommand() === 'server') {
             const owner = await interaction.guild.fetchOwner({ cache: true, force: true }) || "Undefined";
             const description = interaction.guild.description;
@@ -31,10 +33,12 @@ class Info extends Command {
             embed.setTitle(`${interaction.guild.name} Info`)
                 .setColor(Styles.Colours.Theme)
                 .setThumbnail(interaction.guild.iconURL())
-                .addField("Created", interaction.guild.createdAt.toDateString(), true)
-                .addField("Members", `${interaction.guild.memberCount} members`, true)
-                .addField("Owner", owner.toString(), true)
-                .setImage(interaction.guild.bannerURL)
+                .addFields(
+                    { name: "Created", value: interaction.guild.createdAt.toDateString(), inline: true },
+                    { name: "Members", value: `${interaction.guild.memberCount} members`, inline: true },
+                    { name: "Owner", value: owner.toString(), inline: true }
+                )
+                .setImage(interaction.guild.bannerURL())
         }
         await interaction.reply({ embeds: [embed] });
     }

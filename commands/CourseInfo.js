@@ -1,6 +1,6 @@
 const Command = require('./Command.js');
 const Styles = require("../styles.json");
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { bold, blockQuote, hyperlink } = require('@discordjs/builders');
 const Axios = require('axios');
 const Cheerio = require("cheerio");
@@ -58,23 +58,25 @@ class CourseInfo extends Command {
                 sectionsList += ((days !== "" || start !== "") ? `${days} ${start} - ${end}` : "Waitlist") + "\n";
             }
 
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-all-departments", iconURL: Styles.Icons.UBC })
                 .setTitle(`${title} Information`)
                 .setDescription(blockQuote(paragraphElements[0].trim()))
                 .setURL(queryUrl.href)
-                .addField("Credits", `${credits} Credits`)
-                .addField("Pre-Requisites", `${preReqs}`)
-                .addField("Co-Requisites", `${coReqs}`)
+                .addFields(
+                    { name: "Credits", value: `${credits} Credits` },
+                    { name: "Pre-Requisites", value: `${preReqs}` },
+                    { name: "Co-Requisites", value: `${coReqs}` }
+                )
                 .setColor(Styles.Colours.UBC)
 
-            const sectionsEmbed = new MessageEmbed()
+            const sectionsEmbed = new EmbedBuilder()
                 .setTitle(`Sections [${sections.length}]`)
                 .setDescription(sectionsList.slice(0, sectionsList.length < 1024 ? sectionsList.length : prevLength))
                 .setColor(Styles.Colours.UBC)
                 .setTimestamp()
                 .setFooter({ text: `Requested by: ${interaction.user.username} | Data from UBC SSC Course Schedule`, iconURL: interaction.user.avatarURL() });
-            
+
             await interaction.editReply({ embeds: [embed, sectionsEmbed] })
         }).catch(async error => {
             console.log(error);

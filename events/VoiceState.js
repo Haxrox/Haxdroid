@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { bold } = require('@discordjs/builders');
 const ClientEvent = require("../events/ClientEvent.js");
 const Time = require("../utils/Time.js");
@@ -22,7 +22,7 @@ class VoiceStateUpdate extends ClientEvent {
 
         if (this.logChannel) {
             if (oldState.channelId != newState.channelId) {
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setAuthor({ name: newState.member.user.username, iconURL: newState.member.user.avatarURL() })
                     .setTimestamp();
 
@@ -30,14 +30,18 @@ class VoiceStateUpdate extends ClientEvent {
                     const duration = Time.SecondsToDuration(Math.round((Date.now() - Users[newState.member.id]) / 1000));
                     embed.setTitle(`${Styles.Emojis.Voice_Moved}  Moved Voice Channel`)
                         .setDescription(`${bold("Channel:")} ${oldState.channel} -> ${newState.channel}`)
-                        .addField("Duration", duration)
+                        .addFields(
+                            { name: "Duration", value: duration }
+                        )
                         .setColor(Styles.Colours.Yellow)
                 } else if (!newState.channel) {
-                    const duration = Time.SecondsToDuration(Math.round((Date.now() - Users[newState.member.id])/1000));
+                    const duration = Time.SecondsToDuration(Math.round((Date.now() - Users[newState.member.id]) / 1000));
                     delete Users[newState.member.id];
                     embed.setTitle(`${Styles.Emojis.Voice_Left}  Left Voice Channel`, true)
                         .setDescription(`${bold("Channel:")} ${oldState.channel.toString() || "None"}`)
-                        .addField("Duration", duration)
+                        .addFields(
+                            { name: "Duration", value: duration }
+                        )
                         .setColor(Styles.Colours.Red)
                 } else if (newState.channel) {
                     Users[newState.member.id] = Date.now();
@@ -53,5 +57,5 @@ class VoiceStateUpdate extends ClientEvent {
 }
 
 module.exports = (client) => {
-    return new VoiceStateUpdate(client, "voiceStateUpdate", false);
+    return new VoiceStateUpdate(client, "VoiceStateUpdate", false);
 }

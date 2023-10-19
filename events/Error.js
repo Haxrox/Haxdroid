@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const ClientEvent = require("./ClientEvent.js");
 const Config = require("../config.json");
 const Styles = require("../styles.json");
@@ -17,9 +17,9 @@ class Error extends ClientEvent {
         super.Execute(error);
         
         if (this.logChannel) {
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle("Bot Error")
-                .setDescription(`${Styles.Emojis.Error}  ${message}`)
+                .setDescription(`${Styles.Emojis.Error}  ${error.message}`)
                 .setColor(Styles.Colours.Error)
                 .setTimestamp();
             
@@ -29,5 +29,5 @@ class Error extends ClientEvent {
 }
 
 module.exports = (client) => {
-    return new Error(client, "error", false);
+    return new Error(client, "Error", false);
 }

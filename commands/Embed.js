@@ -1,6 +1,6 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 const GUILD_TEXT = 0;
 
@@ -9,8 +9,8 @@ class Embed extends Command {
         const channel = interaction.options.getChannel("channel") || interaction.channel
         const permissions = channel.permissionsFor(interaction.member)
 
-        if (permissions.has(Permissions.FLAGS.SEND_MESSAGES) && (channel.isText() || (channel.isThread() && permissions.has(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS)))) {
-            const embed = new MessageEmbed()
+        if (permissions.has(PermissionsBitField.Flags.SendMessages) && (channel.isText() || (channel.isThread() && permissions.has(PermissionsBitField.Flags.SendMessagesInThreads)))) {
+            const embed = new EmbedBuilder()
                 .setAuthor({
                     name: interaction.options.getString("author-name") || "",
                     iconURL: interaction.options.getString("author-iconURL") || "",
@@ -33,7 +33,7 @@ class Embed extends Command {
 
             channel.send({ embeds: [embed] }).then(async data => {
                 console.log("Embed sent");
-                const responseEmbed = new MessageEmbed()
+                const responseEmbed = new EmbedBuilder()
                     .setTitle("Embed")
                     .setDescription(`Embed sent to: ${channel}`)
                     .setColor(Styles.Colours.Theme)
@@ -58,7 +58,7 @@ EmbedCommand.GetData()
         option.setName("description").setDescription("Sets the description field").setRequired(true)
     )
     .addChannelOption(option =>
-        option.setName("channel").setDescription("Sets the channel to send the embed").addChannelType(GUILD_TEXT)
+        option.setName("channel").setDescription("Sets the channel to send the embed").addChannelTypes(GUILD_TEXT)
     )
     .addStringOption(option =>
         option.setName("author-name").setDescription("Sets the author name field")

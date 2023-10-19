@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { bold } = require('@discordjs/builders');
 const ClientEvent = require("./ClientEvent.js");
 const Config = require("../config.json");
@@ -18,21 +18,23 @@ class GuildMemberAdd extends ClientEvent {
         super.Execute(member);
 
         if (this.logChannel) {
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle("Member Joined")
                 .setDescription(`${bold("User:")} ${member}`)
                 .setColor(Styles.Colours.Green)
-                .addField("Created On", member.user.createdAt.toDateString(), true)
-                .addField("Tag", member.user.tag, true)
-                .addField("ID", member.user.id, true)
+                .addFields(
+                    { name: "Created On", value: member.user.createdAt.toDateString(), inline: true },
+                    { name: "Tag", value: member.user.tag, inline: true },
+                    { name: "ID", value: member.user.id, inline: true }
+                )
                 .setThumbnail(member.user.avatarURL())
                 .setTimestamp();
-            
+
             this.logChannel.send({ embeds: [embed] });
         }
     }
 }
 
 module.exports = (client) => {
-    return new GuildMemberAdd(client, "guildMemberAdd", false);
+    return new GuildMemberAdd(client, "GuildMemberAdd", false);
 }

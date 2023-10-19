@@ -1,6 +1,6 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { EmbedBuilder, MessageAttachment } = require('discord.js');
 const { bold, blockQuote } = require('@discordjs/builders');
 const WolframAlphaAPI = require("../services/WolframAlphaAPI.js")
 const Configuration = require('../config.json');
@@ -23,7 +23,7 @@ class Wolfram extends Command {
                 const plotPod = response.pods.find(pod => pod.id.includes("Plot"));
                 var fieldCount = 0;
 
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setAuthor({ name: "WolframAlpha", url: "https://www.wolframalpha.com/", iconURL: Styles.Icons.Wolfram })
                     .setTitle("Wolfram Query")
                     .setURL(url.href)
@@ -39,7 +39,13 @@ class Wolfram extends Command {
                             data = data.concat(`${podData.plaintext}\n`);
                         })
                         if (data != "" && data != "\n" && fieldCount < 25) {
-                            embed.addField(pod.id, blockQuote(data), fieldCount != 0 && fieldCount % 3 != 0);
+                            embed.addFields(
+                                {
+                                    name: pod.id,
+                                    value: blockQuote(data),
+                                    inline: fieldCount != 0 && fieldCount % 3 != 0
+                                }
+                            );
                             fieldCount++;
                         }
                     }

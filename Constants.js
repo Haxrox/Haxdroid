@@ -16,7 +16,12 @@ const CONSTANTS = {
     THESAURUS_URL_BROWSE_URL: "https://www.thesaurus.com/browse",
     DICTIONARY_URL: "https://www.dictionaryapi.com/api/v3/references/collegiate/json",
     THESAURUS_URL: "https://www.dictionaryapi.com/api/v3/references/thesaurus/json",
-    GUILD_VOICE: 2
+    GUILD_VOICE: 2,
+
+    SECONDS: 60,
+    SECONDS_TO_MINUTES: 60*60,
+    SECONDS_TO_HOURS: 60*60*60,
+    SECONDS_TO_DAYS: 60*60*60*24
 }
 
 CONSTANTS.ALPHABET = CONSTANTS.LOWER_CASE + CONSTANTS.UPPER_CASE;
