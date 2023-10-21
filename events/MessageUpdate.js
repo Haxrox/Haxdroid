@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 const ClientEvent = require("./ClientEvent.js");
 const Config = require("../config.json");
@@ -16,33 +16,35 @@ class MessageUpdate extends ClientEvent {
 
     Execute(oldMessage, newMessage) {
         super.Execute(oldMessage, newMessage);
-        
+
         if (this.logChannel && !newMessage.author.bot && oldMessage.content != newMessage.content) {
-            const headerEmbed = new MessageEmbed()
+            const headerEmbed = new EmbedBuilder()
                 .setAuthor({ name: newMessage.author.username, iconURL: newMessage.author.avatarURL() })
                 .setTitle("Message Updated")
                 .setURL(newMessage.url)
                 .setColor(Styles.Colours.Yellow)
-                .addField("Created At", newMessage.createdAt.toLocaleString(), true)
-                .addField("Edited At", newMessage?.editedAt?.toLocaleString() || "None", true)
+                .addFields(
+                    { name: "Created At", value: newMessage.createdAt.toLocaleString(), inline: true },
+                    { name: "Edited At", value: newMessage?.editedAt?.toLocaleString() || "None", inline: true }
+                )
                 .setFooter({ text: newMessage.id })
 
-            const oldEmbed = new MessageEmbed()
+            const oldEmbed = new EmbedBuilder()
                 .setTitle("Old Message")
                 .setDescription(oldMessage.content)
                 .setColor(Styles.Colours.Red)
 
-            const newEmbed = new MessageEmbed()
+            const newEmbed = new EmbedBuilder()
                 .setTitle("New Message")
                 .setDescription(newMessage.content)
                 .setColor(Styles.Colours.Green)
                 .setTimestamp()
-            
+
             this.logChannel.send({ embeds: [headerEmbed, oldEmbed, newEmbed] });
         }
     }
 }
 
 module.exports = (client) => {
-    return new MessageUpdate(client, "messageUpdate", false);
+    return new MessageUpdate(client, "MessageUpdate", false);
 }

@@ -1,7 +1,7 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const Axios = require('axios');
-const { MessageEmbed, MessageAttachment, DiscordAPIError } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder, DiscordAPIError } = require('discord.js');
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const { bold, blockQuote } = require('@discordjs/builders');
 
@@ -10,7 +10,7 @@ const WEB_URL = "https://ubcgrades.com/#CAMPUS-SESSION-SUBJECT-COURSE-SECTION"
 const COURSE_FORMAT = "CAMPUS - SESSION SUBJECT COURSE SECTION";
 
 const GRADE_DISTRIBUTION = ["<50%", "50-54%", "55-59%", "60-63%", "64-67%", "68-71%", "72-75%", "76-79%", "80-84%", "85-89%", "90-100%"];
-const CURRENT_YEAR = 2021;
+const CURRENT_YEAR = 2023;
 const SUBJECTS = [
     "APSC - Applied Sciences",
     "CPEN - Computer Engineering",
@@ -101,21 +101,26 @@ class UBCGrades extends Command {
                 }
             });
 
-            const attachment = new MessageAttachment(image, "distribution.png");
-            const embed = new MessageEmbed()
+            const attachment = new AttachmentBuilder(image, {
+                name: "distribution.png",
+                description: "Distrubition chart"
+            });
+            const embed = new EmbedBuilder()
                 .setAuthor({ name: "UBCGrades", url: "https://ubcgrades.com/", iconURL: Styles.Icons.UBC })
                 .setTitle(`Grade Summary of ${format}`)
                 .setDescription(description)
                 .setURL(webUrl)
-                .addField("Enrolled", `${response.data.enrolled} Student(s)`, true)
-                .addField("Average", `${parseFloat(response.data.average).toFixed(4)}%`, true)
-                .addField("Standard Deviation", `${parseFloat(response.data.stdev).toFixed(4)}%`, true)
-                .addField("Passed", `${response.data.enrolled - response.data.grades["<50%"]} Student(s) (${parseFloat((response.data.enrolled - response.data.grades["<50%"]) / response.data.enrolled * 100).toFixed(4)}%)`, true)
-                .addField("Failed", `${response.data.grades["<50%"]} Student(s)`, true)
-                .addField('\u200b', '\u200b', true)
-                .addField("Highest", `${response.data.high}%`, true)
-                .addField("Lowest", `${response.data.low}%`, true)
-                .addField('\u200b', '\u200b', true)
+                .addFields(
+                    { name: "Enrolled", value: `${response.data.enrolled} Student(s)`, inline: true },
+                    { name: "Average", value: `${parseFloat(response.data.average).toFixed(4)}%`, inline: true },
+                    { name: "Standard Deviation", value: `${parseFloat(response.data.stdev).toFixed(4)}%`, inline: true },
+                    { name: "Passed", value: `${response.data.enrolled - response.data.grades["<50%"]} Student(s) (${parseFloat((response.data.enrolled - response.data.grades["<50%"]) / response.data.enrolled * 100).toFixed(4)}%)`, inline: true },
+                    { name: "Failed", value: `${response.data.grades["<50%"]} Student(s)`, inline: true },
+                    { name: '\u200b', value: '\u200b', inline: true },
+                    { name: "Highest", value: `${response.data.high}%`, inline: true },
+                    { name: "Lowest", value: `${response.data.low}%`, inline: true },
+                    { name: '\u200b', value: '\u200b', inline: true }
+                )
                 .setImage("attachment://distribution.png")
                 .setColor(Styles.Colours.UBC)
                 .setTimestamp()
@@ -137,24 +142,32 @@ const UBCGradesCommand = new UBCGrades("UBCGrades", "Retrieves grade information
 UBCGradesCommand.GetData()
     .addStringOption(option => {
         option.setName("session").setDescription("Course session").setRequired(true);
+        const choices = [];
         for (var index = CURRENT_YEAR; index >= CURRENT_YEAR - 10; index--) {
-            option.addChoice(index.toString().concat("W"), index.toString().concat("W"));
-            option.addChoice(index.toString().concat("S"), index.toString().concat("S"));
+            option.addChoices({ name: index.toString().concat("W"), value: index.toString().concat("W") });
+            option.addChoices({ name: index.toString().concat("S"), value: index.toString().concat("S") });
         }
+        // option.addChoices(choices);
         return option;
     })
     .addStringOption(option => {
         option.setName("subject").setDescription("Subject code").setRequired(true);
+        const choices = [];
         for (var code of SUBJECTS) {
-            option.addChoice(code, code.slice(0, 4));
+            option.addChoices({ name: code, value: code.slice(0, 4) });
         }
+        // option.addChoices(choices);
         return option;
     })
     .addStringOption(option =>
         option.setName("course").setDescription("Course code").setRequired(true)
     )
     .addStringOption(option =>
-        option.setName("campus").setDescription("Campus for the course").addChoice("Vancouver Campus", "UBCV").addChoice("Okanagan Campus", "UBCO")
+        option.setName("campus").setDescription("Campus for the course")
+            .addChoices(
+                { name: "Vancouver Campus", value: "UBCV" },
+                { name: "Okanagan Campus", value: "UBCO" }
+            )
     )
     .addStringOption(option =>
         option.setName("section").setDescription("Section of the course")

@@ -1,7 +1,7 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
 const { LOWER_CASE, UPPER_CASE, SPECIAL, DIGITS } = require("../Constants.js");
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const Uuid = require("uuid"); // might write own algorithm for each version
 const { blockQuote, inlineCode, spoiler } = require('@discordjs/builders');
 const RNG = require('./RNG.js');
@@ -128,7 +128,7 @@ class Generate extends Command {
         const subcommand = interaction.options.getSubcommand();
         if (this.Subcommands[subcommand]) {
             const data = await this.Subcommands[subcommand](interaction);
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle(`Generated ${subcommand} data`)
                 .setDescription(blockQuote(data || "none"))
                 .setColor(Styles.Colours.Theme)
@@ -151,15 +151,19 @@ GenerateCommand.GetData()
             )
             .addStringOption(option =>
                 option.setName("type").setDescription("type of the data")
-                    .addChoice("Integer", "int")
-                    .addChoice("Float", "float")
-                    .addChoice("Double", "double")
+                    .addChoices(
+                        {name: "Integer", value: "int"},
+                        {name: "Float", value: "float"},
+                        {name: "Double", value: "double"}
+                    )
             )
             .addStringOption(option =>
                 option.setName("order").setDescription("whether the array is in ascending, descending, or unsorted order")
-                    .addChoice("Unordered", "unordered")
-                    .addChoice("Ascending", "ascending")
-                    .addChoice("Descending", "descending")
+                    .addChoices(
+                        {name: "Unordered", value: "unordered"},
+                        {name: "Ascending", value: "ascending"},
+                        {name: "Descending", value: "descending"}
+                    )
             )
             .addIntegerOption(option =>
                 option.setName("min").setDescription("Enter lower-bound")
@@ -183,11 +187,13 @@ GenerateCommand.GetData()
         subcommand.setName('uuid').setDescription('Generates a UUID')
             .addStringOption(option =>
                 option.setName("version").setDescription("version of the UUID to generate").setRequired(true)
-                    .addChoice("Version 1 (date-time + MAC address)", "v1")
-                    .addChoice("Version 2 (date-time + MAC address, DCE security version", "v2")
-                    .addChoice("Version 3 (namespace name-based w/ MD5 hashing)", "v3")
-                    .addChoice("Version 4 (random)", "v4")
-                    .addChoice("Version 5 (namespace name-based w/ SHA-1 hashing)", "v5")
+                    .addChoices(
+                        {name: "Version 1 (date-time + MAC address)", value: "v1"},
+                        {name: "Version 2 (date-time + MAC address, DCE security version", value: "v2"},
+                        {name: "Version 3 (namespace name-based w/ MD5 hashing)", value: "v3"},
+                        {name: "Version 4 (random)", value: "v4"},
+                        {name: "Version 5 (namespace name-based w/ SHA-1 hashing)", value: "v5"}
+                    )
             )
     )
     .addSubcommand(subcommand =>
@@ -197,9 +203,11 @@ GenerateCommand.GetData()
             )
             .addStringOption(option =>
                 option.setName("strength").setDescription("Strength of the password").setRequired(true)
-                    .addChoice("Weak", "weak")
-                    .addChoice("Medium", "medium")
-                    .addChoice("Strong", "strong")
+                    .addChoices(
+                        {name: "Weak", value: "weak"},
+                        {name: "Medium", value: "medium"},
+                        {name: "Strong", value: "strong"}
+                    )
             )
             .addBooleanOption(option =>
                 option.setName("upper").setDescription(`Adds 2 uppercase letters to password (${inlineCode(UPPER_CASE)})`)

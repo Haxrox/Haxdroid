@@ -8,5 +8,5 @@ class MessageCreate extends ClientEvent {
 }
 
 module.exports = (client) => {
-    return new MessageCreate(client, "messageCreate", false);
+    return new MessageCreate(client, "MessageCreate", false);
 }

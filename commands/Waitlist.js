@@ -1,6 +1,6 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { bold, inlineCode, hyperlink } = require('@discordjs/builders');
 const Axios = require("axios");
 const Cheerio = require("cheerio");
@@ -32,7 +32,7 @@ function getSeatInfo(url) {
 function initAlert(user, title, url, toggle = false) {
     const id = setInterval(() => {
         getSeatInfo(url).then(([title, description, seatsRemaining]) => {
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=welcome&tname=welcome", iconURL: Styles.Icons.UBC })
                 .setTitle(`${title} Waitlist Alert`)
                 .setURL(url)
@@ -58,7 +58,7 @@ function initAlert(user, title, url, toggle = false) {
             cache[id].timestamp = new Date();
         }).catch(error => {
             if (cache[id].toggle) {
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=welcome&tname=welcome", iconURL: Styles.Icons.UBC })
                     .setTitle(`${cache[id].title} Alert Failed`)
                     .setColor(Styles.Colours.Red)
@@ -89,7 +89,7 @@ class Waitlist extends Command {
             const url = interaction.options.getString("url", true);
             getSeatInfo(url).then(([title, description, seatsRemaining]) => {
                 console.log(title, description);
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=welcome&tname=welcome", iconURL: Styles.Icons.UBC })
                     .setTitle(`${title} Waitlist Alert Registered`)
                     .setURL(url)
@@ -106,7 +106,7 @@ class Waitlist extends Command {
                 this.DeferError(interaction, error);
             });
         } else if (subcommand === "list") {
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=welcome&tname=welcome", iconURL: Styles.Icons.UBC })
                 .setTitle("Waitlist Alerts")
                 .setColor(Styles.Colours.UBC)
@@ -131,7 +131,7 @@ class Waitlist extends Command {
             if (cache[id] && cache[id].user.id === interaction.user.id) {
                 clearInterval(id);
                 delete cache[id];
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=welcome&tname=welcome", iconURL: Styles.Icons.UBC })
                     .setTitle("Waitlist Alerts")
                     .setDescription(`Alert: ${inlineCode(id)} deregistered`)
@@ -147,7 +147,7 @@ class Waitlist extends Command {
             const id = interaction.options.getString("id", true);
             if (cache[id] && cache[id].user.id === interaction.user.id) {
                 cache[id].toggle = interaction.options.getBoolean("toggle", true);
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setAuthor({ name: "UBC", url: "https://courses.students.ubc.ca/cs/courseschedule?pname=welcome&tname=welcome", iconURL: Styles.Icons.UBC })
                     .setTitle("Waitlist Alerts")
                     .setDescription(`Toggle: ${inlineCode(cache[id].toggle)}`)

@@ -1,6 +1,6 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const {MessageEmbed} = require('discord.js');
+const {EmbedBuilder} = require('discord.js');
 const wait = require('util').promisify(setTimeout);
 
 class CoinFlip extends Command {
@@ -12,7 +12,7 @@ class CoinFlip extends Command {
         const result = choice ? headOption : tailOption;
         await interaction.deferReply();
         await wait(1000);
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
             .setTitle(`:coin: ${question}`)
             .setDescription(`${result}!`)

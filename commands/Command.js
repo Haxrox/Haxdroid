@@ -1,6 +1,5 @@
 const Styles = require("../styles.json");
-const {SlashCommandBuilder} = require("@discordjs/builders");
-const {MessageEmbed} = require('discord.js');
+const {SlashCommandBuilder, EmbedBuilder} = require('discord.js');
 
 module.exports = class Command {
     defaultPermission = true;
@@ -88,7 +87,7 @@ module.exports = class Command {
      */
     async Error(interaction, message) {
         console.log(this.commandName +  " error: " + message);
-        const embed = new MessageEmbed() 
+        const embed = new EmbedBuilder() 
             .setTitle(`${this.commandName} Error`)
             .setDescription(`${Styles.Emojis.Error}  ${message}`)
             .setColor(Styles.Colours.Error)
@@ -104,7 +103,7 @@ module.exports = class Command {
      */
      async DeferError(interaction, message) {
         console.log(this.commandName + " error: " + message);
-        const embed = new MessageEmbed() 
+        const embed = new EmbedBuilder() 
             .setTitle(`${this.commandName} Error`)
             .setDescription(`${Styles.Emojis.Error}  ${message}`)
             .setColor(Styles.Colours.Error)

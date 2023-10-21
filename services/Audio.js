@@ -1,12 +1,6 @@
-const {
-    AudioPlayerStatus,
-    StreamType,
-    createAudioPlayer,
-    createAudioResource,
-    joinVoiceChannel,
-} = require('@discordjs/voice');
+const { AudioPlayerStatus, StreamType, createAudioPlayer, createAudioResource, joinVoiceChannel} = require('@discordjs/voice');
 const Axios = require('axios');
-const { MessageEmbed, MessageActionRow, MessageButton, CommandInteraction, Client, VoiceChannel } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder, CommandInteraction, Client, VoiceChannel } = require('discord.js');
 const { bold, hyperlink } = require('@discordjs/builders');
 const Ytdl = require("ytdl-core");
 
@@ -63,22 +57,23 @@ class Song {
     }
 
     /**
-     * Gets a MessageEmbed for the song
-     * @returns a MessageEmbed that represents the song
+     * Gets a EmbedBuilder for the song
+     * @returns a EmbedBuilder that represents the song
      */
     Embed() {
         const duration = Time.SecondsToDuration(this.Length);
 
-        return new MessageEmbed()
+        return new EmbedBuilder()
             .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
             .setTitle(`${Styles.Emojis.Music}  ${this.Title}`)
             .setURL(this.Url)
-            .addField("Duration", duration, true)
-            .addField("Artist", hyperlink(this.Artist.name, this.Artist.channel_url), true)
-            .addField('\u200b', '\u200b', true)
-            .addField("ViewCount", this.Views.toLocaleString("en-US") || "0", true)
-            .addField("Likes", this.Likes.toLocaleString("en-US") || "0", true)
-            .addField("Subscribers", this.Artist?.subscriber_count.toLocaleString("en-US") || "0", true)
+            .addFields({ name: "Duration", value: duration, inline: true },
+                { name: "Artist", value: hyperlink(this.Artist.name, this.Artist.channel_url), inline: true },
+                { name: '\u200b', value: '\u200b', inline: true },
+                { name: "ViewCount", value: this.Views.toLocaleString("en-US") || "0", inline: true },
+                { name: "Likes", value: this.Likes.toLocaleString("en-US") || "0", inline: true },
+                { name: "Subscribers", value: this.Artist?.subscriber_count.toLocaleString("en-US") || "0", inline: true }
+            )
             .setImage(this.Thumbnail)
             .setColor(Styles.Colours.YouTube)
             .setTimestamp()
@@ -86,18 +81,18 @@ class Song {
     }
 
     /**
-     * Gets a MessageEmbed for the related videos
-     * @returns a MessageEmbed that represents the related videos
+     * Gets a EmbedBuilder for the related videos
+     * @returns a EmbedBuilder that represents the related videos
      */
     RelatedEmbed() {
-        return this.RelatedVideos != null && new MessageEmbed()
+        return this.RelatedVideos != null && new EmbedBuilder()
             .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
             .setTitle(`${Styles.Emojis.Music}  ${this.Title} - Related Videos`)
             .setDescription(this.RelatedVideos.reduce((prev, song) => {
                 const url = new URL(Constants.YOUTUBE_VIDEO_URL);
                 url.searchParams.append("v", song.id);
                 const appended = prev + `${Styles.Emojis.Bullet} ${bold(hyperlink(song.title, url.href))} - ${hyperlink(song.author?.name, song.author?.channel_url)}\n`;
-                
+
                 if (appended.length > 1500) {
                     return prev;
                 } else {
@@ -157,7 +152,7 @@ class Audio {
             this.PlayerChannel = await interaction.guild.channels.fetch(Config.MUSIC_PLAYER_CHANNEL_ID);
             this.HistoryChannel = await interaction.guild.channels.fetch(Config.MUSIC_HISTORY_CHANNEL_ID);
 
-            this.InitEmbed = new MessageEmbed()
+            this.InitEmbed = new EmbedBuilder()
                 .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
                 .setTitle(`${Styles.Emojis.Music}  Music Initialized`)
                 .setDescription(`${bold("Channel:")} <#${channel.id}>\n${bold("Autoplay:")} ${this.AutoPlay}\n${bold("Repeat:")} ${this.Repeat}`)
@@ -166,54 +161,54 @@ class Audio {
                 .setFooter({ text: `Initialized by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
 
             const reduce = this.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${bold(hyperlink(song.Title, song.Url))} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "", 2048);
-            this.QueueEmbed = new MessageEmbed()
+            this.QueueEmbed = new EmbedBuilder()
                 .setTitle(`${Styles.Emojis.Music}  Queue [${reduce[0]}/${this.Queue.Size || "0"}]`)
                 .setDescription(this.Queue.Size > 0 ? reduce[1] : "Empty", true)
                 .setColor(Styles.Colours.YouTube)
                 .setTimestamp()
 
-            this.PauseButton = new MessageButton()
+            this.PauseButton = new ButtonBuilder()
                 .setCustomId(this.ID.MUSIC_PAUSE)
                 .setLabel('Pause')
-                .setStyle('PRIMARY')
+                .setStyle(ButtonStyle.Primary)
                 .setEmoji(Styles.Emojis.Pause);
-            this.ResumeButton = new MessageButton()
+            this.ResumeButton = new ButtonBuilder()
                 .setCustomId(this.ID.MUSIC_PAUSE)
                 .setLabel('Resume')
-                .setStyle('PRIMARY')
+                .setStyle(ButtonStyle.Primary)
                 .setEmoji(Styles.Emojis.Play);
-            this.SkipButton = new MessageButton()
+            this.SkipButton = new ButtonBuilder()
                 .setCustomId(this.ID.MUSIC_SKIP)
                 .setLabel("Skip")
-                .setStyle("PRIMARY")
+                .setStyle(ButtonStyle.Primary)
                 .setEmoji(Styles.Emojis.Skip);
-            this.AutoPlayOnButton = new MessageButton()
+            this.AutoPlayOnButton = new ButtonBuilder()
                 .setCustomId(this.ID.MUSIC_AUTOPLAY)
                 .setLabel("AutoPlay")
-                .setStyle("SUCCESS")
+                .setStyle(ButtonStyle.Success)
                 .setEmoji(Styles.Emojis.AutoPlay);
-            this.AutoPlayOffButton = new MessageButton()
+            this.AutoPlayOffButton = new ButtonBuilder()
                 .setCustomId(this.ID.MUSIC_AUTOPLAY)
                 .setLabel("AutoPlay")
-                .setStyle("DANGER")
+                .setStyle(ButtonStyle.Danger)
                 .setEmoji(Styles.Emojis.AutoPlay);
-            this.RepeatOnButton = new MessageButton()
+            this.RepeatOnButton = new ButtonBuilder()
                 .setCustomId(this.ID.MUSIC_REPEAT)
                 .setLabel("Repeat")
-                .setStyle("SUCCESS")
+                .setStyle(ButtonStyle.Success)
                 .setEmoji(Styles.Emojis.Repeat);
-            this.RepeatOffButton = new MessageButton()
+            this.RepeatOffButton = new ButtonBuilder()
                 .setCustomId(this.ID.MUSIC_REPEAT)
                 .setLabel("Repeat")
-                .setStyle("DANGER")
+                .setStyle(ButtonStyle.Danger)
                 .setEmoji(Styles.Emojis.Repeat);
-            this.StopButton = new MessageButton()
+            this.StopButton = new ButtonBuilder()
                 .setCustomId(this.ID.MUSIC_STOP)
                 .setLabel("Stop")
-                .setStyle("DANGER")
+                .setStyle(ButtonStyle.Danger)
                 .setEmoji(Styles.Emojis.Stop);
 
-            this.Buttons = new MessageActionRow().addComponents(
+            this.Buttons = new ActionRowBuilder().addComponents(
                 this.PauseButton, this.SkipButton, this.AutoPlay ? this.AutoPlayOnButton : this.AutoPlayOffButton,
                 this.Repeat ? this.RepeatOnButton : this.RepeatOffButton, this.StopButton
             );
@@ -237,12 +232,12 @@ class Audio {
      * @param {CommandInteraction} interaction 
      * @param {*} setting the setting to modify
      * @param {*} value the value to set the setting to
-     * @returns a MessageEmbed to be shown when changing the setting
+     * @returns a EmbedBuilder to be shown when changing the setting
      */
     UpdateSetting(interaction, setting, value) {
         if (this[setting] != undefined) {
             this[setting] = value;
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
                 .setTitle(`${Styles.Emojis.Music}  Setting changed`)
                 .setDescription(`${setting} set to ${bold(value)}`)
@@ -250,7 +245,7 @@ class Audio {
                 .setTimestamp()
                 .setFooter({ text: `Set by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
 
-            this.Buttons = new MessageActionRow().addComponents(
+            this.Buttons = new ActionRowBuilder().addComponents(
                 this.PauseButton, this.SkipButton, this.AutoPlay ? this.AutoPlayOnButton : this.AutoPlayOffButton,
                 this.Repeat ? this.RepeatOnButton : this.RepeatOffButton, this.StopButton
             );
@@ -335,7 +330,7 @@ class Audio {
      * Plays the given song
      * @param {String} url to the YouTube video
      * @param {Client} user that played the given song
-     * @returns a MessageEmbed to be shown when playing the song
+     * @returns a EmbedBuilder to be shown when playing the song
      */
     async Play(url, user) {
         if (Ytdl.validateURL(url)) {
@@ -412,10 +407,10 @@ class Audio {
     /**
      * Skips the current song
      * @param {CommandInteraction} interaction the interaction used to skip the song
-     * @returns a MessageEmbed to be shown when skipping the song
+     * @returns a EmbedBuilder to be shown when skipping the song
      */
     Skip(interaction) {
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
             .setTitle(`${Styles.Emojis.Skip}  Song Skipped`)
             .setDescription(`${hyperlink(this.CurrentSong.Title, this.CurrentSong.Url)}`)
@@ -435,7 +430,7 @@ class Audio {
     /**
      * Pauses the music
      * @param {CommandInteraction} interaction used to pause the music
-     * @returns a MessageEmbed to be shown when pausing the music
+     * @returns a EmbedBuilder to be shown when pausing the music
      */
     Pause(interaction) {
         this.State = this.STATES.PAUSE;
@@ -452,7 +447,7 @@ class Audio {
     /**
      * Resumes the music
      * @param {CommandInteraction} interaction used to resume the music
-     * @returns a MessageEmbed to be shown when resuming the music
+     * @returns a EmbedBuilder to be shown when resuming the music
      */
     Resume(interaction) {
         this.State = this.STATES.PLAY;
@@ -469,7 +464,7 @@ class Audio {
     /**
      * Stops the music and cleans any resources created
      * @param {CommandInteraction} interaction that was used to stop the music
-     * @returns a MessageEmbed if an interaction to be shown when stopping the music
+     * @returns a EmbedBuilder if an interaction to be shown when stopping the music
      */
     Stop(interaction) {
         this.CurrentSong = null;
@@ -481,7 +476,7 @@ class Audio {
         this.Connection.destroy();
 
         if (interaction) {
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setAuthor({ name: "YouTube", url: Constants.YOUTUBE_VIDEO_URL, iconURL: Styles.Icons.YouTube })
                 .setTitle(`${Styles.Emojis.Stop}  Music Stopped`)
                 .setColor(Styles.Colours.YouTube)

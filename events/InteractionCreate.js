@@ -66,5 +66,5 @@ class InteractionCreate extends ClientEvent {
 }
 
 module.exports = (client) => {
-    return new InteractionCreate(client, "interactionCreate", false);
+    return new InteractionCreate(client, "InteractionCreate", false);
 }

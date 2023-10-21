@@ -1,6 +1,6 @@
 const Styles = require("../styles.json");
 const Command = require('./Command.js');
-const {MessageEmbed} = require('discord.js');
+const {EmbedBuilder} = require('discord.js');
 const wait = require('util').promisify(setTimeout);
 
 const RESPONSES = [
@@ -47,7 +47,7 @@ class Magic8Ball extends Command {
         await interaction.deferReply();
         await wait(1000);
         const responseColour = responseIndex < 10 ? "Green" : (responseIndex < 15 ? "Yellow" : "Red");
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             // .setAuthor({name: interaction.client.user.username, iconURL: interaction.client.user.avatarURL()})
             .setTitle(`Magic :8ball:,  ${interaction.options.getString("question", true)}?`)
             .setDescription(`${RESPONSE_DATA[responseColour].Emoji}  ${RESPONSES[responseIndex]}.`)

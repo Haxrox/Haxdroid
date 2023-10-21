@@ -1,5 +1,5 @@
 const Command = require('./Command.js');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 class Source extends Command {
     async Execute(interaction) {

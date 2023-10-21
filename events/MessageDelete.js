@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 const ClientEvent = require("./ClientEvent.js");
 const Config = require("../config.json");
@@ -18,21 +18,23 @@ class MessageDelete extends ClientEvent {
         super.Execute(message);
 
         if (this.logChannel && !message.author.bot) {
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setAuthor({ name: message.author.username, iconURL: message.author.avatarURL() })
                 .setTitle("Message Deleted")
                 .setDescription(message.content || "None")
                 .setColor(Styles.Colours.Red)
-                .addField("Created At", message.createdAt.toLocaleString(), true)
-                .addField("Edited", message?.editedAt?.toLocaleString() || "None", true)
+                .addFields(
+                    { name: "Created At", value: message.createdAt.toLocaleString(), inline: true },
+                    { name: "Edited", value: message?.editedAt?.toLocaleString() || "None", inline: true }
+                )
                 .setFooter({ text: message.id })
                 .setTimestamp()
-            
+
             this.logChannel.send({ embeds: [embed] });
         }
     }
 }
 
 module.exports = (client) => {
-    return new MessageDelete(client, "messageDelete", false);
+    return new MessageDelete(client, "MessageDelete", false);
 }

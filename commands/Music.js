@@ -1,5 +1,5 @@
 const Axios = require("axios");
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { bold, hyperlink } = require('@discordjs/builders');
 
 const Config = require("../config.json");
@@ -31,11 +31,17 @@ class Music extends Command {
 		},
 		info: async function (interaction) {
 			const reduce = audio?.Queue.Reduce((song) => `${Styles.Emojis.Bullet} ${hyperlink(song.Title, song.Url)} - ${hyperlink(song.Artist?.name, song.Artist?.channel_url)}\n`, "", 1024);
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube })
 				.setTitle(`${Styles.Emojis.Music}  Music Information`)
 				.setDescription(`${bold("Current Song:")} ${hyperlink(audio?.CurrentSong?.Title || "None", audio?.CurrentSong?.Url || "https://www.youtube.com/")}\n${bold("Channel:")} <#${audio?.Channel?.id || "None"}>\n${bold("Autoplay:")} ${audio?.AutoPlay || "None"}`)
-				.addField(`Queue [${reduce[0]}/${audio?.Queue.Size || "0"}]:`, audio?.Queue.Size > 0 ? reduce[1] : "Empty", true)
+				.addFields(
+					{
+						name: `Queue [${reduce[0]}/${audio?.Queue.Size || "0"}]:`,
+						value: audio?.Queue.Size > 0 ? reduce[1] : "Empty",
+						inline: true
+					}
+				)
 				.setColor(Styles.Colours.YouTube)
 				.setTimestamp()
 				.setFooter({ text: `Requested by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
@@ -57,7 +63,7 @@ class Music extends Command {
 		},
 		search: async function (interaction) {
 			await interaction.deferReply();
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: "YouTube", url: "https://www.youtube.com/", iconURL: Styles.Icons.YouTube })
 				.setTitle(`${Styles.Emojis.Music}  Search Results`)
 				.setColor(Styles.Colours.YouTube)
@@ -218,29 +224,40 @@ class Music extends Command {
 const MusicCommand = new Music("Music", "Music player");
 MusicCommand.GetData()
 	.addSubcommand(subcommand =>
-		subcommand.setName("init").setDescription("Initializes the music player")
+		subcommand.setName("init")
+			.setDescription("Initializes the music player")
 			.addChannelOption(option =>
-				option.setName("channel").setDescription("Voice channel to join").setRequired(true).addChannelType(Constants.GUILD_VOICE)
+				option.setName("channel")
+					.setDescription("Voice channel to join")
+					.setRequired(true)
+					.addChannelTypes(Constants.GUILD_VOICE)
 			)
 			.addStringOption(option =>
-				option.setName("song").setDescription("Song to play").setRequired(true)
+				option.setName("song")
+					.setDescription("Song to play")
+					.setRequired(true)
 			)
 			.addBooleanOption(option =>
-				option.setName("autoplay").setDescription("Whether to continue playing music once the queue is empty")
+				option.setName("autoplay")
+					.setDescription("Whether to continue playing music once the queue is empty")
 			)
 			.addBooleanOption(option =>
-				option.setName("repeat").setDescription("Whether to repeat the currently playing song")
+				option.setName("repeat")
+					.setDescription("Whether to repeat the currently playing song")
 			)
 	)
 	.addSubcommand(subcommand =>
-		subcommand.setName("info").setDescription("Gets information about current music state")
+		subcommand.setName("info")
+			.setDescription("Gets information about current music state")
 	)
 	.addSubcommand(subcommand =>
 		subcommand.setName("search").setDescription("Searches for a song")
 			.addStringOption(option =>
 				option.setName("provider").setDescription("where to search for the song").setRequired(true)
-					.addChoice("YouTube", YOUTUBE)
-					.addChoice("YouTube Music", YOUTUBE_MUSIC)
+					.addChoices(
+						{ name: "YouTube", value: YOUTUBE },
+						{ name: "YouTube Music", value: YOUTUBE_MUSIC }
+					)
 			)
 			.addStringOption(option =>
 				option.setName("query").setDescription("song to search for").setRequired(true)

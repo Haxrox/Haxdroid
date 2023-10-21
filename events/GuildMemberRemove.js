@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { bold } = require('@discordjs/builders');
 const ClientEvent = require("./ClientEvent.js");
 const Config = require("../config.json");
@@ -18,13 +18,15 @@ class GuildMemberRemove extends ClientEvent {
         super.Execute(member);
 
         if (this.logChannel) {
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle("Member Left")
                 .setDescription(`${bold("User:")} ${member}`)
                 .setColor(Styles.Colours.Red)
-                .addField("Created On", member.user.createdAt.toDateString(), true)
-                .addField("Tag", member.user.tag, true)
-                .addField("ID", member.user.id, true)
+                .addFields(
+                    { name: "Created On", value: member.user.createdAt.toDateString(), inline: true },
+                    { name: "Tag", value: member.user.tag, inline: true },
+                    { name: "ID", value: member.user.id, inline: true }
+                )
                 .setThumbnail(member.user.avatarURL())
                 .setTimestamp();
             
@@ -34,5 +36,5 @@ class GuildMemberRemove extends ClientEvent {
 }
 
 module.exports = (client) => {
-    return new GuildMemberRemove(client, "guildMemberRemove", false);
+    return new GuildMemberRemove(client, "GuildMemberRemove", false);
 }
