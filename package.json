@@ -29,7 +29,7 @@
     "discord.js": "^14.12.1",
     "ffmpeg-static": "^4.4.1",
     "libsodium-wrappers": "^0.7.13",
-    "uuid": "^8.3.2",
+    "uuid": "^9.0.1",
     "yargs": "^17.6.2",
     "ytdl-core": "^4.11.5"
   }
