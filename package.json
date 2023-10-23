@@ -27,7 +27,7 @@
     "axios": "^1.5.1",
     "chart.js": "^3.7.0",
     "chartjs-node-canvas": "^4.1.5",
-    "cheerio": "^1.0.0-rc.10",
+    "cheerio": "^1.0.0-rc.12",
     "discord.js": "^14.13.0",
     "ffmpeg-static": "^4.4.1",
     "libsodium-wrappers": "^0.7.13",
