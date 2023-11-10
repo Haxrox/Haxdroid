@@ -24,6 +24,9 @@ const DISPATCH_GUILD_COMMANDS = argv.guild_commands;
 const DISPATCH_COMMANDS = argv.dispatch_commands;
 const TESTING = argv.testing;
 
+const RELATIVE_COMMANDS_PATH = "../commands"
+const COMMANDS_PATH = "./commands"
+
 const rest = new REST()
     .setToken(TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN);
 const commands = [];
@@ -37,13 +40,13 @@ const applicationCommands = DISPATCH_GUILD_COMMANDS ?
     if (DISPATCH_COMMANDS) {
         console.log("Dispatching %scommands ...", DISPATCH_GUILD_COMMANDS ? "guild " : "");
 
-        const commandFiles = FileSystem.readdirSync('./commands').filter(file => (file != 'Command.js' && file != 'SlashCommand.js'));
+        const commandFiles = FileSystem.readdirSync(COMMANDS_PATH).filter(file => (file != 'Command.js' && file != 'SlashCommand.js'));
         commandFiles.filter(command => true).forEach(file => {
             if (file.endsWith('.js')) {
-                var command = require(`./commands/${file}`);
+                var command = require(`${RELATIVE_COMMANDS_PATH}/${file}`);
             } else {
-                var commandFile = FileSystem.readdirSync(`./commands/${file}`).filter(subFile => subFile.endsWith('.js')).find(subFile => subFile.toUpperCase().startsWith(file.toUpperCase()));
-                var command = require(`./commands/${file}/${commandFile}`);
+                var commandFile = FileSystem.readdirSync(`${COMMANDS_PATH}/${file}`).filter(subFile => subFile.endsWith('.js')).find(subFile => subFile.toUpperCase().startsWith(file.toUpperCase()));
+                var command = require(`${RELATIVE_COMMANDS_PATH}/${file}/${commandFile}`);
             }
             const commandData = command.GetData()
                 .setDefaultPermission(command.defaultPermission);
