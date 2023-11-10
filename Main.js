@@ -1,6 +1,19 @@
-const { Client, GatewayIntentBits} = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
+const yargs = require('yargs');
 const ReadyEvent = require('./events/Ready.js');
 const Configuration = require('./config.json');
+
+const argv = yargs.option('debugging', {
+    alias: 'd',
+    description: 'Set debugging to true',
+    type: 'boolean',
+    default: false
+}).option("testing", {
+    alias: 't',
+    description: 'Set testing to true',
+    type: 'boolean',
+    default: false
+}).argv;
 
 const client = new Client({
     intents: [
@@ -20,9 +33,15 @@ client.once(Ready.eventName, Ready.Execute.bind(Ready));
 var failCount = 0;
 
 function login() {
-    client.login(Configuration.TESTING ? Configuration.TEST_TOKEN : Configuration.TOKEN).then(() => {
+    client.login(argv.testing ? Configuration.TEST_TOKEN : Configuration.TOKEN).then(() => {
+        if (argv.testing) {
+            process.exit(0);
+        }
         failCount = 0; 
-    }).catch ((error) => {
+    }).catch((error) => {
+        if (argv.testing) {
+            process.exit(1);
+        }
         console.error(error);
         setTimeout(login, failCount * 5000);
     });
