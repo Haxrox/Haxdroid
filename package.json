@@ -4,10 +4,11 @@
   "description": "Haxdroid - a Discord utility bot",
   "main": "Main.js",
   "scripts": {
-    "test": "node Main.js",
+    "debug": "node Main.js -d",
+    "test": "node ./scripts/DispatchSlashCommands.js -gdt && node Main.js -t && node ./scripts/DispatchSlashCommands.js -gt",
     "start": "npm run dispatch && node Main.js",
-    "dispatch": "node DispatchSlashCommands.js -g -d",
-    "undispatch": "node DispatchSlashCommands.js -g"
+    "dispatch": "node ./scripts/DispatchSlashCommands.js -gd",
+    "undispatch": "node ./scripts/DispatchSlashCommands.js -g"
   },
   "repository": {
     "type": "git",
