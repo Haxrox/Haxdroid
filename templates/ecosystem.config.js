@@ -17,7 +17,7 @@ module.exports = {
       path: '<REMOTE_DESTINATION_PATH>',
       ssh_options: "StrictHostKeyChecking=no",
       'pre-setup': 'mkdir -p <REMOTE_DIRECTORY_PATH>',
-      'post-setup': 'npm install && npm run configure --' + process.argv[2]
+      'post-setup': 'npm install && npm run configure -- ' + process.argv[2]
     }
   }
 };
