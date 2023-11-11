@@ -39,15 +39,16 @@ function main() {
   local passphrase="$1"
 
   # Decrypt key file
-  decrypt "${KEY_PATH}.gpg" "${KEY_PATH}" passphrase
+  decrypt "${KEY_PATH}.gpg" "${KEY_PATH}" "${passphrase}"
   if [ -e "${KEY_PATH}" ]; then
     chmod 400 "${KEY_PATH}"
   fi
 
   # Decrypt config file
-  decrypt "${CONFIG_PATH}.gpg" "${CONFIG_PATH}" passphrase
+  decrypt "${CONFIG_PATH}.gpg" "${CONFIG_PATH}" "${passphrase}"
 
   # Decrypt ecosystem.config.js
-  decrypt "${PM2_ECOSYSTEM_PATH}.gpg" "${PM2_ECOSYSTEM_PATH}" passphrase
+  decrypt "${PM2_ECOSYSTEM_PATH}.gpg" "${PM2_ECOSYSTEM_PATH}" "${passphrase}"
 }
+
 main "$@"

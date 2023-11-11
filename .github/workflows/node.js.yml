@@ -28,5 +28,28 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm test
+    - name: Install dependencies
+      run: npm ci
+    - name: Run tests
+      run: npm test
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Decrypts config.json file
+        run: npm run configure -- ${{ secrets.CONFIG_PASSPHRASE }}
+        env:
+          CONFIG_PASSPHRASE: ${{ secrets.CONFIG_PASSPHRASE }}
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+      - name: Deploy to backend using pm2
+        run: pm2 deploy ./configs/ecosystem.config.js production
+      
+
+
