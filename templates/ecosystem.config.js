@@ -1,6 +1,5 @@
 /*
  * argv[2] is CONFIG_PASSPHRASE
- * argv[3] is VM_HOST
  */
 module.exports = {
   apps: [{
@@ -12,8 +11,8 @@ module.exports = {
   deploy : {
     production : {
       user: '<SSH_USERNAME>',
-      host: process.argv[3],
-      ref  : 'origin/main',
+      host: '<SSH_HOST>',
+      ref  : '<REPO_BRANCH>',
       repo : '<GIT_REPOSITORY>',
       path: '<REMOTE_DESTINATION_PATH>',
       ssh_options: "StrictHostKeyChecking=no",
