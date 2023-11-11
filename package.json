@@ -7,7 +7,7 @@
     "configure": "./scripts/decrypt.sh",
     "debug": "node Main.js -d",
     "test": "npm run dispatch -t && node Main.js -t && npm run undispatch -- -t",
-    "start": "npm run dispatch && pm2 start ./configs/ecoystem.config.js",
+    "start": "npm run dispatch && node Main.js",
     "dispatch": "node ./scripts/DispatchSlashCommands.js -gd",
     "undispatch": "node ./scripts/DispatchSlashCommands.js -g"
   },
