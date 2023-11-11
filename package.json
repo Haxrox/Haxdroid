@@ -4,7 +4,7 @@
   "description": "Haxdroid - a Discord utility bot",
   "main": "Main.js",
   "scripts": {
-    "configure": "./scripts/decrypt.sh './configs/config.json.gpg' './configs/config.json'",
+    "configure": "./scripts/decrypt.sh",
     "debug": "node Main.js -d",
     "test": "npm run dispatch -t && node Main.js -t && npm run undispatch -- -t",
     "start": "npm run dispatch && pm2 start ./configs/ecoystem.config.js",
