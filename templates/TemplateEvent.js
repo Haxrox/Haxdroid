@@ -1,5 +1,5 @@
 const ClientEvent = require("./ClientEvent.js");
-const Config = require("../config.json");
+const Config = require("../configs/config.json");
 const Styles = require("../styles.json");
 
 class EVENT_NAME extends ClientEvent {

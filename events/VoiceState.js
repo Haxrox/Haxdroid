@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const { bold } = require('@discordjs/builders');
 const ClientEvent = require("../events/ClientEvent.js");
 const Time = require("../utils/Time.js");
-const Config = require("../config.json");
+const Config = require("../configs/config.json");
 const Styles = require("../styles.json");
 
 const Users = {};
