@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const yargs = require('yargs');
 const ReadyEvent = require('./events/Ready.js');
-const Configuration = require('./config.json');
+const Configuration = require('./configs/config.json');
 
 const argv = yargs.option('debugging', {
     alias: 'd',

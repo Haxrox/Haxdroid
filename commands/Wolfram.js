@@ -3,7 +3,7 @@ const Command = require('./Command.js');
 const { EmbedBuilder, MessageAttachment } = require('discord.js');
 const { bold, blockQuote } = require('@discordjs/builders');
 const WolframAlphaAPI = require("../services/WolframAlphaAPI.js")
-const Configuration = require('../config.json');
+const Configuration = require('../configs/config.json');
 
 const wolframAPI = WolframAlphaAPI(Configuration.WOLFRAM_KEY);
 const BASE_URL = `https://www.wolframalpha.com/input`;

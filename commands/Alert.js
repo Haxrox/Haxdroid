@@ -1,5 +1,5 @@
 const Styles = require("../styles.json");
-const Config = require("../config.json");
+const Config = require("../configs/config.json");
 const Command = require('./Command.js');
 const { EmbedBuilder } = require('discord.js');
 const { blockQuote, bold } = require('@discordjs/builders');
