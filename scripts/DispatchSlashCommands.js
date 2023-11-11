@@ -1,6 +1,6 @@
 const { REST, Routes } = require('discord.js');
 const FileSystem = require('fs');
-const Configuration = require('../config.json');
+const Configuration = require('../configs/config.json');
 const yargs = require('yargs');
 
 const argv = yargs.option('testing', {
