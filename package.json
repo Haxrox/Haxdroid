@@ -4,8 +4,9 @@
   "description": "Haxdroid - a Discord utility bot",
   "main": "Main.js",
   "scripts": {
+    "configure": "./scripts/decrypt.sh './config.json.gpg' './config.json'",
     "debug": "node Main.js -d",
-    "test": "node ./scripts/DispatchSlashCommands.js -gdt && node Main.js -t && node ./scripts/DispatchSlashCommands.js -gt",
+    "test": "npm run dispatch -t && node Main.js -t && npm run undispatch -- -t",
     "start": "npm run dispatch && node Main.js",
     "dispatch": "node ./scripts/DispatchSlashCommands.js -gd",
     "undispatch": "node ./scripts/DispatchSlashCommands.js -g"

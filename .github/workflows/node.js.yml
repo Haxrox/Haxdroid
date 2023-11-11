@@ -22,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Decrypts config.json file
-      run: ls -la ./scripts && ./scripts/decrypt.sh "./config.json.gpg" ${{ secrets.CONFIG_PASSPHRASE }} "./config.json"
+      run: npm run configure -- ${{ secrets.CONFIG_PASSPHRASE }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
