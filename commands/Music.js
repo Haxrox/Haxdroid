@@ -2,7 +2,7 @@ const Axios = require("axios");
 const { EmbedBuilder } = require('discord.js');
 const { bold, hyperlink } = require('@discordjs/builders');
 
-const Config = require("../config.json");
+const Config = require("../configs/config.json");
 const Styles = require("../styles.json");
 const Constants = require("../Constants.js");
 const Command = require('./Command.js');

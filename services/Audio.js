@@ -4,7 +4,7 @@ const { EmbedBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder, CommandInter
 const { bold, hyperlink } = require('@discordjs/builders');
 const Ytdl = require("ytdl-core");
 
-const Config = require("../config.json");
+const Config = require("../configs/config.json");
 const Styles = require("../styles.json");
 const Constants = require("../Constants.js");
 const Random = require("../services/Random.js");

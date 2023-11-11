@@ -22,11 +22,35 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Decrypts config.json file
-      run: ls -la ./scripts && ./scripts/decrypt.sh "./config.json.gpg" ${{ secrets.CONFIG_PASSPHRASE }} "./config.json"
+      run: npm run configure -- ${{ secrets.CONFIG_PASSPHRASE }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm test
+    - name: Install dependencies
+      run: npm ci
+    - name: Run tests
+      run: npm test
+  
+  deploy:
+    needs: build
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Decrypts config.json file
+        run: npm run configure -- ${{ secrets.CONFIG_PASSPHRASE }}
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+      - name: Install pm2
+        run: npm install pm2@latest -g
+      - name: Deploy to backend using pm2
+        run: pm2 deploy ./configs/ecosystem.config.js production ${{ secrets.CONFIG_PASSPHRASE }} >> /dev/null
+      
+
+

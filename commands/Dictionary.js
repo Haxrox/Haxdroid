@@ -1,7 +1,7 @@
 const Styles = require("../styles.json");
 const { DICTIONARY_BROWSE_URL, DICTIONARY_URL, THESAURUS_URL } = require("../Constants.js");
 const Command = require('./Command.js');
-const Config = require("../config.json");
+const Config = require("../configs/config.json");
 const Axios = require('axios');
 const { EmbedBuilder } = require('discord.js');
 const { bold, blockQuote, hyperlink } = require('@discordjs/builders');
