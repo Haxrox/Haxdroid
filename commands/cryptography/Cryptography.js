@@ -21,7 +21,7 @@ function addCiphers(option) {
 }
 
 class Cryptography extends Command {
-    async Execute(interaction) {
+    async execute(interaction) {
         const cipher = interaction.options.getString("cipher", true);
 
         if (ciphers.has(cipher)) {
@@ -44,19 +44,19 @@ class Cryptography extends Command {
 
                     interaction.reply({ embeds: [embed], ephemeral: true });
                 } else {
-                    this.Error(interaction, "Key failed verification");
+                    this.error(interaction, "Key failed verification");
                 }
             } else {
-                this.Error(interaction, "Key required for this cipher");
+                this.error(interaction, "Key required for this cipher");
             }
         } else {
-            this.Error(interaction, `Invalid cipher - ${cipher}`);
+            this.error(interaction, `Invalid cipher - ${cipher}`);
         }
     }
 }
 
 const CryptographyCommand = new Cryptography("Cryptography", "Encrypt / decrypt messages with various encryption algorithms");
-CryptographyCommand.GetData()
+CryptographyCommand.getData()
     .addSubcommand(subcommand =>
         subcommand.setName("encrypt").setDescription("Encrypts the messsage")
             .addStringOption(option => {

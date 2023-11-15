@@ -1,18 +1,33 @@
-const Crypto = require("crypto");
+const Crypto = require('crypto');
 
+/**
+ * Random library
+ */
 class Random {
-    Generate(min, max) {
-        min = min || 0;
-        max = max || 100;
+  /**
+   * Generates an insecure random number
+   * @param {Integer} min lowerbound number (inclusive)
+   * @param {Integer} max upperbound (exclusive)
+   * @return {Integer} randomly generated number
+   */
+  generate(min, max) {
+    min = min || 0;
+    max = max || 100;
 
-        min = Math.min(min, max);
-        max = Math.max(min, max);
+    min = Math.min(min, max);
+    max = Math.max(min, max);
 
-        return (Math.random() * (max - min)) + min;
-    }
-    GenerateSecure(min, max) {
-        return Crypto.randomInt(min = min, max = max);
-    }
+    return (Math.random() * (max - min)) + min;
+  }
+  /**
+   * Generates random number using Crypto library
+   * @param {Integer} min lowerbound (inclusive)
+   * @param {Integer} max upperbound (exlusive)
+   * @return {Integer} randomly generated number
+   */
+  generateSecure(min, max) {
+    return Crypto.randomInt(min = min, max = max);
+  }
 }
 
-module.exports = new Random()
+module.exports = new Random();

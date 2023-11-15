@@ -7,7 +7,7 @@ class Create extends Command {
         return await channelManager.create(name, channelOptions);
     }
 
-    async Execute(interaction) {
+    async execute(interaction) {
         await interaction.deferReply();
         if (interaction.options.getSubcommand() == "channel") {
             if (interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels), true) {
@@ -67,10 +67,10 @@ class Create extends Command {
                         .setFooter({ text: `Created by: ${interaction.user.username}`, iconURL: interaction.user.avatarURL() });
                     interaction.editReply({ embeds: [embed] });
                 } catch (error) {
-                    this.DeferError(interaction, error.message);
+                    this.deferError(interaction, error.message);
                 }
             } else {
-                this.DeferError(interaction, "Not enough permissions");
+                this.deferError(interaction, "Not enough permissions");
             }
         }
     }
@@ -78,7 +78,7 @@ class Create extends Command {
 
 const CreateCommand = new Create("Create", "Creates stuff in the discord server");
 CreateCommand.defaultPermission = true;
-CreateCommand.GetData()
+CreateCommand.getData()
     .addSubcommand(subcommand =>
         subcommand.setName("channel").setDescription("creates a channel in the discord server")
             .addStringOption(option =>

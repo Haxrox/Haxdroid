@@ -7,7 +7,7 @@ class Caeser extends Cipher {
     DecryptKey = true;
 
     Encrypt(message, key) {
-        key = key || Random.GenerateSecure(1, message.length);
+        key = key || Random.generateSecure(1, message.length);
 
         let translated = "";
 
