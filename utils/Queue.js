@@ -1,162 +1,169 @@
+/**
+ * LinkedList Node
+ */
 class Node {
-    /**
-     * Creates a node
-     * @param {*} data 
-     * @param {Node} next the next node
-     */
-    constructor(data, next = null) {
-        this.Data = data;
-        this.Next = next;
-    }
+  /**
+   * Creates a node
+   * @param {*} data data to store
+   * @param {Node} next the next node
+   */
+  constructor(data, next = null) {
+    this.Data = data;
+    this.Next = next;
+  }
 }
 
+/**
+ * Queue
+ */
 class Queue {
-    /**
-     * Creates a queue
-     */
-    constructor() {
-        this.Head = null;
-        this.Tail = null;
-        this.Size = 0;
-    }
+  /**
+   * Creates a queue
+   */
+  constructor() {
+    this.Head = null;
+    this.Tail = null;
+    this.Size = 0;
+  }
 
-    /**
-     * Gets the data of the head
-     * @returns the head data
-     */
-    Get() {
-        return this.Head?.Data;
-    }
+  /**
+   * Gets the data of the head
+   * @return {*} the head data
+   */
+  get() {
+    return this.Head?.Data;
+  }
 
-    /**
-     * Removes the node at the given index
-     * @param {number} index the index of the node to remove
-     * @returns the data of the removed node
-     */
-    Remove(index) {
-        var data = this.Head?.Data;
-        if (index === 0) {
-            this.Head = this.Head.Next;
-        } else {
-            var node = this.Head;
-            for (var i = 0; i < index - 1; i++) {
-                node = node.Next;
-            }
-            data = node.Next.Data
-            node.Next = node.Next.Next;
+  /**
+   * Removes the node at the given index
+   * @param {Number} index the index of the node to remove
+   * @return {*} the data of the removed node
+   */
+  remove(index) {
+    let data = this.Head?.Data;
+    if (index === 0) {
+      this.Head = this.Head.Next;
+    } else {
+      let node = this.Head;
+      for (let i = 0; i < index - 1; i++) {
+        node = node.Next;
+      }
+      data = node.Next.Data;
+      node.Next = node.Next.Next;
 
-            if (!node.Next) {
-                this.Tail = node;
-            }
-        }
-        this.Size--;
-
-        if (this.Size === 0) {
-            this.Head = null;
-            this.Tail = null;
-        }
-        return data;
-    }
-    /**
-     * Pushes data to the end of the queue
-     * @param {*} data the data to push
-     */
-    Push(data) {
-        if (!this.Tail) {
-            this.Tail = new Node(data);
-            this.Head = this.Tail;
-        } else {
-            this.Tail.Next = new Node(data);
-            this.Tail = this.Tail.Next;
-        }
-        this.Size++;
-    }
-
-    /**
-     * Removes the front of the queue and returns the data
-     * @returns the data at the front of the queue
-     */
-    Pop() {
-        const data = this.Head?.Data;
-        this.Head = this.Head?.Next;
-
-        if (!this.Head) {
-            this.Tail = null;
-        }
-
-        this.Size--;
-        return data;
-    }
-
-    /**
-     * Inserts data at the front of the queue
-     * @param {*} data 
-     */
-    InsertFront(data) {
-        this.Head = new Node(data, this.Head);
-        this.Size++;
-    }
-
-    /**
-     * Concatenates another queue to the current queue
-     * @param {Queue} queue the queue to concatenate
-     */
-    Concat(queue) {
-        var node = queue?.Head;
-        if (!this.Tail) {
-            this.Head = node;
-        } else {
-            this.Tail.Next = node;
-        }
-        while (!node?.Next) {
-            node = node.next;
-        }
+      if (!node.Next) {
         this.Tail = node;
-        this.Size += queue.Size;
+      }
+    }
+    this.Size--;
+
+    if (this.Size === 0) {
+      this.Head = null;
+      this.Tail = null;
+    }
+    return data;
+  }
+
+  /**
+   * Pushes data to the end of the queue
+   * @param {*} data the data to push
+   */
+  push(data) {
+    if (!this.Tail) {
+      this.Tail = new Node(data);
+      this.Head = this.Tail;
+    } else {
+      this.Tail.Next = new Node(data);
+      this.Tail = this.Tail.Next;
+    }
+    this.Size++;
+  }
+
+  /**
+   * Removes the front of the queue and returns the data
+   * @return {*} the data at the front of the queue
+   */
+  pop() {
+    const data = this.Head?.Data;
+    this.Head = this.Head?.Next;
+
+    if (!this.Head) {
+      this.Tail = null;
     }
 
-    /**
-     * Reduces the queue to a single value
-     * @param {Function} func the callback to parse the data that takes in a single value
-     * @param {*} init the initial value to parse the data
-     * @param {*} maxSize the maximum size that can be reduced
-     * @returns the reduces value
-     */
-    Reduce(func, init, maxSize) {
-        var node = this.Head;
-        var processed = 0;
-        var index = 0;
-        while (node != null) {
-            const append = func(node.Data, index);
-            if ((init + append).length <= (maxSize - 24)) {
-                processed++;
-                init += append;
-                node = node.Next;
-            } else {
-                init += `+ ${this.Size - processed} more`;
-                break;
-            }
-            index++;
-        }
-        return [processed, init];
-    }
+    this.Size--;
+    return data;
+  }
 
-    /**
-     * Clears the entire queue
-     */
-    Clear() {
-        this.Head = null;
-        this.Tail = null;
-        this.Size = 0;
-    }
+  /**
+   * Inserts data at the front of the queue
+   * @param {*} data
+   */
+  insertFront(data) {
+    this.Head = new Node(data, this.Head);
+    this.Size++;
+  }
 
-    /**
-     * Gets whether the queue is empty
-     * @returns whether the queue is empty
-     */
-    Empty() {
-        return this.Size === 0;
+  /**
+   * Concatenates another queue to the current queue
+   * @param {Queue} queue the queue to concatenate
+   */
+  concat(queue) {
+    let node = queue?.Head;
+    if (!this.Tail) {
+      this.Head = node;
+    } else {
+      this.Tail.Next = node;
     }
+    while (!node?.Next) {
+      node = node.next;
+    }
+    this.Tail = node;
+    this.Size += queue.Size;
+  }
+
+  /**
+   * Reduces the queue to a single value
+   * @param {Function} func callback that parses the data
+   * @param {*} init initial value to parse the data
+   * @param {*} maxSize maximum size that can be reduced to
+   * @return {*} reduces value
+   */
+  reduce(func, init, maxSize) {
+    let node = this.Head;
+    let processed = 0;
+    let index = 0;
+    while (node != null) {
+      const append = func(node.Data, index);
+      if ((init + append).length <= (maxSize - 24)) {
+        processed++;
+        init += append;
+        node = node.Next;
+      } else {
+        init += `+ ${this.Size - processed} more`;
+        break;
+      }
+      index++;
+    }
+    return [processed, init];
+  }
+
+  /**
+   * Clears the entire queue
+   */
+  clear() {
+    this.Head = null;
+    this.Tail = null;
+    this.Size = 0;
+  }
+
+  /**
+   * Gets whether the queue is empty
+   * @return {boolean} whether the queue is empty
+   */
+  empty() {
+    return this.Size === 0;
+  }
 }
 
 module.exports = Queue;

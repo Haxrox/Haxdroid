@@ -1,12 +1,19 @@
-const ClientEvent = require("./ClientEvent.js");
+const ClientEvent = require('./ClientEvent.js');
 
+/**
+ * Emitted whenever a message is created
+ */
 class MessageCreate extends ClientEvent {
-    Execute(message) {
-        super.Execute(message);
-        console.log(message.content);
-    }
+  /**
+   * Listener for the event
+   * @param {Message} message the created message
+   */
+  execute(message) {
+    super.execute(message);
+    console.log(message.content);
+  }
 }
 
 module.exports = (client) => {
-    return new MessageCreate(client, "MessageCreate", false);
-}
+  return new MessageCreate(client, 'MessageCreate', false);
+};
