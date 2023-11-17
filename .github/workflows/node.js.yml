@@ -56,7 +56,7 @@ jobs:
       - name: Install pm2
         run: npm install pm2@latest -g
       - name: Deploy to backend using pm2
-        run: pm2 deploy ./configs/ecosystem.config.js production ${{ secrets.CONFIG_PASSPHRASE }} >> /dev/null
+        run: npm run deploy -- ${{ secrets.CONFIG_PASSPHRASE }} >> /dev/null
       
 
 
