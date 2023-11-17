@@ -43,6 +43,9 @@ jobs:
     needs: build
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
+    concurrency:
+      group: ONE_DEPLOY_ONLY
+      cancel-in-progress: true
 
     steps:
       - uses: actions/checkout@v3
