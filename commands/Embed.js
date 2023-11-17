@@ -1,6 +1,6 @@
 const Styles = require('../styles.json');
 const Command = require('./Command.js');
-const {EmbedBuilder, PermissionsBitField} = require('discord.js');
+const {EmbedBuilder, PermissionsBitField, ChannelType} = require('discord.js');
 
 const GUILD_TEXT = 0;
 
@@ -14,14 +14,12 @@ class Embed extends Command {
    */
   async execute(interaction) {
     const channel = interaction.options.getChannel('channel') ||
-    interaction.channel;
+      interaction.channel;
     const permissions = channel.permissionsFor(interaction.member);
 
     if (permissions.has(PermissionsBitField.Flags.SendMessages) &&
-      (channel.isText() || (
-        channel.isThread() &&
-        permissions.has(PermissionsBitField.Flags.SendMessagesInThreads))
-      )) {
+        (channel.type == ChannelType.GuildText &&
+          permissions.has(PermissionsBitField.Flags.SendMessagesInThreads))) {
       const embed = new EmbedBuilder()
           .setAuthor({
             name: interaction.options.getString('author-name') || '',

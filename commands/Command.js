@@ -87,7 +87,7 @@ module.exports = class Command {
    * @param {String} message error message
    */
   async error(interaction, message) {
-    console.log(this.commandName + ' error: ' + message);
+    console.log('{} error: {}', this.commandName, message);
     const embed = new EmbedBuilder()
         .setTitle(`${this.commandName} Error`)
         .setDescription(`${Styles.Emojis.Error}  ${message}`)
@@ -106,7 +106,7 @@ module.exports = class Command {
    * @param {String} message error message
    */
   async deferError(interaction, message) {
-    console.log(this.commandName + ' error: ' + message);
+    console.log('{} error: {}', this.commandName, message);
     const embed = new EmbedBuilder()
         .setTitle(`${this.commandName} Error`)
         .setDescription(`${Styles.Emojis.Error}  ${message}`)

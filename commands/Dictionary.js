@@ -38,9 +38,9 @@ class Dictionary extends Command {
             .setTitle(word)
             .setURL(browseURL)
             .setDescription(`${definition.fl}
-            ${definition.meta.stems.join(', ')}
-            \n
-            ${definitionString}`)
+              ${definition.meta.stems.join(', ')}
+              ${definitionString}
+            `)
             .setColor(Styles.Colours.Dictionary)
             .setTimestamp()
             .setFooter({
@@ -56,22 +56,21 @@ class Dictionary extends Command {
 
           if (thesaurusResponse.status === 200) {
             const thesaurusData = thesaurusResponse?.data[0];
-            const synonyms = thesaurusData.meta.syns[0]?.length > 0 ?
+            const synonyms = thesaurusData.meta?.syns[0]?.length > 0 ?
             thesaurusData.meta.syns[0].reduce((previousValue, currentValue) => {
               // eslint-disable-next-line max-len
               const url = new URL(DICTIONARY_BROWSE_URL.concat('/' + currentValue)).href;
-              previousValue.concat(hyperlink(currentValue, url))
+              return previousValue.concat(hyperlink(currentValue, url))
                   .concat(', ');
-            }, '').slice(0, -2) :
-            'None';
-            const antonyms = thesaurusData.meta.ants[0]?.length > 0 ?
+            }, '').slice(0, -2) : 'None';
+            const antonyms = thesaurusData.meta?.ants[0]?.length > 0 ?
             thesaurusData.meta.ants[0].reduce((previousValue, currentValue) => {
               // eslint-disable-next-line max-len
               const url = new URL(DICTIONARY_BROWSE_URL.concat('/' + currentValue)).href;
-              previousValue.concat(hyperlink(currentValue, url))
+              return previousValue.concat(hyperlink(currentValue, url))
                   .concat(', ');
-            }, '').slice(0, -2) :
-            'None';
+            }, '')
+                .slice(0, -2) : 'None';
 
             embed.addFields(
                 {

@@ -17,16 +17,17 @@ class Commands extends Command {
   constructor(name, description) {
     super(name, description);
     FileSystem.readdirSync('./commands')
-        .filter((file) => (file.endsWith('.js') && file != 'Command.js' &&
-    file != 'SlashCommand.js' && file != 'Commands.js'))
+        .filter((file) =>
+          (file.endsWith('.js') && file != 'Command.js' &&
+          file != 'SlashCommand.js' && file != 'Commands.js'),
+        )
         .forEach((file) => {
           const command = require(`../commands/${file}`);
           this.commandCount++;
-          this.commands = this.commands.concat(
-              bold(`${command.name} - `),
-              command.description,
-              '\n',
-          );
+          this.commands = this.commands
+              .concat(bold(`${command.commandName} - `))
+              .concat(command.description)
+              .concat('\n');
         });
   }
 

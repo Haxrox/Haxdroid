@@ -3,12 +3,12 @@ const yargs = require('yargs');
 const ready = require('./events/Ready.js');
 const Configuration = require('./configs/config.json');
 
-const argv = yargs.option('debugging', {
+const argv = yargs.option('debug', {
   alias: 'd',
   description: 'Set debugging to true',
   type: 'boolean',
   default: false,
-}).option('testing', {
+}).option('test', {
   alias: 't',
   description: 'Set testing to true',
   type: 'boolean',
@@ -36,15 +36,15 @@ let failCount = 0;
  * Logs into the Bot
  */
 function login() {
-  client.login(argv.testing ? Configuration.TEST_TOKEN :
+  client.login((argv.test || argv.debug) ? Configuration.TEST_TOKEN :
     Configuration.TOKEN,
   ).then(() => {
-    if (argv.testing) {
+    if (argv.test) {
       process.exit(0);
     }
     failCount = 0;
   }).catch((error) => {
-    if (argv.testing) {
+    if (argv.test) {
       process.exit(1);
     }
     console.error(error);

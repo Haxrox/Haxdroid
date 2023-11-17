@@ -10,7 +10,7 @@ class Error extends ClientEvent {
   /**
    * Constructor for event
    * @param {Client} client client that emits the event
-   * @param {string} eventName name of the event
+   * @param {String} eventName name of the event
    * @param {boolean} once whether to emit the event only once
    */
   constructor(client, eventName, once) {
@@ -24,7 +24,7 @@ class Error extends ClientEvent {
 
   /**
    * Listener for the event
-   * @param {*} error error encountered
+   * @param {Error} error error encountered
    */
   execute(error) {
     super.execute(error);

@@ -6,11 +6,20 @@
   "scripts": {
     "configure": "./scripts/decrypt.sh",
     "debug": "node Main.js -d",
-    "test": "npm run dispatch -t && node Main.js -t && npm run undispatch -- -t",
+    "linter": "npx eslint .",
+    "local-test": "npm run linter && npm run dispatch -- -t && npm run test && npm run undispatch -- -t",
+    "test": "node Main.js -t",
+    "dispatch-test": "npm run dispatch -- -t",
+    "undispatch-test": "npm run undispatch -- -test",
+    "deploy": "git push heroku main",
     "start": "npm run dispatch && node Main.js",
     "dispatch": "node ./scripts/DispatchSlashCommands.js -gd",
     "undispatch": "node ./scripts/DispatchSlashCommands.js -g"
   },
+  "eslintIgnore": [
+    "/templates/*.js",
+    "/node_modules/**/*.js"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Haxrox/Haxdroid"

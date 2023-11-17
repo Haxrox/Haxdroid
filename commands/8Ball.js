@@ -79,8 +79,7 @@ class Magic8Ball extends Command {
 const command = new Magic8Ball('8Ball', 'Asks a Magic 8-Ball question');
 command.getData()
     .addStringOption((option) =>
-      option
-          .setName('question')
+      option.setName('question')
           .setDescription('Enter your question')
           .setRequired(true),
     );

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * @module wolfram-alpha-api
  * Taken from: https://products.wolframalpha.com/api/libraries/javascript/WolframAlphaAPI.js

@@ -8,5 +8,11 @@
   "[javascript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
-  "eslint.format.enable": true
+  "[json]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },    
+  "eslint.format.enable": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
 }

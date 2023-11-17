@@ -45,7 +45,7 @@ class InteractionCreate extends ClientEvent {
         if (command.validate(interaction.member)) {
           command.execute(interaction);
         } else {
-          command.Error(interaction, 'Cannot execute command');
+          command.error(interaction, 'Cannot execute command');
         }
       } else {
         interaction.reply('Command not ready');
