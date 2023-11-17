@@ -1,43 +1,43 @@
 {
-    "Icons": {
-        "Avatar": "https://github.com/Haxrox/Haxdroid/blob/main/assets/Haxdroid.gif",
-        "Wolfram": "https://pbs.twimg.com/profile_images/1134537628123115521/RqPloDPr_400x400.png",
-        "YouTube": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/YouTube_social_red_square_%282017%29.svg/2048px-YouTube_social_red_square_%282017%29.svg.png",
-        "UBC": "https://pbs.twimg.com/profile_images/1174018931532550144/jRmFjhVX_400x400.png",
-        "Dictionary": "https://www.dictionary.com/e/wp-content/uploads/2020/10/Dictionary_Favicon.jpg"
-    },
-    "Colours": {
-        "Theme": "#cacaca",
-        "Red": "#dd2e44",
-        "Error": "#dd2e44",
-        "Reminder_Cancelled": "#fdcb58",
-        "Reminder_Set": "#78b159",
-        "Reminder_Confirmation": "#fdcb58",
-        "Reminder_Alarm": "#dd2e44",
-        "Yellow": "#fdcb58",
-        "Green": "#78b159",
-        "Wolfram": "#fd745c",
-        "UBC": "#0c2344",
-        "YouTube": "fa0000",
-        "Dictionary": "00248b"
-    },
-    "Emojis": {
-        "Red_Circle": ":red_circle:",
-        "Yellow_Circle": ":yellow_circle:",
-        "Green_Circle": ":green_circle:",
-        "Error": ":octagonal_sign:",
-        "Reminder": "alarm_clock",
-        "Music": ":musical_note:",
-        "Play": "▶️",
-        "Pause": "⏸️",
-        "Stop": "⏹️",
-        "Skip": "⏩",
-        "Repeat": "🔁",
-        "AutoPlay": "⏭️",
-        "Bullet": "‣",
-        "Voice_Join": ":loud_sound:",
-        "Voice_Left": ":mute:",
-        "Voice_Moved": ":left_right_arrow:",
-        "Blocked": ":no_entry_sign:"
-    }
+  "Icons": {
+    "Avatar": "https://github.com/Haxrox/Haxdroid/blob/main/assets/Haxdroid.gif",
+    "Wolfram": "https://pbs.twimg.com/profile_images/1134537628123115521/RqPloDPr_400x400.png",
+    "YouTube": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/YouTube_social_red_square_%282017%29.svg/2048px-YouTube_social_red_square_%282017%29.svg.png",
+    "UBC": "https://pbs.twimg.com/profile_images/1174018931532550144/jRmFjhVX_400x400.png",
+    "Dictionary": "https://www.dictionary.com/e/wp-content/uploads/2020/10/Dictionary_Favicon.jpg"
+  },
+  "Colours": {
+    "Theme": "#cacaca",
+    "Red": "#dd2e44",
+    "Error": "#dd2e44",
+    "Reminder_Cancelled": "#fdcb58",
+    "Reminder_Set": "#78b159",
+    "Reminder_Confirmation": "#fdcb58",
+    "Reminder_Alarm": "#dd2e44",
+    "Yellow": "#fdcb58",
+    "Green": "#78b159",
+    "Wolfram": "#fd745c",
+    "UBC": "#0c2344",
+    "YouTube": "fa0000",
+    "Dictionary": "00248b"
+  },
+  "Emojis": {
+    "Red_Circle": ":red_circle:",
+    "Yellow_Circle": ":yellow_circle:",
+    "Green_Circle": ":green_circle:",
+    "Error": ":octagonal_sign:",
+    "Reminder": "alarm_clock",
+    "Music": ":musical_note:",
+    "Play": "▶️",
+    "Pause": "⏸️",
+    "Stop": "⏹️",
+    "Skip": "⏩",
+    "Repeat": "🔁",
+    "AutoPlay": "⏭️",
+    "Bullet": "‣",
+    "Voice_Join": ":loud_sound:",
+    "Voice_Left": ":mute:",
+    "Voice_Moved": ":left_right_arrow:",
+    "Blocked": ":no_entry_sign:"
+  }
 }
