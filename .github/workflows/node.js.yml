@@ -32,12 +32,12 @@ jobs:
       run: npm ci
     - name: Run linter
       run: npm run linter
-    - name: Dispatch commands
-      run: npm run dispatch-test
+    # - name: Dispatch commands
+      # run: npm run dispatch-test
     - name: Run tests
       run: npm test
-    - name: Undispatch commands
-      run: npm run undispatch-test
+    # - name: Undispatch commands
+      # run: npm run undispatch-test
   
   deploy:
     needs: build
