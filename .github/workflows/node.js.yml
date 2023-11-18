@@ -32,17 +32,20 @@ jobs:
       run: npm ci
     - name: Run linter
       run: npm run linter
-    - name: Dispatch commands
-      run: npm run dispatch-test
+    # - name: Dispatch commands
+      # run: npm run dispatch-test
     - name: Run tests
       run: npm test
-    - name: Undispatch commands
-      run: npm run undispatch-test
+    # - name: Undispatch commands
+      # run: npm run undispatch-test
   
   deploy:
     needs: build
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
+    concurrency:
+      group: ONE_DEPLOY_ONLY
+      cancel-in-progress: true
 
     steps:
       - uses: actions/checkout@v3
@@ -56,7 +59,7 @@ jobs:
       - name: Install pm2
         run: npm install pm2@latest -g
       - name: Deploy to backend using pm2
-        run: pm2 deploy ./configs/ecosystem.config.js production ${{ secrets.CONFIG_PASSPHRASE }} >> /dev/null
+        run: npm run deploy -- ${{ secrets.CONFIG_PASSPHRASE }} >> /dev/null
       
 
 

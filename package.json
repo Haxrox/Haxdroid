@@ -11,7 +11,7 @@
     "test": "node Main.js -t",
     "dispatch-test": "npm run dispatch -- -t",
     "undispatch-test": "npm run undispatch -- -test",
-    "deploy": "git push heroku main",
+    "deploy": "pm2 deploy ./configs/ecosystem.config.js production",
     "start": "npm run dispatch && node Main.js",
     "dispatch": "node ./scripts/DispatchSlashCommands.js -gd",
     "undispatch": "node ./scripts/DispatchSlashCommands.js -g"
