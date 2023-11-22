@@ -22,9 +22,12 @@ class Source extends Command {
       git.getRevision(),
       git.getRemote(),
     ]).then((results) => {
-      const branch = results[0].value;
-      const revision = results[1].value;
-      const remote = results[2].value;
+      const branch = results[0].status === 'fulfilled' ?
+        results[0].value : 'main';
+      const revision = results[1].status === 'fulfilled' ?
+        results[1].value : 'n/a';
+      const remote = results[2].status === 'fulfilled' ?
+        results[2].value : 'https://github.com/Haxrox/Haxdroid';
 
       const embed = new EmbedBuilder()
           .setTitle(`${interaction.client.user.username} Source`)
@@ -51,4 +54,7 @@ class Source extends Command {
   }
 }
 
-module.exports = new Source('Source', 'Gets the bot source code');
+module.exports = new Source(
+    'Source',
+    'Gets the bot Git repository information',
+);
