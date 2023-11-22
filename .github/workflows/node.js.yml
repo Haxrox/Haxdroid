@@ -21,13 +21,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Decrypts config.json file
-      run: npm run configure -- ${{ secrets.CONFIG_PASSPHRASE }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - name: Decrypts config files
+      run: npm run configure -- ${{ secrets.CONFIG_PASSPHRASE }}
     - name: Install dependencies
       run: npm ci
     - name: Run linter
@@ -49,13 +49,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Decrypts config.json file
-        run: npm run configure -- ${{ secrets.CONFIG_PASSPHRASE }}
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: 'npm'
+      - name: Decrypts config files
+        run: npm run configure -- ${{ secrets.CONFIG_PASSPHRASE }}
       - name: Install pm2
         run: npm install pm2@latest -g
       - name: Deploy to backend using pm2
