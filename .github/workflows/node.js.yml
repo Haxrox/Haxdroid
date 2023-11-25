@@ -17,13 +17,13 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    secrets: inherit
 
     steps:
     - uses: actions/checkout@v3
@@ -52,6 +52,7 @@ jobs:
     concurrency:
       group: ONE_DEPLOY_ONLY
       cancel-in-progress: true
+    secrets: inherit
 
     steps:
       - uses: actions/checkout@v3
