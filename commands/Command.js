@@ -1,8 +1,11 @@
-const Styles = require('../styles.json');
 const {SlashCommandBuilder, EmbedBuilder} = require('discord.js');
+
+const Styles = require('../styles.json');
 
 module.exports = class Command {
   defaultPermission = true;
+  embedData = null;
+
   /**
    * Class for commands executed by the user
    * @param {String} name name of the command
@@ -11,7 +14,7 @@ module.exports = class Command {
   constructor(name, description) {
     this.commandName = name;
     this.description = description;
-    this.data = new SlashCommandBuilder()
+    this.slashData = new SlashCommandBuilder()
         .setName(name.toLowerCase())
         .setDescription(description);
   }
@@ -21,7 +24,7 @@ module.exports = class Command {
    * @return {SlashCommandBuiler} SlashCommandBuilder for this command
    */
   getData() {
-    return this.data;
+    return this.slashData;
   }
 
   /**
@@ -39,6 +42,36 @@ module.exports = class Command {
    */
   validate(member) {
     return true;
+  }
+
+  /**
+   * Creates an embed with the given data
+   * @param {BaseInteraction} interaction interaction associated with embed
+   * @param {EmbedBuilder} embedBuilder embedBuilder for the embed
+   * @return {EmbedBuilder} embed builder
+   */
+  createEmbed(interaction, embedBuilder) {
+    const embedData = embedBuilder.data;
+
+    return new EmbedBuilder()
+        .setAuthor(embedData.author ? {
+          name: embedData.author.name, // interaction.client.user.username,
+          // eslint-disable-next-line max-len
+          iconURL: embedData.author.iconURL, // interaction.client.user.avatarURL(),
+        } : null)
+        .setTitle(embedData.title || null)
+        .setDescription(embedData.description || null)
+        .setThumbnail(embedData.thumbnail?.url)
+        .setImage(embedData.image?.url || null)
+        .setTimestamp(embedData.timestamp || null)
+        .setFooter({
+          text: embedData.footer?.text ||
+            `Requested by: ${interaction.user.username}`,
+          iconURL: embedData.footer?.iconURL ||
+            interaction.user.avatarURL(),
+        })
+        .addFields(embedData.fields || null)
+        .setColor(embedData.color || Styles.Colours.Theme);
   }
 
   /**
@@ -88,15 +121,13 @@ module.exports = class Command {
    */
   async error(interaction, message) {
     console.log('{} error: {}', this.commandName, message);
-    const embed = new EmbedBuilder()
-        .setTitle(`${this.commandName} Error`)
-        .setDescription(`${Styles.Emojis.Error}  ${message}`)
-        .setColor(Styles.Colours.Error)
-        .setTimestamp()
-        .setFooter({
-          text: `Requested by: ${interaction.user.username}`,
-          iconURL: interaction.user.avatarURL(),
-        });
+    const embed = this.createEmbed(interaction,
+        new EmbedBuilder()
+            .setTitle(`${this.commandName} Error`)
+            .setDescription(`${Styles.Emojis.Error}  ${message}`)
+            .setColor(Styles.Colours.Error)
+            .data,
+    );
     await interaction.reply({embeds: [embed]});
   }
 
@@ -107,15 +138,13 @@ module.exports = class Command {
    */
   async deferError(interaction, message) {
     console.log('{} error: {}', this.commandName, message);
-    const embed = new EmbedBuilder()
-        .setTitle(`${this.commandName} Error`)
-        .setDescription(`${Styles.Emojis.Error}  ${message}`)
-        .setColor(Styles.Colours.Error)
-        .setTimestamp()
-        .setFooter({
-          text: `Requested by: ${interaction.user.username}`,
-          iconURL: interaction.user.avatarURL()},
-        );
+    const embed = this.createEmbed(interaction,
+        new EmbedBuilder()
+            .setTitle(`${this.commandName} Error`)
+            .setDescription(`${Styles.Emojis.Error}  ${message}`)
+            .setColor(Styles.Colours.Error)
+            .data,
+    );
     await interaction.editReply({embeds: [embed]});
   }
 };
