@@ -28,7 +28,7 @@ class Info extends Command {
 
       embed.setColor(user.hexAccentColor || Styles.Colours.Theme)
           .setTitle(`${user.username} Info`)
-          .setURL(user === interaction.client.user && 'https://haxtech.web.app/projects/Haxdroid')
+          .setURL(user === interaction.client.user ? 'https://haxtech.web.app/projects/Haxdroid' : null)
           .setDescription(`**Profile:** ${user}`)
           .setThumbnail(user.avatarURL())
           .addFields(
