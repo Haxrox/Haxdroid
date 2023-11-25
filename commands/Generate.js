@@ -1,10 +1,10 @@
-const Styles = require('../styles.json');
-const Command = require('./Command.js');
-const {LOWER_CASE, UPPER_CASE, SPECIAL, DIGITS} = require('../Constants.js');
-const {EmbedBuilder} = require('discord.js');
+const {EmbedBuilder, blockQuote, inlineCode, spoiler} = require('discord.js');
 const Uuid = require('uuid'); // might write own algorithm for each version
-const {blockQuote, inlineCode, spoiler} = require('@discordjs/builders');
-const Random = require('../services/Random');
+
+const Command = require('./Command.js');
+const Styles = require('../styles.json');
+const {LOWER_CASE, UPPER_CASE, SPECIAL, DIGITS} = require('../Constants.js');
+const Random = require('../utils/Random.js');
 
 /**
  * Generate pieces of data

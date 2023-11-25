@@ -1,8 +1,11 @@
-const Styles = require('../styles.json');
-const Command = require('./Command.js');
 const {EmbedBuilder} = require('discord.js');
-const Time = require('../utils/Time.js');
 
+const Command = require('./Command.js');
+const Styles = require('../styles.json');
+const Time = require('../utils/Time.js');
+const Random = require('../utils/Random.js');
+
+const EIGHT_BALL_EMOJI = ':8ball:';
 
 const RESPONSES = [
   'It is certain',
@@ -47,37 +50,27 @@ const RESPONSE_DATA = {
  */
 class Magic8Ball extends Command {
   /**
-    * Executes the given command interaction
-    * @param {BaseInteraction} interaction interaction executed
-    */
+   * Executes the given command interaction
+   * @param {BaseInteraction} interaction interaction executed
+   */
   async execute(interaction) {
     await interaction.deferReply();
     Time.wait(1000).then(async () => {
-      const responseIndex = Math.round(Math.random() * RESPONSES.length);
-
+      const responseIndex = Random.generate(0, RESPONSES.length);
       const responseColour = responseIndex < 10 ? 'Green' :
         (responseIndex < 15 ? 'Yellow' : 'Red');
+
       const question = interaction.options.getString('question', true);
       const responseEmoji = RESPONSE_DATA[responseColour].Emoji;
       const response = RESPONSES[responseIndex];
 
-      const embed = new EmbedBuilder()
-          /*
-          .setAuthor({
-            name: interaction.client.user.username,
-            iconURL: interaction.client.user.avatarURL()
-          })
-          */
-          .setTitle(`Magic :8ball:, ${question}?`)
-          .setDescription(`${responseEmoji}  ${response}.`)
-          .setColor(RESPONSE_DATA[responseColour].Colour)
-          .setTimestamp()
-          .setFooter({
-            text: `Asked by: ${interaction.user.username}`,
-            iconURL: interaction.user.avatarURL(),
-          });
-
-      await interaction.editReply({embeds: [embed]});
+      await interaction.editReply({embeds: [
+        this.createEmbed(interaction, new EmbedBuilder()
+            .setTitle(`Magic ${EIGHT_BALL_EMOJI}, ${question}?`)
+            .setDescription(`${responseEmoji}  ${response}.`)
+            .setColor(RESPONSE_DATA[responseColour].Colour),
+        ),
+      ]});
     });
   }
 }

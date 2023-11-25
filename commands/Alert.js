@@ -1,8 +1,8 @@
+const {EmbedBuilder, blockQuote, bold} = require('discord.js');
+
+const Command = require('./Command.js');
 const Styles = require('../styles.json');
 const Config = require('../configs/config.json');
-const Command = require('./Command.js');
-const {EmbedBuilder} = require('discord.js');
-const {blockQuote, bold} = require('@discordjs/builders');
 
 const ALERT_RATE = 500; // rate to send each message (ms / message)
 const MAX_ALERT = 25; // number of messages
@@ -97,19 +97,14 @@ class Alert extends Command {
           alertUnit = `${bold(Math.min(count, MAX_ALERT))} times`;
         }
 
-        const embed = new EmbedBuilder()
-            .setTitle('Alert Initialized')
-            .setDescription(`Alerting ${target} ${alertUnit} with message:
-              ${blockQuote(message)}`,
-            )
-            .setColor(Styles.Colours.Theme)
-            .setTimestamp()
-            .setFooter({
-              text: `Alerted by: ${interaction.user.username}`,
-              iconURL: interaction.user.avatarURL(),
-            });
-
-        interaction.reply({embeds: [embed]});
+        interaction.reply({embeds: [
+          this.createEmbed(interaction, new EmbedBuilder()
+              .setTitle('Alert Initialized')
+              .setDescription(`Alerting ${target} ${alertUnit} with message:
+                  ${blockQuote(message)}`,
+              ),
+          ),
+        ]});
       } else {
         this.error(interaction, 'Field `duration` or `count` must be filled');
       }

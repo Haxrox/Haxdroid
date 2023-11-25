@@ -1,8 +1,7 @@
-const Styles = require('../styles.json');
-const Command = require('./Command.js');
 const {EmbedBuilder, PermissionsBitField, ChannelType} = require('discord.js');
 
-const GUILD_TEXT = 0;
+const Command = require('./Command.js');
+const Styles = require('../styles.json');
 
 /**
  * Searches the Oxford dictionary
@@ -76,7 +75,7 @@ EmbedCommand.getData()
     .addChannelOption((option) =>
       option.setName('channel')
           .setDescription('Sets the channel to send the embed')
-          .addChannelTypes(GUILD_TEXT),
+          .addChannelTypes(ChannelType.GuildText),
     )
     .addStringOption((option) =>
       option.setName('author-name')

@@ -1,9 +1,14 @@
-const Styles = require('../styles.json');
-const Command = require('./Command.js');
-const {EmbedBuilder} = require('discord.js');
-const {bold, inlineCode, hyperlink} = require('@discordjs/builders');
+const {
+  EmbedBuilder,
+  bold,
+  inlineCode,
+  hyperlink,
+} = require('discord.js');
 const Axios = require('axios');
 const Cheerio = require('cheerio');
+
+const Command = require('./Command.js');
+const Styles = require('../styles.json');
 
 const cache = {};
 const INTERVAL = 60000; // 1 minute
@@ -120,7 +125,6 @@ class Waitlist extends Command {
     if (subcommand === 'register') {
       const url = interaction.options.getString('url', true);
       getSeatInfo(url).then(([title, description, seatsRemaining]) => {
-        console.log(title, description);
         const embed = new EmbedBuilder()
             .setAuthor({
               name: 'UBC',

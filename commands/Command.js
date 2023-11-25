@@ -57,7 +57,9 @@ module.exports = class Command {
         .setAuthor(embedData.author ? {
           name: embedData.author.name, // interaction.client.user.username,
           // eslint-disable-next-line max-len
-          iconURL: embedData.author.iconURL, // interaction.client.user.avatarURL(),
+          iconURL: embedData.author.icon_url, // interaction.client.user.avatarURL(),
+          url: embedData.author.url,
+          proxy_icon_url: embedData.author.proxy_icon_url,
         } : null)
         .setTitle(embedData.title || null)
         .setDescription(embedData.description || null)
@@ -70,7 +72,7 @@ module.exports = class Command {
           iconURL: embedData.footer?.iconURL ||
             interaction.user.avatarURL(),
         })
-        .addFields(embedData.fields || null)
+        .addFields(embedData.fields || [])
         .setColor(embedData.color || Styles.Colours.Theme);
   }
 
@@ -120,13 +122,12 @@ module.exports = class Command {
    * @param {String} message error message
    */
   async error(interaction, message) {
-    console.log('{} error: {}', this.commandName, message);
+    console.log('%s error: %s', this.commandName, message);
     const embed = this.createEmbed(interaction,
         new EmbedBuilder()
             .setTitle(`${this.commandName} Error`)
             .setDescription(`${Styles.Emojis.Error}  ${message}`)
-            .setColor(Styles.Colours.Error)
-            .data,
+            .setColor(Styles.Colours.Error),
     );
     await interaction.reply({embeds: [embed]});
   }
@@ -137,13 +138,12 @@ module.exports = class Command {
    * @param {String} message error message
    */
   async deferError(interaction, message) {
-    console.log('{} error: {}', this.commandName, message);
+    console.log('%s error: %s', this.commandName, message);
     const embed = this.createEmbed(interaction,
         new EmbedBuilder()
             .setTitle(`${this.commandName} Error`)
             .setDescription(`${Styles.Emojis.Error}  ${message}`)
-            .setColor(Styles.Colours.Error)
-            .data,
+            .setColor(Styles.Colours.Error),
     );
     await interaction.editReply({embeds: [embed]});
   }

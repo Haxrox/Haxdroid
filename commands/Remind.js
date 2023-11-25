@@ -1,8 +1,14 @@
-const Styles = require('../styles.json');
+const {
+  EmbedBuilder,
+  Permissions,
+  bold,
+  blockQuote,
+  ChannelType,
+} = require('discord.js');
+
 const Command = require('./Command.js');
+const Styles = require('../styles.json');
 const CONSTANTS = require('../Constants.js');
-const {EmbedBuilder, Permissions, bold, blockQuote} = require('discord.js');
-const GUILD_TEXT = 0;
 
 const Reminders = {};
 
@@ -238,7 +244,7 @@ RemindCommand.getData()
           .addChannelOption((option) =>
             option.setName('channel')
                 .setDescription('Where to remind everyone')
-                .addChannelTypes(GUILD_TEXT),
+                .addChannelTypes(ChannelType.GuildText),
           ),
     )
     .addSubcommand((subcommand) =>

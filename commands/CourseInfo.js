@@ -1,9 +1,9 @@
-const Command = require('./Command.js');
-const Styles = require('../styles.json');
-const {EmbedBuilder} = require('discord.js');
-const {bold, blockQuote, hyperlink} = require('@discordjs/builders');
+const {EmbedBuilder, bold, blockQuote, hyperlink} = require('discord.js');
 const Axios = require('axios');
 const Cheerio = require('cheerio');
+
+const Command = require('./Command.js');
+const Styles = require('../styles.json');
 
 const ORIGIN = 'https://courses.students.ubc.ca';
 const BASE_URL = `${ORIGIN}/cs/courseschedule?pname=subjarea&tname=subj-course`;
@@ -42,13 +42,13 @@ class CourseInfo extends Command {
       });
 
       const credits = paragraphElements[1] ?
-      paragraphElements[1].slice(8).trim() : 0;
+        paragraphElements[1].slice(8).trim() : 0;
       // paragraphElements[1].search("Credits:")
       const preReqs = paragraphElements[2] ?
-      paragraphElements[2].slice(9).trim() : 'None';
+        paragraphElements[2].slice(9).trim() : 'None';
       // paragraphElements[2].search("Pre-reqs:")
       const coReqs = paragraphElements[3] ?
-      paragraphElements[3].slice(8).trim() : 'None';
+        paragraphElements[3].slice(8).trim() : 'None';
       // paragraphElements[2].search("Pre-reqs:")
 
       const sections = htmlParser('.section-summary > tbody').children();
@@ -75,7 +75,11 @@ class CourseInfo extends Command {
       }
 
       const embed = new EmbedBuilder()
-          .setAuthor({name: 'UBC', url: 'https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-all-departments', iconURL: Styles.Icons.UBC})
+          .setAuthor({
+            name: 'UBC',
+            url: 'https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-all-departments',
+            iconURL: Styles.Icons.UBC,
+          })
           .setTitle(`${title} Information`)
           .setDescription(blockQuote(paragraphElements[0].trim()))
           .setURL(queryUrl.href)
@@ -94,16 +98,17 @@ class CourseInfo extends Command {
           .setColor(Styles.Colours.UBC)
           .setTimestamp()
           .setFooter({
-            // eslint-disable-next-line max-len
-            text: `Requested by: ${interaction.user.username} | Data from UBC SSC Course Schedule`,
+            text: `Requested by: ${interaction.user.username}`
+                .concat(' | Data from UBC SSC Course Schedule'),
             iconURL: interaction.user.avatarURL(),
           });
 
       await interaction.editReply({embeds: [embed, sectionsEmbed]});
     }).catch(async (error) => {
-      console.log(error);
-      // eslint-disable-next-line max-len
-      await this.deferError(interaction, `Failed to get course info. Please retry. If this command constantly fails, try to use this **[link](${queryUrl.href})** to manually find the course`);
+      await this.deferError(interaction,
+          // eslint-disable-next-line max-len
+          `Failed to get course info. Please retry. If this command constantly fails, try to use this **[link](${queryUrl.href})** to manually find the course\n${blockQuote(error.message)}`,
+      );
     });
   }
 }

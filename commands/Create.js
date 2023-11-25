@@ -1,11 +1,12 @@
-const Styles = require('../styles.json');
-const Command = require('./Command.js');
 const {
   ChannelType,
   PermissionsBitField,
   EmbedBuilder,
   MessageMentions: {USERS_PATTERN, ROLES_PATTERN},
 } = require('discord.js');
+
+const Command = require('./Command.js');
+const Styles = require('../styles.json');
 
 /**
  * Create channels in Discord

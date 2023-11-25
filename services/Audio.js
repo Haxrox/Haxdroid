@@ -18,7 +18,7 @@ const ytdl = require('ytdl-core');
 const Config = require('../configs/config.json');
 const Styles = require('../styles.json');
 const Constants = require('../Constants.js');
-const Random = require('../services/Random.js');
+const Random = require('../utils/Random.js');
 const Queue = require('../utils/Queue.js');
 const Time = require('../utils/Time.js');
 

@@ -1,12 +1,12 @@
+const Axios = require('axios');
+const {EmbedBuilder, blockQuote, hyperlink} = require('discord.js');
+
+const Command = require('./Command.js');
 const Styles = require('../styles.json');
 const {
   DICTIONARY_BROWSE_URL, DICTIONARY_URL, THESAURUS_URL,
 } = require('../Constants.js');
-const Command = require('./Command.js');
 const Config = require('../configs/config.json');
-const Axios = require('axios');
-const {EmbedBuilder} = require('discord.js');
-const {blockQuote, hyperlink} = require('@discordjs/builders');
 
 /**
  * Searches the Oxford dictionary
@@ -27,14 +27,20 @@ class Dictionary extends Command {
         const definition = response.data[0];
         let getSynonyms = interaction.options.getBoolean('synonyms');
         getSynonyms = getSynonyms !== null ? getSynonyms : true;
-        // eslint-disable-next-line max-len
-        const browseURL = new URL(DICTIONARY_BROWSE_URL.concat('/' + word)).href;
+        const browseURL = new URL(
+            DICTIONARY_BROWSE_URL.concat('/' + word),
+        ).href;
         const definitionString = blockQuote(
             definition.shortdef.reduce((previousValue, currentValue, index) =>
               previousValue.concat(`${index + 1}. ${currentValue}\n`), '',
-            ));
-        const embed = new EmbedBuilder()
-            .setAuthor({name: 'Dictionary.com', url: 'https://www.dictionary.com/', iconURL: Styles.Icons.Dictionary})
+            ),
+        );
+        const embed = this.createEmbed(interaction, new EmbedBuilder()
+            .setAuthor({
+              name: 'Dictionary.com',
+              url: 'https://www.dictionary.com/',
+              iconURL: Styles.Icons.Dictionary,
+            })
             .setTitle(word)
             .setURL(browseURL)
             .setDescription(`${definition.fl}
@@ -42,12 +48,13 @@ class Dictionary extends Command {
               ${definitionString}
             `)
             .setColor(Styles.Colours.Dictionary)
-            .setTimestamp()
             .setFooter({
-              // eslint-disable-next-line max-len
-              text: `Searched by: ${interaction.user.username} | Data from dictionaryapi.com | Links route to dictionary.com`,
+              text: `Searched by: ${interaction.user.username}`
+                  .concat(' | Data from dictionaryapi.com')
+                  .concat(' | Links route to dictionary.com'),
               iconURL: interaction.user.avatarURL(),
-            });
+            }),
+        );
 
         if (getSynonyms) {
           const thesaurusUrl = new URL(THESAURUS_URL + '/' + word);

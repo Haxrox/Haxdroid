@@ -1,8 +1,7 @@
 const {EmbedBuilder, hyperlink} = require('discord.js');
 
 const Command = require('./Command.js');
-const Git = require('../services/Git.js');
-const Styles = require('../styles.json');
+const Git = require('../utils/Git.js');
 
 /**
  * Returns GitHub repo for bot
@@ -29,27 +28,25 @@ class Source extends Command {
       const remote = results[2].status === 'fulfilled' ?
         results[2].value : 'https://github.com/Haxrox/Haxdroid';
 
-      const embed = new EmbedBuilder()
-          .setTitle(`${interaction.client.user.username} Source`)
-          .setURL(remote)
-          .setThumbnail(interaction.client.user.avatarURL())
-          .addFields([
-            {
-              name: 'Branch',
-              value: hyperlink(branch, remote.concat('/tree/', branch)),
-            },
-            {
-              name: 'Revision',
-              value: hyperlink(revision, remote.concat('/commit/', revision)),
-            },
-          ])
-          .setColor(Styles.Colours.Theme)
-          .setTimestamp()
-          .setFooter({
-            text: `Requested by: ${interaction.user.username}`,
-            iconURL: interaction.user.avatarURL(),
-          });
-      interaction.editReply({embeds: [embed]});
+      interaction.editReply({embeds: [
+        this.createEmbed(interaction, new EmbedBuilder()
+            .setTitle(`${interaction.client.user.username} Source`)
+            .setURL(remote)
+            .setThumbnail(interaction.client.user.avatarURL())
+            .addFields([
+              {
+                name: 'Branch',
+                value: hyperlink(branch, remote.concat('/tree/', branch)),
+              },
+              {
+                name: 'Revision',
+                value: hyperlink(revision,
+                    remote.concat('/commit/', revision),
+                ),
+              },
+            ]),
+        ),
+      ]});
     });
   }
 }

@@ -1,6 +1,6 @@
 const Cipher = require('./Cipher.js');
 const {ALL} = require('../../Constants.js');
-const Random = require('../../services/Random.js');
+const Random = require('../../utils/Random.js');
 
 /**
  * Caseser Cipher
