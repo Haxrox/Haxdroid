@@ -1,6 +1,5 @@
 const {
   AudioPlayerStatus,
-  StreamType,
   createAudioPlayer,
   createAudioResource,
   joinVoiceChannel,
