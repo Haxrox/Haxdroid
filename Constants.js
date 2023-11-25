@@ -18,6 +18,7 @@ const CONSTANTS = {
   THESAURUS_URL: 'https://www.dictionaryapi.com/api/v3/references/thesaurus/json',
   GUILD_VOICE: 2,
 
+  MS_TO_S: 1/1000,
   SECONDS: 60,
   SECONDS_TO_MINUTES: 60 * 60,
   SECONDS_TO_HOURS: 60 * 60 * 60,

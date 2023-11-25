@@ -1,7 +1,8 @@
 const Styles = require('../styles.json');
 const Command = require('./Command.js');
 const {EmbedBuilder} = require('discord.js');
-const wait = require('util').promisify(setTimeout);
+const Time = require('../utils/Time.js');
+
 
 const RESPONSES = [
   'It is certain',
@@ -50,29 +51,34 @@ class Magic8Ball extends Command {
     * @param {BaseInteraction} interaction interaction executed
     */
   async execute(interaction) {
-    const responseIndex = Math.round(Math.random() * RESPONSES.length);
     await interaction.deferReply();
-    await wait(1000);
-    const responseColour = responseIndex < 10 ? 'Green' :
-      (responseIndex < 15 ? 'Yellow' : 'Red');
-    const question = interaction.options.getString('question', true);
-    const responseEmoji = RESPONSE_DATA[responseColour].Emoji;
-    const response = RESPONSES[responseIndex];
+    Time.wait(1000).then(async () => {
+      const responseIndex = Math.round(Math.random() * RESPONSES.length);
 
-    const embed = new EmbedBuilder()
-    /* .setAuthor({
-          name: interaction.client.user.username,
-          iconURL: interaction.client.user.avatarURL()
-        }) */
-        .setTitle(`Magic :8ball:, ${question}?`)
-        .setDescription(`${responseEmoji}  ${response}.`)
-        .setColor(RESPONSE_DATA[responseColour].Colour)
-        .setTimestamp()
-        .setFooter({
-          text: `Asked by: ${interaction.user.username}`,
-          iconURL: interaction.user.avatarURL(),
-        });
-    await interaction.editReply({embeds: [embed]});
+      const responseColour = responseIndex < 10 ? 'Green' :
+        (responseIndex < 15 ? 'Yellow' : 'Red');
+      const question = interaction.options.getString('question', true);
+      const responseEmoji = RESPONSE_DATA[responseColour].Emoji;
+      const response = RESPONSES[responseIndex];
+
+      const embed = new EmbedBuilder()
+          /*
+          .setAuthor({
+            name: interaction.client.user.username,
+            iconURL: interaction.client.user.avatarURL()
+          })
+          */
+          .setTitle(`Magic :8ball:, ${question}?`)
+          .setDescription(`${responseEmoji}  ${response}.`)
+          .setColor(RESPONSE_DATA[responseColour].Colour)
+          .setTimestamp()
+          .setFooter({
+            text: `Asked by: ${interaction.user.username}`,
+            iconURL: interaction.user.avatarURL(),
+          });
+
+      await interaction.editReply({embeds: [embed]});
+    });
   }
 }
 
