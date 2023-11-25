@@ -1,9 +1,9 @@
 const Axios = require('axios');
 const {
-  EmbedBuilder, 
+  EmbedBuilder,
   AttachmentBuilder,
-  bold, 
-  blockQuote
+  bold,
+  blockQuote,
 } = require('discord.js');
 const {ChartJSNodeCanvas} = require('chartjs-node-canvas');
 

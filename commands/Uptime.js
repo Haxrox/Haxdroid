@@ -1,7 +1,7 @@
-const Styles = require('../styles.json');
-const Constants = require('../Constants.js');
-const Command = require('./Command.js');
 const {EmbedBuilder} = require('discord.js');
+
+const Command = require('./Command.js');
+const Constants = require('../Constants.js');
 const Time = require('../utils/Time.js' );
 
 const os = require('os');
