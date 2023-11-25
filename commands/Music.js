@@ -1,11 +1,10 @@
 const Axios = require('axios');
-const {EmbedBuilder} = require('discord.js');
-const {bold, hyperlink} = require('@discordjs/builders');
+const {EmbedBuilder, bold, hyperlink} = require('discord.js');
 
+const Command = require('./Command.js');
 const Config = require('../configs/config.json');
 const Styles = require('../styles.json');
 const Constants = require('../Constants.js');
-const Command = require('./Command.js');
 const Audio = require('../services/Audio.js');
 
 const YOUTUBE = 'youtube';

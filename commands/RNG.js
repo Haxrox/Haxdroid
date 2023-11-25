@@ -1,7 +1,7 @@
-const Styles = require('../styles.json');
-const Command = require('./Command.js');
-const Random = require('../services/Random.js');
 const {EmbedBuilder} = require('discord.js');
+
+const Command = require('./Command.js');
+const Random = require('../utils/Random.js');
 
 /**
  * Generates a random number
@@ -17,22 +17,12 @@ class RandomNumberGenerator extends Command {
 
     if (min <= max) {
       const num = Math.round(Random.generate(min, max));
-      const embed = new EmbedBuilder()
-          /*
-          .setAuthor({
-            name: interaction.client.user.username,
-            iconURL: interaction.client.user.avatarURL()
-          })
-          */
-          .setTitle(`RNG [${min}-${max}]`)
-          .setDescription(num.toString())
-          .setColor(Styles.Colours.Theme)
-          .setTimestamp()
-          .setFooter({
-            text: `Requested by: ${interaction.user.username}`,
-            iconURL: interaction.user.avatarURL(),
-          });
-      await interaction.reply({embeds: [embed]});
+      await interaction.reply({embeds: [
+        this.createEmbed(interaction, new EmbedBuilder()
+            .setTitle(`RNG [${min}-${max}]`)
+            .setDescription(num.toString()),
+        ),
+      ]});
     } else {
       await super.Error(interaction, '`max` must be greater than `min`');
     }

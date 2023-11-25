@@ -1,7 +1,7 @@
-const Styles = require('../styles.json');
-const Constants = require('../Constants.js');
-const Command = require('./Command.js');
 const {EmbedBuilder} = require('discord.js');
+
+const Command = require('./Command.js');
+const Constants = require('../Constants.js');
 const Time = require('../utils/Time.js' );
 
 const os = require('os');
@@ -19,34 +19,29 @@ class Uptime extends Command {
     const procUptime = process.uptime();
     const vmUptime = os.uptime();
 
-    const embed = new EmbedBuilder()
-        .setTitle('Uptime Information')
-        .setThumbnail(interaction.client.user.avatarURL())
-        .addFields([
-          {
-            name: 'VM Uptime',
-            value: Time.secondsToDuration(vmUptime),
-            inline: true,
-          },
-          {
-            name: 'Proc Uptime',
-            value: Time.secondsToDuration(procUptime),
-            inline: true,
-          },
-          {
-            name: 'Bot Uptime',
-            value: Time.secondsToDuration(botUptime * Constants.MS_TO_S),
-            inline: true,
-          },
-        ])
-        .setColor(Styles.Colours.Theme)
-        .setTimestamp()
-        .setFooter({
-          text: `Requested by: ${interaction.user.username}`,
-          iconURL: interaction.user.avatarURL(),
-        });
-
-    interaction.reply({embeds: [embed]});
+    interaction.reply({embeds: [
+      this.createEmbed(interaction, new EmbedBuilder()
+          .setTitle('Uptime Information')
+          .setThumbnail(interaction.client.user.avatarURL())
+          .addFields([
+            {
+              name: 'VM Uptime',
+              value: Time.secondsToDuration(vmUptime),
+              inline: true,
+            },
+            {
+              name: 'Proc Uptime',
+              value: Time.secondsToDuration(procUptime),
+              inline: true,
+            },
+            {
+              name: 'Bot Uptime',
+              value: Time.secondsToDuration(botUptime * Constants.MS_TO_S),
+              inline: true,
+            },
+          ]),
+      ),
+    ]});
   }
 }
 
