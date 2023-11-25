@@ -245,7 +245,7 @@ class Music extends Command {
    * Executes the given button interaction
    * @param {BaseInteraction} interaction interaction executed
    */
-  async ExecuteButton(interaction) {
+  async executeButton(interaction) {
     switch (interaction.customId) {
       case audio?.ID.MUSIC_PAUSE:
         audio.State === audio?.STATES.PLAY ?

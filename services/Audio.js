@@ -1,9 +1,9 @@
 const {
   AudioPlayerStatus,
-  StreamType,
   createAudioPlayer,
   createAudioResource,
   joinVoiceChannel,
+  demuxProbe,
 } = require('@discordjs/voice');
 const Axios = require('axios');
 const {
@@ -203,7 +203,7 @@ class Audio {
     this.AutoPlay = autoplay === null ? true : autoplay;
     this.Repeat = repeat === null ? false : repeat;
 
-    this.Player.on(AudioPlayerStatus.Idle, this.Idle.bind(this));
+    this.Player.on(AudioPlayerStatus.Idle, this.idle.bind(this));
     this.Player.on('error', this.error.bind(this));
     this.Connection.on('error', this.error.bind(this));
     this.Connection.subscribe(this.Player);
@@ -495,7 +495,7 @@ class Audio {
    * (if this.Repeat === true)
    * @return {Song} the current song that is playing
    */
-  playSong() {
+  async playSong() {
     if (!this.Repeat) {
       this.CurrentSong = this.Queue.pop();
       this.State = this.STATES.PLAY;
@@ -514,19 +514,19 @@ class Audio {
         ],
       });
     }
-    const stream = ytdl(this.CurrentSong.Url, {
-      fmt: 'mp3',
-      format: 'audio',
+
+    const readableStream = ytdl(this.CurrentSong.Url, {
       quality: 'highestaudio',
-      codecs: 'opus',
-      highWaterMark: 1 << 62,
-      liveBuffer: 1 << 62,
-      dlChunkSize: 0,
-      bitrate: 128,
+      filter: 'audioonly',
+      liveBuffer: 40000,
+      highWaterMark: 1 << 30,
     });
+
+    const {stream, type} = await demuxProbe(readableStream);
     this.Player.play(createAudioResource(stream, {
-      inputType: StreamType.Arbitrary,
+      inputType: type,
     }));
+
     return this.CurrentSong;
   }
 
@@ -586,7 +586,7 @@ class Audio {
    * @param {CommandInteraction} interaction used to resume the music
    * @return {EmbedBuilder} embed to be shown when resuming the music
    */
-  Resume(interaction) {
+  resume(interaction) {
     this.State = this.STATES.PLAY;
     this.Player.unpause();
 
@@ -669,7 +669,7 @@ class Audio {
    * Called when this class errors
    * @param {*} error error that was thrown
    */
-  Error(error) {
+  error(error) {
     console.error(error);
   }
 }
