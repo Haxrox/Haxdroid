@@ -4,9 +4,9 @@
 # Arguments:
 #   $1: passphrase used to encrypt the secrets
 
-declare -r KEY_PATH="./configs/HaxVM_key.pem"
-declare -r CONFIG_PATH="./configs/config.json"
-declare -r PM2_ECOSYSTEM_PATH="./configs/ecosystem.config.js"
+declare -r KEY_PATH="./src/configs/HaxVM_key.pem"
+declare -r CONFIG_PATH="./src/configs/config.json"
+declare -r PM2_ECOSYSTEM_PATH="./src/configs/ecosystem.config.js"
 
 ########################################
 # Decrypts secret JSON file using gpg
