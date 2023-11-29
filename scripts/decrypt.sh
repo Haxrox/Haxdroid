@@ -4,7 +4,7 @@
 # Arguments:
 #   $1: passphrase used to encrypt the secrets
 
-declare -r KEY_PATH="./HaxVM_key.pem"
+declare -r KEY_PATH="./configs/HaxVM_key.pem"
 declare -r CONFIG_PATH="./configs/config.json"
 declare -r PM2_ECOSYSTEM_PATH="./configs/ecosystem.config.js"
 
