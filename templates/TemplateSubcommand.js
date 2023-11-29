@@ -1,6 +1,6 @@
 const {EmbedBuilder} = require('discord.js');
 
-const SlashCommand = require('../core/SlashCommand.js');
+const Subcommand = require('../../core/Subcommand.js');
 const Styles = require('../configs/styles.json');
 
 const NAME = 'COMMAND_NAME';
@@ -10,9 +10,9 @@ const DESCRIPTION = 'COMMAND_DESCRIPTION';
  * @class COMMAND_NAME
  * @description COMMAND_DESCRIPTION
  */
-class COMMAND_NAME extends SlashCommand {
+class COMMAND_NAME extends Subcommand {
   /**
-   * Create COMMAND_NAME SlashCommand
+   * Create COMMAND_NAME Subcommand
    * @param {String} name name of the command
    * @param {String} description description of the command
    */
@@ -23,8 +23,8 @@ class COMMAND_NAME extends SlashCommand {
   }
 
   /**
-   * Executes command
-   * @param {BaseInteraction} interaction interaction associated with command
+   * Executes Slash Command interaction
+   * @param {BaseInteraction} interaction interaction created
    */
   async execute(interaction) {
     super.execute(interaction);
