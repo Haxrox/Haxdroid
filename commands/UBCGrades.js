@@ -1,10 +1,14 @@
-const Styles = require('../styles.json');
-const Command = require('./Command.js');
 const Axios = require('axios');
-// eslint-disable-next-line max-len
-const {EmbedBuilder, AttachmentBuilder} = require('discord.js');
+const {
+  EmbedBuilder,
+  AttachmentBuilder,
+  bold,
+  blockQuote,
+} = require('discord.js');
 const {ChartJSNodeCanvas} = require('chartjs-node-canvas');
-const {bold, blockQuote} = require('@discordjs/builders');
+
+const Command = require('./Command.js');
+const Styles = require('../styles.json');
 
 const API_URL = 'https://ubcgrades.com/api/v2/grades/CAMPUS/SESSION/SUBJECT/COURSE/SECTION';
 const WEB_URL = 'https://ubcgrades.com/#CAMPUS-SESSION-SUBJECT-COURSE-SECTION';

@@ -1,7 +1,7 @@
-const Styles = require('../styles.json');
+const {EmbedBuilder, blockQuote} = require('discord.js');
+
 const Command = require('./Command.js');
-const {EmbedBuilder} = require('discord.js');
-const {blockQuote} = require('@discordjs/builders');
+const Styles = require('../styles.json');
 const wolframAlphaAPI = require('../services/WolframAlphaAPI.js');
 const Configuration = require('../configs/config.json');
 

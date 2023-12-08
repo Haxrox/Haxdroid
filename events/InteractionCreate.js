@@ -50,7 +50,7 @@ class InteractionCreate extends ClientEvent {
       } else {
         interaction.reply('Command not ready');
       }
-    } else if (interaction.isSelectMenu()) {
+    } else if (interaction.isStringSelectMenu()) {
       const commandId = interaction.commandId;
       const index = commandId.indexOf('_');
       const command = index > -1 &&

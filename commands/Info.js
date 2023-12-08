@@ -1,7 +1,7 @@
-const Styles = require('../styles.json');
+const {EmbedBuilder, blockQuote} = require('discord.js');
+
 const Command = require('./Command.js');
-const {EmbedBuilder} = require('discord.js');
-const {blockQuote} = require('@discordjs/builders');
+const Styles = require('../styles.json');
 
 /**
  * Gets info about Guilds or GuildMembers
@@ -12,23 +12,13 @@ class Info extends Command {
    * @param {BaseInteraction} interaction interaction executed
    */
   async execute(interaction) {
-    const embed = new EmbedBuilder()
-    //  .setAuthor({
-    //   name: interaction.client.user.username,
-    //   iconURL: interaction.client.user.avatarURL()
-    // })
-        .setTimestamp()
-        .setFooter({
-          text: `Requested by: ${interaction.user.username}`,
-          iconURL: interaction.user.avatarURL(),
-        });
-
+    const embedBuilder = new EmbedBuilder();
     if (interaction.options.getSubcommand() === 'user') {
       const user = interaction.options.getUser('target') || interaction.user;
 
-      embed.setColor(user.hexAccentColor || Styles.Colours.Theme)
+      embedBuilder.setColor(user.hexAccentColor || Styles.Colours.Theme)
           .setTitle(`${user.username} Info`)
-          .setURL(user === interaction.client.user && 'https://haxtech.web.app/projects/Haxdroid')
+          .setURL(user === interaction.client.user ? 'https://haxtech.web.app/projects/Haxdroid' : null)
           .setDescription(`**Profile:** ${user}`)
           .setThumbnail(user.avatarURL())
           .addFields(
@@ -50,11 +40,10 @@ class Info extends Command {
       const description = interaction.guild.description;
       if (description != null) {
         description = blockQuote(description);
-        embed.setDescription(description);
+        embedBuilder.setDescription(description);
       }
 
-      embed.setTitle(`${interaction.guild.name} Info`)
-          .setColor(Styles.Colours.Theme)
+      embedBuilder.setTitle(`${interaction.guild.name} Info`)
           .setThumbnail(interaction.guild.iconURL())
           .addFields(
               {
@@ -74,7 +63,10 @@ class Info extends Command {
           )
           .setImage(interaction.guild.bannerURL());
     }
-    await interaction.reply({embeds: [embed]});
+
+    await interaction.reply({embeds: [
+      this.createEmbed(interaction, embedBuilder),
+    ]});
   }
 }
 

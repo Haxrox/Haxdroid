@@ -7,8 +7,10 @@ const Command = require('./Command.js');
  * Displays command list
  */
 class Commands extends Command {
+  embedBuilder;
   commands = '';
   commandCount = 0;
+
   /**
    * Constructs commands description and counts the number of commands
    * @param {string} name
@@ -29,6 +31,10 @@ class Commands extends Command {
               .concat(command.description)
               .concat('\n');
         });
+
+    this.embedBuilder = new EmbedBuilder()
+        .setTitle(`List of commands [${this.commandCount}]`)
+        .setDescription(this.commands);
   }
 
   /**
@@ -36,20 +42,9 @@ class Commands extends Command {
    * @param {BaseInteraction} interaction interaction executed
    */
   async execute(interaction) {
-    const embed = new EmbedBuilder()
-    /* .setAuthor({
-      name: interaction.client.user.username,
-      iconURL: interaction.client.user.avatarURL()
-     })*/
-        .setTitle(`List of commands [${this.commandCount}]`)
-        .setDescription(this.commands)
-        .setColor('#cacaca')
-        .setTimestamp()
-        .setFooter({
-          text: `Requested by: ${interaction.user.username}`,
-          iconURL: interaction.user.avatarURL()},
-        );
-    await interaction.reply({embeds: [embed]});
+    await interaction.reply({embeds: [
+      this.createEmbed(interaction, this.embedBuilder),
+    ]});
   }
 }
 
