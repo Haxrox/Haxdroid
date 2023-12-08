@@ -23,7 +23,7 @@ class Info extends SlashCommand {
    * @param {BaseInteraction} interaction interaction associated with command
    */
   async execute(interaction) {
-    super.execute(interaction);
+    return super.execute(interaction);
   }
 }
 

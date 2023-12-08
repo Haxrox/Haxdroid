@@ -2,7 +2,7 @@ const {EmbedBuilder, blockQuote} = require('discord.js');
 
 const SlashCommand = require('../core/SlashCommand.js');
 const Styles = require('../configs/styles.json');
-const wolframAlphaAPI = require('../services/WolframAlphaAPI.js');
+const wolframAlphaAPI = require('../services/WolframService.js');
 const Configuration = require('../configs/config.json');
 
 const wolframAPI = wolframAlphaAPI(Configuration.WOLFRAM_KEY);

@@ -1,5 +1,7 @@
-const {Collection} = require('discord.js');
+const {EmbedBuilder, Collection} = require('discord.js');
 const FileSystem = require('fs');
+
+const Styles = require('../configs/styles.json');
 
 const COMMANDS_BASE_PATH = './src/commands';
 const RELATIVE_COMMANDS_PATH = '../commands';

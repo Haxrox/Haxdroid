@@ -1,7 +1,7 @@
 const {EmbedBuilder} = require('discord.js');
 
 const Subcommand = require('../../core/Subcommand.js');
-const Styles = require('../configs/styles.json');
+const Styles = require('../../configs/styles.json');
 
 const NAME = 'COMMAND_NAME';
 const DESCRIPTION = 'COMMAND_DESCRIPTION';
