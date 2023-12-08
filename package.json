@@ -5,16 +5,18 @@
   "main": "Main.js",
   "scripts": {
     "configure": "./scripts/decrypt.sh",
-    "debug": "node Main.js -d",
-    "linter": "npx eslint .",
+    "debug": "node --trace-warnings ./src/Main.js -d",
+    "linter": "npx eslint src",
     "local-test": "npm run linter && npm run dispatch -- -t && npm run test && npm run undispatch -- -t",
-    "test": "node Main.js -t",
+    "test": "node ./src/Main.js -t",
     "dispatch-test": "npm run dispatch -- -t",
     "undispatch-test": "npm run undispatch -- -test",
     "deploy": "pm2 deploy ./configs/ecosystem.config.js production",
-    "start": "npm run dispatch && node Main.js",
+    "start": "npm run dispatch && node ./src/Main.js",
     "dispatch": "node ./scripts/DispatchSlashCommands.js -gd",
-    "undispatch": "node ./scripts/DispatchSlashCommands.js -g"
+    "undispatch": "node ./scripts/DispatchSlashCommands.js -g",
+    "create-command": "./scripts/create_command.sh",
+    "test-npm": "echo $1 $2 $3; echo"
   },
   "eslintIgnore": [
     "/templates/*.js",
