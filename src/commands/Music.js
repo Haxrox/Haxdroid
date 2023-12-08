@@ -5,7 +5,7 @@ const SlashCommand = require('../core/SlashCommand.js');
 const Config = require('../configs/config.json');
 const Styles = require('../configs/styles.json');
 const Constants = require('../Constants.js');
-const Audio = require('../services/Audio.js');
+const Audio = require('../services/AudioService.js');
 
 const YOUTUBE = 'youtube';
 const YOUTUBE_MUSIC = 'youtube_music';

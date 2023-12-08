@@ -54,7 +54,7 @@ const applicationCommands = DISPATCH_GUILD_COMMANDS ?
       DISPATCH_GUILD_COMMANDS ? 'guild ' : '',
     );
   }
-
+  
   await rest.put(applicationCommands, {
     body: commands,
   })

@@ -51,13 +51,9 @@ class SlashCommand extends Command {
 
       if (subcommandKey) {
         const subcommand = this.#subcommands?.get(subcommandKey);
-        subcommand.execute(interaction);
-
-        return true;
+        return subcommand.execute(interaction);
       }
     }
-
-    return false;
   }
 
   /**
