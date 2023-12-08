@@ -1,6 +1,9 @@
-const {EmbedBuilder} = require('discord.js');
+const {EmbedBuilder, blockQuote} = require('discord.js');
 
+const Styles = require('../configs/styles.json');
+const {S_TO_MS} = require('../Constants.js');
 const CommandsService = require('../services/CommandsService.js');
+
 const ALERT_INTERVAL_IN_MS = 1000;
 const MAX_DURATION_IN_S = 300;
 const MAX_ALERT_COUNT = 25;
@@ -40,9 +43,40 @@ class AlertError extends Error {
 class AlertData {
   alerter;
   target;
+  content;
   message;
+  messageEmbed;
   duration;
   type;
+
+  /**
+   * Returns alert as a string
+   * @return {String} string representation
+   *  of the alert
+   */
+  toString() {
+    let str = '';
+
+    switch (this.type) {
+      case AlertType.DURATION:
+        str = str.concat(this.duration / S_TO_MS);
+        break;
+      case AlertType.COUNT:
+        str = str.concat(this.duration / ALERT_INTERVAL_IN_MS);
+        break;
+    }
+
+    return str.concat(' ')
+        .concat(this.type);
+  }
+
+  /**
+     * Returns the alert type
+     * @return {AlertType} alert type
+     */
+  get type() {
+    return this.type;
+  }
 }
 
 /**
@@ -54,47 +88,29 @@ class AlertData {
  */
 class AlertBuilder {
   #data;
-  #alertEmbed;
-  #alertId;
-  #timeoutId;
-  #status;
 
   /**
    * Create AlertBuilder
    * @param {AlertData} alertData data for alert
    */
   constructor(alertData) {
-    this.data = alertData || new AlertData();
-    this.status = AlertStatus.INACTIVE;
+    this.#data = alertData || new AlertData();
   }
 
   /**
-   * Returns alert as a string
+   * Creates an Alert from this data
+   * @return {Alert} alert
+   **/
+  build() {
+    return new Alert(this.#data);
+  }
+
+  /**
+   * Returns the alert as a string
    * @return {String} string representation
-   *  of the alert
    */
-  toString() {
-    const str = '';
-
-    switch (this.#data.type) {
-      case AlertType.DURATION:
-        str.concat(this.#data.tally);
-        break;
-      case AlertType.COUNT:
-        str.concat(this.#data.tally / ALERT_INTERVAL_IN_MS);
-        break;
-    }
-
-    return str.concat(' ')
-        .concat(this.#data.type);
-  }
-
-  /**
-   * Returns the alert type
-   * @return {AlertType} alert type
-   */
-  get type() {
-    return this.#data.type;
+  getDurationString() {
+    return this.#data.toString();
   }
 
   /**
@@ -118,12 +134,32 @@ class AlertBuilder {
   }
 
   /**
+   * Sets the content
+   * @param {String} content content to send
+   * @return {AlertBuilder} this
+   */
+  setContent(content) {
+    this.#data.content = content;
+    return this;
+  }
+
+  /**
    * Sets the message
    * @param {String} message message to send
    * @return {AlertBuilder} this
    */
   setMessage(message) {
     this.#data.message = message;
+    return this;
+  }
+
+  /**
+   * Sets the message embed
+   * @param {EmbedBuilder} embed to send
+   * @return {AlertBuilder} this
+   */
+  setMessageEmbed(embed) {
+    this.#data.message = embed;
     return this;
   }
 
@@ -139,7 +175,7 @@ class AlertBuilder {
    */
   setDuration(duration) {
     if (duration) {
-      this.#data.tally = duration;
+      this.#data.duration = duration * S_TO_MS;
       this.#data.type = AlertType.DURATION;
 
       if (duration > MAX_DURATION_IN_S) {
@@ -161,7 +197,8 @@ class AlertBuilder {
    */
   setCount(count) {
     if (count) {
-      this.#data.tally = Math.min(count, MAX_ALERT_COUNT)*ALERT_INTERVAL_IN_MS;
+      // eslint-disable-next-line max-len
+      this.#data.duration = Math.min(count, MAX_ALERT_COUNT)*ALERT_INTERVAL_IN_MS;
       this.#data.type = AlertType.COUNT;
 
       if (count > MAX_ALERT_COUNT) {
@@ -193,6 +230,27 @@ class AlertBuilder {
 
     return this;
   }
+}
+
+/**
+ * @class Alert
+ * @description Repeatedly sends messages to a user.
+ */
+class Alert {
+  #alertData;
+  #alertEmbed;
+  #alertId;
+  #timeoutId;
+  #status;
+
+  /**
+   * Creates Alert
+   * @param {AlertData} alertData alertData
+   */
+  constructor(alertData) {
+    this.#alertData = alertData;
+    this.#status = AlertStatus.INACTIVE;
+  }
 
   /**
    * Sends the alert
@@ -200,18 +258,26 @@ class AlertBuilder {
    */
   sendAlert() {
     this.#alertEmbed = this.#alertEmbed || CommandsService.createBaseEmbed(
-        new EmbedBuilder()
-            .setTitle(message)
-            .setFooter({
-              text: `Alerted by: ${this.#data.alerter.username}`,
-              iconURL: this.#data.alerter.avatarURL(),
-            }),
+        this.#alertData.messageEmbed || new EmbedBuilder()
+            .setAuthor({
+              name: this.#alertData.alerter.username,
+              iconURL: this.#alertData.alerter.avatarURL(),
+            })
+            .setTitle(this.#alertData.message),
     );
 
-    return this.#data.target.send({
+    return this.#alertData.target.send({
+      content: this.#alertData.content,
       embeds: [
         this.#alertEmbed.setTimestamp(),
       ],
+    }).catch((error) => {
+      this.#status = AlertStatus.ERROR;
+      this.cleanupAlert('Cannot send messages to '
+          .concat(this.#alertData.target)
+          .concat('\n')
+          .concat(blockQuote(error)),
+      );
     });
   }
 
@@ -219,11 +285,10 @@ class AlertBuilder {
    * Cancels the alert
    */
   cancelsAlert() {
-    clearInterval(this.#alertId);
-    clearInterval(this.#timeoutId);
-
-    this.status = AlertStatus.CANCELLED;
+    this.#status = AlertStatus.CANCELLED;
+    this.cleanupAlert();
   }
+
   /**
    * Cleans up the alert
    * @param {String} message message to cleanup
@@ -237,6 +302,10 @@ class AlertBuilder {
             .setTitle('Alert Complete')
             .setColor(Styles.Colours.Green);
         break;
+      case AlertStatus.CANCELLED:
+        embed
+            .setTitle('Alert Cancelled');
+        break;
       case AlertStatus.ERROR:
         embed
             .setTitle('Alert Failed')
@@ -248,40 +317,71 @@ class AlertBuilder {
       embed.setDescription(message);
     }
 
-    this.#data.alerter.send({embeds: [
+    this.#alertData.alerter.send({embeds: [
       embed.setTimestamp(),
     ]});
 
-    this.status = AlertStatus.INACTIVE;
+    clearInterval(this.#alertId);
+    clearInterval(this.#timeoutId);
+    this.#status = AlertStatus.INACTIVE;
   }
 
   /**
    * Executes the alerting
+   * @return {Integer} id of the alert
    */
   execute() {
-    this.#alertId = setInterval(() => {
-      this.sendAlert().catch((error) => {
-        this.#status = AlertStatus.ERROR;
-        this.cleanupAlert('Cannot send messages to '
-            .concat(target)
-            .concat('\n')
-            .concat(blockQuote(error)),
-        );
-      });
-    }, ALERT_INTERVAL_IN_MS);
+    this.sendAlert();
+    this.#alertId = setInterval(this.sendAlert.bind(this),
+        ALERT_INTERVAL_IN_MS,
+    );
 
-    this.#timeoutId = setTimeout(this.cleanupAlert);
+    this.#timeoutId = setTimeout(this.cleanupAlert.bind(this),
+        this.#alertData.duration,
+    );
 
     this.#status = AlertStatus.ACTIVE;
+
+    return this.#alertId;
   }
 }
 
+/**
+ * @class AlertService
+ * @description Handles all alerts
+ */
+class AlertService {
+  static #cache = new Map();
+
+  /**
+   * Creates an alert
+   * @param {AlertBuilder} alertBuilder builder for alert
+   * @return {Integer} id for alert
+   */
+  static execute(alertBuilder) {
+    const alert = alertBuilder.build();
+    const alertId = alert.execute();
+    this.#cache.set(alertId, alert);
+    return alertId;
+  }
+
+  /**
+   * Lists all alerts
+   * @param {Function<Alert>} filter filter for alerts
+   * @return {Array<Alert>} list of alerts
+   */
+  static list(filter = () => true) {
+    return this.#cache.values()
+        .filter(filter);
+  }
+}
 
 module.exports = {
   AlertStatus,
   AlertType,
   AlertData,
   AlertBuilder,
+  AlertService,
 
   ALERT_INTERVAL_IN_MS,
   MAX_DURATION_IN_S,
