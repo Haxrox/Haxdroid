@@ -25,9 +25,7 @@ class Waitlist extends SlashCommand {
    * @param {BaseInteraction} interaction interaction associated with command
    */
   async execute(interaction) {
-    await interaction.deferReply();
-
-    super.execute(interaction);
+    return super.execute(interaction);
   }
 }
 
